@@ -37,19 +37,25 @@ We launched in a high traffic environment with a lot of users, yet an extremely 
 
 extension Node where Context == HTML.BodyContext {
   static func portfolio(for clients: [Client]) -> Node {
-    .ul(
-      .class("item-list"),
-      .forEach(clients) { client in
-        .li(
-          .h1(.a(
-            .href(client.link),
-            .text(client.name)
-          )),
-          .img(.src(client.image)),
-          .p(.text(client.description))
-        )
-      }
-    )
+    .group([
+      .div(
+        .h1("Clients"),
+        .p("Here's a selection of some of the work I've done for clients.")
+      ),
+      .ul(
+        .class("item-list"),
+        .forEach(clients) { client in
+          .li(
+            .h1(.a(
+              .href(client.link),
+              .text(client.name)
+              )),
+            .img(.src(client.image)),
+            .p(.text(client.description))
+          )
+        }
+      )
+    ])
   }
 }
 

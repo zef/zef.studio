@@ -4,31 +4,6 @@
 *  MIT license, see LICENSE file for details
 */
 
-/* Webfont: Calluna-Regular */@font-face {
-    font-family: 'Calluna';
-    src: url('StudioTheme/Calluna-Regular.eot'); /* IE9 Compat Modes */
-    src: url('StudioTheme/Calluna-Regular.eot?#iefix') format('embedded-opentype'), /* IE6-IE8 */
-         url('StudioTheme/Calluna-Regular.woff') format('woff'), /* Modern Browsers */
-         url('StudioTheme/Calluna-Regular.ttf') format('truetype'), /* Safari, Android, iOS */
-         url('StudioTheme/Calluna-Regular.svg#Calluna-Regular') format('svg'); /* Legacy iOS */
-    font-style: normal;
-    font-weight: normal;
-    text-rendering: optimizeLegibility;
-}
-
-/* Webfont: Calluna-It */@font-face {
-    font-family: 'Calluna';
-    src: url('StudioTheme/Calluna-It.eot'); /* IE9 Compat Modes */
-    src: url('StudioTheme/Calluna-It.eot?#iefix') format('embedded-opentype'), /* IE6-IE8 */
-         url('StudioTheme/Calluna-It.woff') format('woff'), /* Modern Browsers */
-         url('StudioTheme/Calluna-It.ttf') format('truetype'), /* Safari, Android, iOS */
-         url('StudioTheme/Calluna-It.svg#Calluna-It') format('svg'); /* Legacy iOS */
-    font-style: italic;
-    font-weight: normal;
-    text-rendering: optimizeLegibility;
-}
-
-
 * {
     margin: 0;
     padding: 0;

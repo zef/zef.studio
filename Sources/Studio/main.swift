@@ -1,6 +1,7 @@
 import Foundation
 import Publish
 import Plot
+import SassPublishPlugin
 
 // This type acts as the configuration for your website.
 struct Studio: Website {
@@ -21,7 +22,7 @@ struct Studio: Website {
   var name = "Zef Houssney"
   var description = "My name is Zef. Welcome to my website."
   var language: Language { .english }
-  var imagePath: Path? { nil }
+  var imagePath: Path? { "/images/favicon.png" }
 
   var portfolioPage: Page {
     Page(path: "portfolio",
@@ -39,6 +40,30 @@ struct Studio: Website {
 
 let studio = Studio()
 
+
 try studio.publish(withTheme: .studio, additionalSteps: [
   .addPage(studio.portfolioPage)
+], plugins: [
+  .compileSass(
+      sassFilePath: "Resources/styles/styles.sass",
+      cssFilePath: "styles.css"
+  )
 ])
+
+//try studio.publish(using: [
+//  .group(plugins.map(PublishingStep.installPlugin)),
+//  .optional(.copyResources()),
+//  .addMarkdownFiles(),
+//  .sortItems(by: \.date, order: .descending),
+//  .addPage(studio.portfolioPage)
+//
+//    .generateHTML(withTheme: theme, indentation: indentation),
+//  .unwrap(rssFeedConfig) { config in
+//    .generateRSSFeed(
+//      including: rssFeedSections,
+//      config: config
+//    )
+//  },
+//  .generateSiteMap(indentedBy: indentation),
+//  .unwrap(deploymentMethod, PublishingStep.deploy)
+//])
