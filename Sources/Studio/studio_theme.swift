@@ -7,19 +7,18 @@ extension Theme where Site == Studio {
     Theme(
       htmlFactory: StudioHTMLFactory<Studio>(),
       resourcePaths: [
-        "Resources/StudioTheme/styles.css",
       ]
     )
   }
 
   struct StudioHTMLFactory<Site: Website>: HTMLFactory {
 
-    func studioTemplate(location: Location, context: PublishingContext<Studio>, body: () -> Node<HTML.BodyContext>) -> HTML {
+    func studioTemplate(location: Location, selectedSection: Studio.SectionID? = nil, context: PublishingContext<Studio>, body: () -> Node<HTML.BodyContext>) -> HTML {
       HTML(
         .lang(context.site.language),
         .head(for: location, on: context.site),
         .body(
-          .header(for: context, selectedSection: nil),
+          .header(for: context, selectedSection: selectedSection),
           body(),
           .footer(for: context.site)
         )
@@ -49,112 +48,81 @@ extension Theme where Site == Studio {
 
     func makeSectionHTML(for section: Section<Studio>,
                          context: PublishingContext<Studio>) throws -> HTML {
-      HTML(
-        .lang(context.site.language),
-        .head(for: section, on: context.site),
-        .body(
-          .header(for: context, selectedSection: section.id),
-          .wrapper(
-            .h1(.text(section.title)),
-            .itemList(for: section.items, on: context.site)
-          ),
-          .footer(for: context.site)
+      studioTemplate(location: section, selectedSection: section.id, context: context) {
+        .wrapper(
+          .h1(.text(section.title)),
+          .itemList(for: section.items, on: context.site)
         )
-      )
+      }
     }
 
     func makeItemHTML(for item: Item<Studio>,
                       context: PublishingContext<Studio>) throws -> HTML {
-      HTML(
-        .lang(context.site.language),
-        .head(for: item, on: context.site),
-        .body(
-          .class("item-page"),
-          .header(for: context, selectedSection: item.sectionID),
-          .wrapper(
-            .article(
-              .div(
-                .class("content"),
-                .contentBody(item.body)
-              ),
-              .span("Tagged with: "),
-              .tagList(for: item, on: context.site)
-            )
-          ),
-          .footer(for: context.site)
+      studioTemplate(location: item, selectedSection: item.sectionID, context: context) {
+        .wrapper(
+          .article(
+            .div(
+              .class("content"),
+              .contentBody(item.body)
+            ),
+            .span("Tagged with: "),
+            .tagList(for: item, on: context.site)
+          )
         )
-      )
+      }
     }
 
     func makePageHTML(for page: Page,
                       context: PublishingContext<Studio>) throws -> HTML {
-      HTML(
-        .lang(context.site.language),
-        .head(for: page, on: context.site),
-        .body(
-          .header(for: context, selectedSection: nil),
-          .wrapper(.contentBody(page.body)),
-          .footer(for: context.site)
-        )
-      )
+      studioTemplate(location: page, context: context) {
+          .wrapper(.contentBody(page.body))
+      }
     }
 
     func makeTagListHTML(for page: TagListPage,
                          context: PublishingContext<Studio>) throws -> HTML? {
-      HTML(
-        .lang(context.site.language),
-        .head(for: page, on: context.site),
-        .body(
-          .header(for: context, selectedSection: nil),
-          .wrapper(
-            .h1("Browse all tags"),
-            .ul(
-              .class("all-tags"),
-              .forEach(page.tags.sorted()) { tag in
-                .li(
-                  .class("tag"),
-                  .a(
-                    .href(context.site.path(for: tag)),
-                    .text(tag.string)
-                  )
+      studioTemplate(location: page, context: context) {
+        .wrapper(
+          .h1("Browse all tags"),
+          .ul(
+            .class("all-tags"),
+            .forEach(page.tags.sorted()) { tag in
+              .li(
+                .class("tag"),
+                .a(
+                  .href(context.site.path(for: tag)),
+                  .text(tag.string)
                 )
-              }
-            )
-          ),
-          .footer(for: context.site)
+              )
+            }
+          )
         )
-      )
+      }
     }
 
     func makeTagDetailsHTML(for page: TagDetailsPage,
                             context: PublishingContext<Studio>) throws -> HTML? {
-      HTML(
-        .lang(context.site.language),
-        .head(for: page, on: context.site),
-        .body(
-          .header(for: context, selectedSection: nil),
-          .wrapper(
-            .h1(
-              "Tagged with ",
-              .span(.class("tag"), .text(page.tag.string))
-            ),
-            .a(
-              .class("browse-all"),
-              .text("Browse all tags"),
-              .href(context.site.tagListPath)
-            ),
-            .itemList(
-              for: context.items(
-                taggedWith: page.tag,
-                sortedBy: \.date,
-                order: .descending
-              ),
-              on: context.site
-            )
+      studioTemplate(location: page, context: context) {
+        .wrapper(
+          .h1(
+            "Tagged with ",
+            .span(.class("tag"), .text(page.tag.string))
           ),
-          .footer(for: context.site)
+          .a(
+            .class("browse-all"),
+            .text("Browse all tags"),
+            .href(context.site.tagListPath)
+          ),
+          .itemList(
+            for: context.items(
+              taggedWith: page.tag,
+              sortedBy: \.date,
+              order: .descending
+            ),
+            on: context.site
+          )
         )
-      )
+      }
     }
   }
 }
@@ -164,10 +132,7 @@ extension Node where Context == HTML.BodyContext {
     .div(.class("wrapper"), .group(nodes))
   }
 
-  static func header<T: Website>(
-    for context: PublishingContext<T>,
-    selectedSection: T.SectionID?
-  ) -> Node {
+  static func header<T: Website>(for context: PublishingContext<T>, selectedSection: T.SectionID?) -> Node {
     let sectionIDs = T.SectionID.allCases
 
     return .header(
