@@ -8,7 +8,7 @@ struct Studio: Website {
   enum SectionID: String, WebsiteSectionID {
     // Add the sections that you want your website to contain here:
     case posts
-    case portfolio
+//    case portfolio
   }
 
   struct ItemMetadata: WebsiteItemMetadata {
@@ -20,7 +20,7 @@ struct Studio: Website {
   // Update these properties to configure your website:
   var url = URL(string: "https://zef.studio")!
   var name = "Zef Houssney"
-  var description = "My name is Zef. Welcome to my website."
+  var description = "My name is Zef. Welcome to my studio."
   var language: Language { .english }
   var imagePath: Path? { "/images/favicon.png" }
 

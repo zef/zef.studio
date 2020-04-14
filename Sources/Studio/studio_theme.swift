@@ -19,7 +19,9 @@ extension Theme where Site == Studio {
         .head(for: location, on: context.site),
         .body(
           .header(for: context, selectedSection: selectedSection),
-          body(),
+          .div(.class("content"),
+            body()
+          ),
           .footer(for: context.site)
         )
       )
@@ -28,13 +30,8 @@ extension Theme where Site == Studio {
     func makeIndexHTML(for index: Index,
                        context: PublishingContext<Studio>) throws -> HTML {
       studioTemplate(location: index, context: context) {
-        .wrapper(
+        .group(
           .h1(.text(index.title)),
-          .p(
-            .class("description"),
-            .text(context.site.description)
-          ),
-          .h2("Latest content"),
           .itemList(
             for: context.allItems(
               sortedBy: \.date,
@@ -49,7 +46,7 @@ extension Theme where Site == Studio {
     func makeSectionHTML(for section: Section<Studio>,
                          context: PublishingContext<Studio>) throws -> HTML {
       studioTemplate(location: section, selectedSection: section.id, context: context) {
-        .wrapper(
+        .group(
           .h1(.text(section.title)),
           .itemList(for: section.items, on: context.site)
         )
@@ -59,7 +56,7 @@ extension Theme where Site == Studio {
     func makeItemHTML(for item: Item<Studio>,
                       context: PublishingContext<Studio>) throws -> HTML {
       studioTemplate(location: item, selectedSection: item.sectionID, context: context) {
-        .wrapper(
+        .group(
           .article(
             .div(
               .class("content"),
@@ -75,14 +72,16 @@ extension Theme where Site == Studio {
     func makePageHTML(for page: Page,
                       context: PublishingContext<Studio>) throws -> HTML {
       studioTemplate(location: page, context: context) {
-          .wrapper(.contentBody(page.body))
+        .div(.class(page.title.lowercased()),
+          .contentBody(page.body)
+        )
       }
     }
 
     func makeTagListHTML(for page: TagListPage,
                          context: PublishingContext<Studio>) throws -> HTML? {
       studioTemplate(location: page, context: context) {
-        .wrapper(
+        .group(
           .h1("Browse all tags"),
           .ul(
             .class("all-tags"),
@@ -103,7 +102,7 @@ extension Theme where Site == Studio {
     func makeTagDetailsHTML(for page: TagDetailsPage,
                             context: PublishingContext<Studio>) throws -> HTML? {
       studioTemplate(location: page, context: context) {
-        .wrapper(
+        .group(
           .h1(
             "Tagged with ",
             .span(.class("tag"), .text(page.tag.string))
@@ -128,16 +127,15 @@ extension Theme where Site == Studio {
 }
 
 extension Node where Context == HTML.BodyContext {
-  static func wrapper(_ nodes: Node...) -> Node {
-    .div(.class("wrapper"), .group(nodes))
-  }
 
   static func header<T: Website>(for context: PublishingContext<T>, selectedSection: T.SectionID?) -> Node {
     let sectionIDs = T.SectionID.allCases
 
     return .header(
-      .wrapper(
+      .group(
+        .div(.class("logo")),
         .a(.class("site-name"), .href("/"), .text(context.site.name)),
+        .p(.class("site-name-subtitle"), "Senior iOS App Developer &nbsp;•&nbsp; Boulder, Colorado"),
         .if(sectionIDs.count > 1,
             .nav(
               .ul(.forEach(sectionIDs) { section in
@@ -181,17 +179,19 @@ extension Node where Context == HTML.BodyContext {
 
   static func footer<T: Website>(for site: T) -> Node {
     return .footer(
-      .p(
-        .text("Generated using "),
-        .a(
-          .text("Publish"),
-          .href("https://github.com/johnsundell/publish")
-        )
-      ),
-      .p(.a(
-        .text("RSS feed"),
-        .href("/feed.rss")
-        ))
+//      .p(
+//        .text("Generated using "),
+//        .a(
+//          .text("Publish"),
+//          .href("https://github.com/johnsundell/publish")
+//        )
+//      ),
+//      .p(
+//        .a(
+//          .text("RSS feed"),
+//          .href("/feed.rss")
+//        )
+//      )
     )
   }
 }
