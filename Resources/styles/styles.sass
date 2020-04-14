@@ -3,6 +3,7 @@ $primary-color: #333
 $highlight-color: #4764BB
 
 @import 'normalize'
+@import 'font-face'
 @import 'mixins'
 
 +font-face('Calluna', '/styles/fonts/Calluna-Regular', normal, normal)
@@ -86,15 +87,15 @@ h1
     margin-top: 10px
     margin-bottom: 0px
 
-  h1:after
-    content: ""
-    position: absolute
-    background: $primary-color
-    left: 0
-    right: 0
-    margin-top: 16px
-    height: 3px
-    z-index: -1
+    &:after
+      content: ""
+      position: absolute
+      background: $primary-color
+      left: 0
+      right: 0
+      margin-top: 16px
+      height: 3px
+      z-index: -1
 
   p
     padding-right: 6px
