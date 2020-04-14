@@ -59,7 +59,7 @@ Here's a selection of some of the iOS work I've done for clients.
       Client(name: "Disney Movies Anywhere",
              link: "https://en.wikipedia.org/wiki/Movies_Anywhere",
       description: """
-On Disney Movies Anywhere, I worked on a small team to build and architect this high-profile application from scratch, and on a tight timeline. I interacted with Disney APIs, integrated internal and third-party libraries. I also worked with Apple on our system-level iTunes account linking feature.
+On Disney Movies Anywhere, I worked on a small team to build and architect this high-profile application from scratch, and on a tight timeline. I interacted with Disney APIs, integrating internal and third-party libraries. I also worked with Apple on our system-level iTunes account linking feature.
 
 We shipped a great app on time, and I continued to work on it throughout its entire lifetime — eventually taking over leadership of the iOS team — until it was replaced by Movies Anywhere in 2017, and then eventually retired.
 """),
@@ -88,7 +88,7 @@ A key part of this app was the use of ARKit and other iOS Vision libraries to fa
       description: """
 <a href="https://planetary.social">Planetary</a> — currently in beta — is a new social network built on a distributed, open foundation. I came in to help accelerate the development of the app by lending a hand to the solo developer who had started the project. My primary goal was to refine and to improve polish in the app, fixing bugs along the way.
 
-I also got to do implement a fun custom dynamic animation of the icon in their logo for use as a connectivity indicaor inside the app. The number of balls on each of the circles is dynamic, indicating the number of connected peers, spinning, changing color to represent connection state, and smoothly animating changes to the real data.
+I also got to implement a fun custom dynamic animation of the icon in their logo for use as a connectivity indicator inside the app. The number of balls on each of the circles is dynamic, indicating the number of connected peers, spinning, changing color to represent connection state, and smoothly animating changes to the real data.
 """),
 
       Client(name: "Boomerang",
