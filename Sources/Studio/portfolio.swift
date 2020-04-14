@@ -49,7 +49,7 @@ I've been working as a freelance software engineer since 2009, and my software h
 
 In addition to working with code, I'm great at working with clients and designers. I am skilled in clear communication with people from all backgrounds.
 
-<a href="zef-houssney-resume.pdf">Download my Resume</a> to learn about my specific skills, and write me at <a href="mailto:zef@zef.studio">zef@zef.studio</a>.
+<a href="zef-houssney-resume.pdf">Download my Resume</a> to learn about my specific skills, check out some of my work on <a href="https://github.com/zef">GitHub</a>, and write me at <a href="mailto:zef@zef.studio">zef@zef.studio</a>.
 
 I specialize in native iOS application development, but I also have extensive experience with and knowledge of web development, which informs my work and helps me to be a great iOS developer, too.
 
