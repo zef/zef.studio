@@ -47,6 +47,8 @@ Hello! My name is Zef, and I'm passionate about creating excellent software.
 
 I've been working as a freelance software engineer since 2009, and my software has been used by millions of people around the world. I seek to deliver excellent value by providing great code, team leadership, and insight in design, user-experience, and business value.
 
+In addition to working with code, I'm great at working with clients and designers. I am skilled in clear communication with people from all backgrounds.
+
 <a href="zef-houssney-resume.pdf">Download my Resume</a> to learn about my specific skills, and write me at <a href="mailto:zef@zef.studio">zef@zef.studio</a>.
 
 I specialize in native iOS application development, but I also have extensive experience with and knowledge of web development, which informs my work and helps me to be a great iOS developer, too.
@@ -86,7 +88,7 @@ A key part of this app was the use of ARKit and other iOS Vision libraries to fa
       description: """
 <a href="https://planetary.social">Planetary</a> — currently in beta — is a new social network built on a distributed, open foundation. I came in to help accelerate the development of the app by lending a hand to the solo developer who had started the project. My primary goal was to refine and to improve polish in the app, fixing bugs along the way.
 
-I also got to do implement a fun custom dynamic animation of the icon in their logo. The number of balls on each of the circles is dynamic, indicating the number of connected peers, spinning, and smoothly animating changes to the real data.
+I also got to do implement a fun custom dynamic animation of the icon in their logo for use as a connectivity indicaor inside the app. The number of balls on each of the circles is dynamic, indicating the number of connected peers, spinning, changing color to represent connection state, and smoothly animating changes to the real data.
 """),
 
       Client(name: "Boomerang",
