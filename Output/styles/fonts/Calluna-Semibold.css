@@ -1,0 +1,12 @@
+/* Webfont: Calluna-Semibold */@font-face {
+    font-family: 'CallunaSmBd';
+    src: url('Calluna-Semibold.eot'); /* IE9 Compat Modes */
+    src: url('Calluna-Semibold.eot?#iefix') format('embedded-opentype'), /* IE6-IE8 */
+         url('Calluna-Semibold.woff') format('woff'), /* Modern Browsers */
+         url('Calluna-Semibold.ttf') format('truetype'), /* Safari, Android, iOS */
+         url('Calluna-Semibold.svg#Calluna-Semibold') format('svg'); /* Legacy iOS */
+    font-style: normal;
+    font-weight: normal;
+    text-rendering: optimizeLegibility;
+}
+

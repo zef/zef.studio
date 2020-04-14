@@ -1,0 +1,132 @@
+$background: white
+$primary-color: #333
+$highlight-color: #4764BB
+
+@import 'normalize'
+@import 'mixins'
+
++font-face('Calluna', '/styles/fonts/Calluna-Regular', normal, normal)
++font-face('Calluna', '/styles/fonts/Calluna-Semibold', 600, normal)
++font-face('Calluna', '/styles/fonts/Calluna-It', normal, italic)
+
+// @import 'default'
+
+=semibold
+  font-weight: 600
+
+=header-text
+  font-variant: small-caps
+  +semibold
+
+=italic
+  font-style: italic
+  
+=sans
+  font-family: -apple-system, verdana, "Lucida Grande", "Lucida Sans Unicode", helvetica, arial, sans-serif
+
+body
+  background: $background
+  color: $primary-color
+  font-family: "Calluna", "Times New Roman", Times, serif
+  text-align: center
+
+p
+  line-height: 1.3
+
+a
+  color: $highlight-color
+  text-decoration: none
+  +semibold
+
+.logo
+  background: url(/z.svg);
+  $size: 88px
+  height: $size
+  width: $size
+  background-size: $size
+  margin: 50px auto 30px
+
+.site-name
+  font-size: 3em
+  color: $primary-color
+  +header-text
+
+.site-name-subtitle
+  +italic
+  margin-top: 0
+  margin-bottom: 3em
+
+.italic
+  +italic
+
+ul
+  list-style-type: none
+  padding: 0
+
+h1
+  +header-text
+
+.content
+  max-width: 760px
+  margin: 0 auto
+
+.portfolio
+  $icon-width: 68px
+  $portfolio-header-margin: $icon-width + 62px
+  text-align: left
+
+  .intro
+    margin-left: $portfolio-header-margin + 10
+
+  h1
+    background-color: $background
+    padding: 0px 10px
+    margin-left: $portfolio-header-margin
+    display: inline-block
+    margin-top: 10px
+    margin-bottom: 0px
+
+  h1:after
+    content: ""
+    position: absolute
+    background: $primary-color
+    left: 0
+    right: 0
+    margin-top: 16px
+    height: 3px
+    z-index: -1
+
+  p
+    padding-right: 6px
+
+      
+  li>div
+    display: flex
+
+  a.app-icon
+    display: inline-block
+    text-align: center
+    padding: 6px 0px
+    margin: 6px 10px 0
+    +sans
+    text-decoration: none
+    color: $primary-color
+    font-weight: normal
+
+    &:hover
+      background-color: rgba(0, 0, 0, 0.1)
+      border-radius: 12px
+
+  figure
+    margin: 6px 2px
+
+  img 
+    width: $icon-width
+    padding-bottom: 2px
+
+  figcaption
+    width: $icon-width + 50
+      
+
+
+
