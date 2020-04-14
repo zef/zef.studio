@@ -70,7 +70,7 @@ We launched into a high traffic environment, yet maintained an extremely low cra
 
 When wrapping up this project, my good friend Aaron said something really nice about me:
 
-<blockquote class="twitter-tweet" data-theme="light"><p lang="en" dir="ltr">Between you and me, Zef’s game is the tightest I’ve seen. You want the best, you get Zef. <a href="https://t.co/Tr0r7S9DTH">https://t.co/Tr0r7S9DTH</a></p>&mdash; Aaron Vegh (@🏡) (@aaronvegh) <a href="https://twitter.com/aaronvegh/status/959263590028070913?ref_src=twsrc%5Etfw">February 2, 2018</a></blockquote> <script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>.
+<blockquote class="twitter-tweet" data-theme="light"><p lang="en" dir="ltr">Between you and me, Zef’s game is the tightest I’ve seen. You want the best, you get Zef. <a href="https://t.co/Tr0r7S9DTH">https://t.co/Tr0r7S9DTH</a></p>&mdash; Aaron Vegh (@🏡) (@aaronvegh) <a href="https://twitter.com/aaronvegh/status/959263590028070913?ref_src=twsrc%5Etfw">February 2, 2018</a></blockquote> <script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
 """),
 
       Client(name: "Fitz Frames",
@@ -84,23 +84,29 @@ A key part of this app was the use of ARKit and other iOS Vision libraries to fa
       Client(name: "Planetary",
              link: "https://planetary.social",
       description: """
-<a href="https://planetary.social">Planetary</a> — currently in beta — is a new social network built on a distributed, open foundation. I came in to help accelerate the development of the app by lending a hand to the solo developer who had started the project. My primary goal was to refine and to improve polish in the app, fixing bugs along the way. I also got to do implement a fun custom dynamic animation of the icon which is used as their logo. The number of balls in each of the circles is dynamic, indicating the number of connected peers, spinning, and smoothly animating changes to the real data.
+<a href="https://planetary.social">Planetary</a> — currently in beta — is a new social network built on a distributed, open foundation. I came in to help accelerate the development of the app by lending a hand to the solo developer who had started the project. My primary goal was to refine and to improve polish in the app, fixing bugs along the way.
+
+I also got to do implement a fun custom dynamic animation of the icon in their logo. The number of balls on each of the circles is dynamic, indicating the number of connected peers, spinning, and smoothly animating changes to the real data.
 """),
+
       Client(name: "Boomerang",
              link: "https://apps.apple.com/us/app/boomerang-cartoons-movies/id1199519834",
       description: """
 Worked on iOS and tvOS apps for <a href="https://www.boomerang.com">Boomerang</a>. This included a major redesign, feature development, and bug fixing, resulting in a major improvement to the user interface — modernizing design, improving the user experience, and improving reliability.
 """),
+
       Client(name: "DC Universe",
              link: "https://apps.apple.com/us/app/dc-universe/id1329018000",
       description: """
 Worked with a team of developers on the <a href="https://www.dcuniverse.com">DC Universe</a> iOS app, assisting with bug fixing and feature development. This included work on user interface consistency and theming, deep link handling, and analytics.
 """),
+
       Client(name: "Marvel Unlimited",
              link: "https://apps.apple.com/us/app/marvel-unlimited/id607205403",
              description: """
 Helped implement a new native comic reader for <a href="http://marvelunlimited.com">Marvel Unlimited</a> on a tight deadline. This was an interesting and challenging project, allowing comics to be displayed in various ways, including smooth animations between comic panels that share a page.
 """),
+
       Client(name: "Exceed by Money Network",
              link: "https://apps.apple.com/us/app/exceed-by-money-network/id1455259057",
              description: """
@@ -108,6 +114,7 @@ Implemented an aggressive user interface redesign and rebranding in a challengin
 
 I was able to significantly improve the maintainability and consistency of the codebase, fixing some previously-unidentified bugs along the way.
 """),
+
       Client(name: "News Corp Apps",
              link: "https://apps.apple.com/us/app/exceed-by-money-network/id1455259057",
              description: """
