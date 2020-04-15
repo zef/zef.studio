@@ -22,7 +22,8 @@ extension Theme where Site == Studio {
           .div(.class("content"),
             body()
           ),
-          .footer(for: context.site)
+          .footer(for: context.site),
+          .googleAnalytics()
         )
       )
     }
@@ -178,7 +179,7 @@ extension Node where Context == HTML.BodyContext {
   }
 
   static func footer<T: Website>(for site: T) -> Node {
-    return .footer(
+    .footer(
 //      .p(
 //        .text("Generated using "),
 //        .a(
@@ -194,4 +195,14 @@ extension Node where Context == HTML.BodyContext {
 //      )
     )
   }
+
+
+  static func googleAnalytics(userToken: String = "UA-118277061-2") -> Node {
+    .raw(
+        """
+<script async src="https://www.googletagmanager.com/gtag/js?id=\(userToken)"></script><script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','\(userToken)');</script>
+"""
+    )
+  }
+
 }
