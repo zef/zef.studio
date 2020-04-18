@@ -8,7 +8,7 @@ struct Studio: Website {
   enum SectionID: String, WebsiteSectionID {
     // Add the sections that you want your website to contain here:
     case posts
-//    case portfolio
+    case portfolio
   }
 
   struct ItemMetadata: WebsiteItemMetadata {
@@ -23,26 +23,19 @@ struct Studio: Website {
   var description = "My name is Zef. Welcome to my studio."
   var language: Language { .english }
   var imagePath: Path? { "/images/favicon.png" }
-
-  var portfolioContent: Content {
-    Content(
-      title: "Portfolio",
-      description: "Zef Houssney iOS Development Portfolio.",
-      body: Content.Body(node: .portfolio(for: Client.all)),
-      date: Date(),
-      lastModified: Date(),
-      imagePath: nil,
-      audio: nil,
-      video: nil
-    )
-  }
 }
 
 let studio = Studio()
 
 
 try studio.publish(withTheme: .studio, additionalSteps: [
-  .addPage(studio.portfolioPage)
+  .step(named: "Add Portfolio Description") { context in
+    context.mutateAllSections { section in
+      if section.id == .portfolio {
+        section.content.description = "Zef Houssney — iOS Development Portfolio"
+      }
+    }
+  }
 ], plugins: [
   .compileSass(
       sassFilePath: "Resources/styles/styles.sass",
