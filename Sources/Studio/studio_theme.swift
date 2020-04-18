@@ -46,11 +46,19 @@ extension Theme where Site == Studio {
 
     func makeSectionHTML(for section: Section<Studio>,
                          context: PublishingContext<Studio>) throws -> HTML {
-      studioTemplate(location: section, selectedSection: section.id, context: context) {
-        .group(
-          .h1(.text(section.title)),
-          .itemList(for: section.items, on: context.site)
-        )
+      if section.id == .portfolio {
+        // I tried to override this content in a "mutateAllSections" block, but that does not
+        // allow for overriding the body content, so I'm hacking it in here in the theme.
+        return studioTemplate(location: section, selectedSection: section.id, context: context) {
+          .portfolio(for: Client.all)
+        }
+      } else {
+        return studioTemplate(location: section, selectedSection: section.id, context: context) {
+          .group(
+            .h1(.text(section.title)),
+            .itemList(for: section.items, on: context.site)
+          )
+        }
       }
     }
 
@@ -73,7 +81,7 @@ extension Theme where Site == Studio {
     func makePageHTML(for page: Page,
                       context: PublishingContext<Studio>) throws -> HTML {
       studioTemplate(location: page, context: context) {
-        .div(.class(page.title.lowercased()),
+        .div(.class("page-\(page.title.lowercased())"),
           .contentBody(page.body)
         )
       }
@@ -131,13 +139,18 @@ extension Node where Context == HTML.BodyContext {
 
   static func header<T: Website>(for context: PublishingContext<T>, selectedSection: T.SectionID?) -> Node {
     let sectionIDs = T.SectionID.allCases
+    var shouldShowNav = true
+
+    if let section = selectedSection as? Studio.SectionID, section == .portfolio {
+        shouldShowNav = false
+    }
 
     return .header(
       .group(
         .div(.class("logo")),
         .a(.class("site-name"), .href("/"), .text(context.site.name)),
         .p(.class("site-name-subtitle"), "Senior iOS App Developer &nbsp;•&nbsp; Boulder, Colorado"),
-        .if(sectionIDs.count > 1,
+        .if(sectionIDs.count > 1 && shouldShowNav,
             .nav(
               .ul(.forEach(sectionIDs) { section in
                 .li(.a(
