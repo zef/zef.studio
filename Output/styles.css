@@ -467,7 +467,7 @@ h1 {
   text-align: left;
 }
 
-/* line 84, Resources/styles/styles.sass */
+/* line 83, Resources/styles/styles.sass */
 .portfolio .headline-container {
   box-sizing: border-box;
   margin: 0 auto;
@@ -487,14 +487,14 @@ h1 {
 }
 
 @media only screen and (min-width: 41rem) {
-  /* line 84, Resources/styles/styles.sass */
+  /* line 83, Resources/styles/styles.sass */
   .portfolio .headline-container {
     margin-left: 25%;
   }
 }
 
 @media only screen and (min-width: 41rem) {
-  /* line 84, Resources/styles/styles.sass */
+  /* line 83, Resources/styles/styles.sass */
   .portfolio .headline-container {
     box-sizing: border-box;
     flex-basis: 75%;
@@ -504,20 +504,20 @@ h1 {
 }
 
 @media only screen and (max-width: 40rem) {
-  /* line 84, Resources/styles/styles.sass */
+  /* line 83, Resources/styles/styles.sass */
   .portfolio .headline-container {
     text-align: center;
   }
 }
 
-@media only screen and (min-width: 41rem) and (max-width: 64rem) {
-  /* line 84, Resources/styles/styles.sass */
+@media only screen and (min-width: 41rem) {
+  /* line 83, Resources/styles/styles.sass */
   .portfolio .headline-container {
     text-align: left;
   }
 }
 
-/* line 98, Resources/styles/styles.sass */
+/* line 97, Resources/styles/styles.sass */
 .portfolio .headline-container h1 {
   background-color: white;
   margin-top: 10px;
@@ -525,21 +525,21 @@ h1 {
 }
 
 @media only screen and (max-width: 40rem) {
-  /* line 98, Resources/styles/styles.sass */
+  /* line 97, Resources/styles/styles.sass */
   .portfolio .headline-container h1 {
     text-align: center;
     margin: 10px auto 0;
   }
 }
 
-@media only screen and (min-width: 41rem) and (max-width: 64rem) {
-  /* line 98, Resources/styles/styles.sass */
+@media only screen and (min-width: 41rem) {
+  /* line 97, Resources/styles/styles.sass */
   .portfolio .headline-container h1 {
     text-align: left;
   }
 }
 
-/* line 109, Resources/styles/styles.sass */
+/* line 108, Resources/styles/styles.sass */
 .portfolio .headline-container h1:before, .portfolio .headline-container h1:after {
   content: "";
   position: absolute;
@@ -548,17 +548,17 @@ h1 {
   background-color: white;
 }
 
-/* line 116, Resources/styles/styles.sass */
+/* line 115, Resources/styles/styles.sass */
 .portfolio .headline-container h1:before {
   margin-left: -8px;
 }
 
-/* line 118, Resources/styles/styles.sass */
+/* line 117, Resources/styles/styles.sass */
 .portfolio .headline-container h1:after {
   margin-right: -8px;
 }
 
-/* line 123, Resources/styles/styles.sass */
+/* line 122, Resources/styles/styles.sass */
 .portfolio .headline-container:after {
   content: "";
   position: absolute;
@@ -570,7 +570,7 @@ h1 {
   z-index: -1;
 }
 
-/* line 133, Resources/styles/styles.sass */
+/* line 132, Resources/styles/styles.sass */
 .portfolio .item-description {
   box-sizing: border-box;
   margin: 0 auto;
@@ -584,17 +584,16 @@ h1 {
   justify-content: flex-end;
 }
 
-/* line 137, Resources/styles/styles.sass */
+/* line 136, Resources/styles/styles.sass */
 .portfolio .item-description > ul {
   box-sizing: border-box;
   flex-basis: 33.33333%;
   max-width: 33.33333%;
   padding: 0 1rem;
-  text-align: right;
 }
 
 @media only screen and (min-width: 41rem) {
-  /* line 137, Resources/styles/styles.sass */
+  /* line 136, Resources/styles/styles.sass */
   .portfolio .item-description > ul {
     box-sizing: border-box;
     flex-basis: 25%;
@@ -603,7 +602,21 @@ h1 {
   }
 }
 
-/* line 142, Resources/styles/styles.sass */
+@media only screen and (max-width: 40rem) {
+  /* line 136, Resources/styles/styles.sass */
+  .portfolio .item-description > ul {
+    text-align: center;
+  }
+}
+
+@media only screen and (min-width: 41rem) {
+  /* line 136, Resources/styles/styles.sass */
+  .portfolio .item-description > ul {
+    text-align: right;
+  }
+}
+
+/* line 145, Resources/styles/styles.sass */
 .portfolio .item-description > div {
   box-sizing: border-box;
   flex-basis: 66.66667%;
@@ -612,7 +625,7 @@ h1 {
 }
 
 @media only screen and (min-width: 41rem) {
-  /* line 142, Resources/styles/styles.sass */
+  /* line 145, Resources/styles/styles.sass */
   .portfolio .item-description > div {
     box-sizing: border-box;
     flex-grow: 1;
@@ -622,12 +635,12 @@ h1 {
   }
 }
 
-/* line 146, Resources/styles/styles.sass */
+/* line 149, Resources/styles/styles.sass */
 .portfolio p {
   padding-right: 6px;
 }
 
-/* line 149, Resources/styles/styles.sass */
+/* line 152, Resources/styles/styles.sass */
 .portfolio a.app-icon {
   display: inline-block;
   text-align: center;
@@ -639,24 +652,34 @@ h1 {
   font-weight: normal;
 }
 
-/* line 159, Resources/styles/styles.sass */
+/* line 162, Resources/styles/styles.sass */
 .portfolio a.app-icon:hover {
   background-color: rgba(0, 0, 0, 0.1);
   border-radius: 12px;
 }
 
-/* line 163, Resources/styles/styles.sass */
+/* line 166, Resources/styles/styles.sass */
 .portfolio figure {
   margin: 6px 2px;
 }
 
-/* line 166, Resources/styles/styles.sass */
+/* line 171, Resources/styles/styles.sass */
 .portfolio img {
-  width: 68px;
   padding-bottom: 2px;
+  width: 68px;
 }
 
-/* line 170, Resources/styles/styles.sass */
-.portfolio figcaption {
-  width: 118px;
+@media only screen and (max-width: 40rem) {
+  /* line 175, Resources/styles/styles.sass */
+  .portfolio figcaption {
+    width: 104px;
+    font-size: 0.8em;
+  }
+}
+
+@media only screen and (min-width: 41rem) {
+  /* line 175, Resources/styles/styles.sass */
+  .portfolio figcaption {
+    width: 118px;
+  }
 }

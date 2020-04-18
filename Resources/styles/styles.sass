@@ -78,7 +78,6 @@ h1
   margin: 0 auto
 
 .portfolio
-  $icon-width: 68px
   text-align: left
 
   .headline-container
@@ -137,7 +136,11 @@ h1
     >ul
       +col(4)
       +col("sm", 3)
-      text-align: right
+
+      +tiny
+        text-align: center
+      +small
+        text-align: right
 
     >div
       +col(8)
@@ -163,12 +166,18 @@ h1
   figure
     margin: 6px 2px
 
+  $icon-width: 68px
+
   img
-    width: $icon-width
     padding-bottom: 2px
+    width: $icon-width
 
   figcaption
-    width: $icon-width + 50
+    +tiny
+      width: $icon-width + 36
+      font-size: 0.8em
+    +small
+      width: $icon-width + 50
 
 
 
