@@ -5,3 +5,9 @@
 /*.xcodeproj
 .publish
 /* /Output */
+
+/Resources/ignored/
+/Output/drafts/
+/Output/ignored/
+/Output/**/*.sass
+/Output/**/*.scss
