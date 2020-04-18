@@ -135,8 +135,7 @@ Helped accelerate the progress of a team to meet a deadline. Implemented a dynam
 extension Node where Context == HTML.BodyContext {
   static func portfolio(for clients: [Client]) -> Node {
     .group([
-      .ul(
-        .class("item-list"),
+      .ul(.class("portfolio"),
         .forEach(clients) { client in
           .li(
             .div(.class("headline-container"),
