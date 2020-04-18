@@ -24,16 +24,16 @@ struct Studio: Website {
   var language: Language { .english }
   var imagePath: Path? { "/images/favicon.png" }
 
-  var portfolioPage: Page {
-    Page(path: "portfolio",
-         content: Content(title: "Portfolio",
-                          description: "Zef Houssney iOS Development Portfolio.",
-                          body: Content.Body(node: .portfolio(for: Client.all)),
-                          date: Date(),
-                          lastModified: Date(),
-                          imagePath: nil,
-                          audio: nil,
-                          video: nil)
+  var portfolioContent: Content {
+    Content(
+      title: "Portfolio",
+      description: "Zef Houssney iOS Development Portfolio.",
+      body: Content.Body(node: .portfolio(for: Client.all)),
+      date: Date(),
+      lastModified: Date(),
+      imagePath: nil,
+      audio: nil,
+      video: nil
     )
   }
 }
