@@ -522,6 +522,7 @@ h1 {
   background-color: white;
   margin-top: 10px;
   margin-bottom: 0px;
+  box-shadow: 8px 0 0 white, -8px 0 0 white;
 }
 
 @media only screen and (max-width: 40rem) {
@@ -539,26 +540,7 @@ h1 {
   }
 }
 
-/* line 108, Resources/styles/styles.sass */
-.portfolio .headline-container h1:before, .portfolio .headline-container h1:after {
-  content: "";
-  position: absolute;
-  width: 8px;
-  height: 1em;
-  background-color: white;
-}
-
-/* line 115, Resources/styles/styles.sass */
-.portfolio .headline-container h1:before {
-  margin-left: -8px;
-}
-
-/* line 117, Resources/styles/styles.sass */
-.portfolio .headline-container h1:after {
-  margin-right: -8px;
-}
-
-/* line 122, Resources/styles/styles.sass */
+/* line 110, Resources/styles/styles.sass */
 .portfolio .headline-container:after {
   content: "";
   position: absolute;
@@ -570,7 +552,7 @@ h1 {
   z-index: -1;
 }
 
-/* line 132, Resources/styles/styles.sass */
+/* line 120, Resources/styles/styles.sass */
 .portfolio .item-description {
   box-sizing: border-box;
   margin: 0 auto;
@@ -584,7 +566,7 @@ h1 {
   justify-content: flex-end;
 }
 
-/* line 136, Resources/styles/styles.sass */
+/* line 124, Resources/styles/styles.sass */
 .portfolio .item-description > ul {
   box-sizing: border-box;
   flex-basis: 33.33333%;
@@ -593,7 +575,7 @@ h1 {
 }
 
 @media only screen and (min-width: 41rem) {
-  /* line 136, Resources/styles/styles.sass */
+  /* line 124, Resources/styles/styles.sass */
   .portfolio .item-description > ul {
     box-sizing: border-box;
     flex-basis: 25%;
@@ -603,20 +585,20 @@ h1 {
 }
 
 @media only screen and (max-width: 40rem) {
-  /* line 136, Resources/styles/styles.sass */
+  /* line 124, Resources/styles/styles.sass */
   .portfolio .item-description > ul {
     text-align: center;
   }
 }
 
 @media only screen and (min-width: 41rem) {
-  /* line 136, Resources/styles/styles.sass */
+  /* line 124, Resources/styles/styles.sass */
   .portfolio .item-description > ul {
     text-align: right;
   }
 }
 
-/* line 145, Resources/styles/styles.sass */
+/* line 133, Resources/styles/styles.sass */
 .portfolio .item-description > div {
   box-sizing: border-box;
   flex-basis: 66.66667%;
@@ -625,7 +607,7 @@ h1 {
 }
 
 @media only screen and (min-width: 41rem) {
-  /* line 145, Resources/styles/styles.sass */
+  /* line 133, Resources/styles/styles.sass */
   .portfolio .item-description > div {
     box-sizing: border-box;
     flex-grow: 1;
@@ -635,12 +617,12 @@ h1 {
   }
 }
 
-/* line 149, Resources/styles/styles.sass */
+/* line 137, Resources/styles/styles.sass */
 .portfolio p {
   padding-right: 6px;
 }
 
-/* line 152, Resources/styles/styles.sass */
+/* line 140, Resources/styles/styles.sass */
 .portfolio a.app-icon {
   display: inline-block;
   text-align: center;
@@ -652,25 +634,25 @@ h1 {
   font-weight: normal;
 }
 
-/* line 162, Resources/styles/styles.sass */
+/* line 150, Resources/styles/styles.sass */
 .portfolio a.app-icon:hover {
   background-color: rgba(0, 0, 0, 0.1);
   border-radius: 12px;
 }
 
-/* line 166, Resources/styles/styles.sass */
+/* line 154, Resources/styles/styles.sass */
 .portfolio figure {
   margin: 6px 2px;
 }
 
-/* line 171, Resources/styles/styles.sass */
+/* line 159, Resources/styles/styles.sass */
 .portfolio img {
   padding-bottom: 2px;
   width: 68px;
 }
 
 @media only screen and (max-width: 40rem) {
-  /* line 175, Resources/styles/styles.sass */
+  /* line 163, Resources/styles/styles.sass */
   .portfolio figcaption {
     width: 104px;
     font-size: 0.8em;
@@ -678,7 +660,7 @@ h1 {
 }
 
 @media only screen and (min-width: 41rem) {
-  /* line 175, Resources/styles/styles.sass */
+  /* line 163, Resources/styles/styles.sass */
   .portfolio figcaption {
     width: 118px;
   }
