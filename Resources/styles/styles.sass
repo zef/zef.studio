@@ -98,25 +98,13 @@ h1
       background-color: $background
       margin-top: 10px
       margin-bottom: 0px
+      box-shadow: 8px 0 0 $background, -8px 0 0 $background
 
       +tiny
         text-align: center
         margin: 10px auto 0
       +small
         text-align: left
-
-      &:before,
-      &:after
-        content: ""
-        position: absolute
-        width: 8px
-        height: 1em
-        background-color: $background
-      &:before
-        margin-left: -8px
-      &:after
-        margin-right: -8px
-
 
     // Line that goes across headline
     &:after
