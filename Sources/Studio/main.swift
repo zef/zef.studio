@@ -32,6 +32,7 @@ try studio.publish(withTheme: .studio, additionalSteps: [
   .step(named: "Add Portfolio Description") { context in
     context.mutateAllSections { section in
       if section.id == .portfolio {
+        section.title = "iOS Development Portfolio"
         section.content.description = "Zef Houssney — iOS Development Portfolio"
       }
     }

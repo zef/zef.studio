@@ -1,7 +1,3 @@
-$background: white
-$primary-color: #333
-$highlight-color: #4764BB
-
 @import 'normalize'
 @import 'font-face'
 @import 'mixins'
@@ -16,7 +12,19 @@ $highlight-color: #4764BB
 +font-face('Calluna', '/styles/fonts/Calluna-Semibold', 600, normal)
 +font-face('Calluna', '/styles/fonts/Calluna-It', normal, italic)
 
-// @import 'default'
+
+$textColor: #333
+// $textColor: white
+$textInvertedColor: #333
+
+$highlightColor: #4764BB
+// $highlightColor: #5e6aa0
+// $highlightColor: #4d639c
+// $highlightColor: #375686
+
+$background: white
+
+$cornerRadius: 16px
 
 =semibold
   font-weight: 600
@@ -31,19 +39,39 @@ $highlight-color: #4764BB
 =sans
   font-family: -apple-system, verdana, "Lucida Grande", "Lucida Sans Unicode", helvetica, arial, sans-serif
 
-body
+=paperBg
   background: $background
-  color: $primary-color
+  // background: url(/bg-texture.svg);
+  // background-position: center
+
+body
+  +paperBg
+  color: $textColor
   font-family: "Calluna", "Times New Roman", Times, serif
   text-align: center
+
 
 p
   line-height: 1.3
 
 a
-  color: $highlight-color
+  color: $highlightColor
   text-decoration: none
   +semibold
+
+header
+
+nav
+  +row
+  // text-align: center
+
+  ul
+    +clearfix
+    margin: 0 auto
+
+  li
+    float: left
+    padding: 8px
 
 .logo
   background: url(/z.svg);
@@ -55,7 +83,7 @@ a
 
 .site-name
   font-size: 3em
-  color: $primary-color
+  color: $textColor
   +header-text
 
 .site-name-subtitle
@@ -74,99 +102,34 @@ h1
   +header-text
 
 .content
-  max-width: 760px
+  max-width: 960px
   margin: 0 auto
 
-.portfolio
+article
   text-align: left
+  +row
 
-  .headline-container
-    +row
-    +col(12)
-    +col-offset("sm", 3)
-    +col("sm", 9)
+  .article-content
+    +col-offset(3)
 
-    +tiny
-      text-align: center
-    +small
-      text-align: left
+  ul.tags
+    +col-offset(3)
 
-    padding-top: 0px
-    padding-bottom: 0px
+    a
+      padding: 7px 12px 5px
+      color: white
+      border-radius: $cornerRadius
+      background-color: lighten($highlightColor, 16)
 
-    h1
-      background-color: $background
-      margin-top: 10px
-      margin-bottom: 0px
-      box-shadow: 8px 0 0 $background, -8px 0 0 $background
+      &:hover
+        background-color: $highlightColor
 
-      +tiny
-        text-align: center
-        margin: 10px auto 0
-      +small
-        text-align: left
 
-    // Line that goes across headline
-    &:after
-      content: ""
-      position: absolute
-      background: $primary-color
-      left: 0
-      right: 0
-      margin-top: 25px
-      height: 3px
-      z-index: -1
 
-  .item-description
-    +row
-    +end
 
-    >ul
-      +col(4)
-      +col("sm", 3)
 
-      +tiny
-        text-align: center
-      +small
-        text-align: right
 
-    >div
-      +col(8)
-      +col("sm")
-
-  p
-    padding-right: 6px
-
-  a.app-icon
-    display: inline-block
-    text-align: center
-    padding: 6px 0px
-    margin: 6px 0 0
-    +sans
-    text-decoration: none
-    color: $primary-color
-    font-weight: normal
-
-    &:hover
-      background-color: rgba(0, 0, 0, 0.1)
-      border-radius: 12px
-
-  figure
-    margin: 6px 2px
-
-  $icon-width: 68px
-
-  img
-    padding-bottom: 2px
-    width: $icon-width
-
-  figcaption
-    +tiny
-      width: $icon-width + 36
-      font-size: 0.8em
-    +small
-      width: $icon-width + 50
-
+@import 'portfolio'
 
 
 
