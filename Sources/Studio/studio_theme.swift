@@ -6,8 +6,7 @@ extension Theme where Site == Studio {
   static var studio: Self {
     Theme(
       htmlFactory: StudioHTMLFactory<Studio>(),
-      resourcePaths: [
-      ]
+      resourcePaths: [ ]
     )
   }
 
@@ -16,7 +15,7 @@ extension Theme where Site == Studio {
     func studioTemplate(location: Location, selectedSection: Studio.SectionID? = nil, context: PublishingContext<Studio>, body: () -> Node<HTML.BodyContext>) -> HTML {
       HTML(
         .lang(context.site.language),
-        .head(for: location, on: context.site),
+        .customHead(for: location, on: context.site),
         .body(
           .header(for: context, selectedSection: selectedSection),
           .div(.class("content"),
@@ -67,11 +66,9 @@ extension Theme where Site == Studio {
       studioTemplate(location: item, selectedSection: item.sectionID, context: context) {
         .group(
           .article(
-            .div(
-              .class("content"),
+            .div(.class("article-content"),
               .contentBody(item.body)
             ),
-            .span("Tagged with: "),
             .tagList(for: item, on: context.site)
           )
         )
@@ -174,7 +171,7 @@ extension Node where Context == HTML.BodyContext {
             .href(item.path),
             .text(item.title)
             )),
-          .tagList(for: item, on: site),
+//          .tagList(for: item, on: site),
 //          .text(item.metadata.appName),
           .p(.text(item.description))
           ))
@@ -183,7 +180,7 @@ extension Node where Context == HTML.BodyContext {
   }
 
   static func tagList<T: Website>(for item: Item<T>, on site: T) -> Node {
-    return .ul(.class("tag-list"), .forEach(item.tags) { tag in
+    return .ul(.class("tags"), .forEach(item.tags) { tag in
       .li(.a(
         .href(site.path(for: tag)),
         .text(tag.string)
@@ -212,10 +209,94 @@ extension Node where Context == HTML.BodyContext {
 
   static func googleAnalytics(userToken: String = "UA-118277061-2") -> Node {
     .raw(
-        """
-<script async src="https://www.googletagmanager.com/gtag/js?id=\(userToken)"></script><script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','\(userToken)');</script>
-"""
+      """
+      <script async src="https://www.googletagmanager.com/gtag/js?id=\(userToken)"></script><script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','\(userToken)');</script>
+      """
     )
   }
-
 }
+
+public extension Node where Context == HTML.HeadContext {
+  static func customFavicon() -> Node {
+    .raw(
+"""
+<link rel="apple-touch-icon" sizes="57x57" href="/images/favicons/apple-icon-57x57.png">
+<link rel="apple-touch-icon" sizes="60x60" href="/images/favicons/apple-icon-60x60.png">
+<link rel="apple-touch-icon" sizes="72x72" href="/images/favicons/apple-icon-72x72.png">
+<link rel="apple-touch-icon" sizes="76x76" href="/images/favicons/apple-icon-76x76.png">
+<link rel="apple-touch-icon" sizes="114x114" href="/images/favicons/apple-icon-114x114.png">
+<link rel="apple-touch-icon" sizes="120x120" href="/images/favicons/apple-icon-120x120.png">
+<link rel="apple-touch-icon" sizes="144x144" href="/images/favicons/apple-icon-144x144.png">
+<link rel="apple-touch-icon" sizes="152x152" href="/images/favicons/apple-icon-152x152.png">
+<link rel="apple-touch-icon" sizes="180x180" href="/images/favicons/apple-icon-180x180.png">
+<link rel="icon" type="image/png" sizes="192x192"  href="/images/favicons/android-icon-192x192.png">
+<link rel="icon" type="image/png" sizes="32x32" href="/images/favicons/favicon-32x32.png">
+<link rel="icon" type="image/png" sizes="96x96" href="/images/favicons/favicon-96x96.png">
+<link rel="icon" type="image/png" sizes="16x16" href="/images/favicons/favicon-16x16.png">
+<meta name="msapplication-TileColor" content="#ffffff">
+<meta name="msapplication-TileImage" content="/images/favicons/ms-icon-144x144.png">
+<meta name="theme-color" content="#ffffff">
+""".replacingOccurrences(of: "\n", with: "")
+    )
+  }
+}
+
+
+// taken from PlotComponents.swift and modified
+public extension Node where Context == HTML.DocumentContext {
+    /// Add an HTML `<head>` tag within the current context, based
+    /// on inferred information from the current location and `Website`
+    /// implementation.
+    /// - parameter location: The location to generate a `<head>` tag for.
+    /// - parameter site: The website on which the location is located.
+    /// - parameter titleSeparator: Any string to use to separate the location's
+    ///   title from the name of the website. Default: `" | "`.
+    /// - parameter stylesheetPaths: The paths to any stylesheets to add to
+    ///   the resulting HTML page. Default: `styles.css`.
+    /// - parameter rssFeedPath: The path to any RSS feed to associate with the
+    ///   resulting HTML page. Default: `feed.rss`.
+    /// - parameter rssFeedTitle: An optional title for the page's RSS feed.
+    static func customHead<T: Website>(
+        for location: Location,
+        on site: T,
+        titleSeparator: String = " | ",
+        stylesheetPaths: [Path] = ["/styles.css"],
+        rssFeedPath: Path? = .defaultForRSSFeed,
+        rssFeedTitle: String? = nil
+    ) -> Node {
+        var title = location.title
+
+        if title.isEmpty {
+            title = site.name
+        } else {
+            title.append(titleSeparator + site.name)
+        }
+
+        var description = location.description
+
+        if description.isEmpty {
+            description = site.description
+        }
+
+        return .head(
+            .encoding(.utf8),
+            .siteName(site.name),
+            .url(site.url(for: location)),
+            .title(title),
+            .description(description),
+            .twitterCardType(location.imagePath == nil ? .summary : .summaryLargeImage),
+            .forEach(stylesheetPaths, { .stylesheet($0) }),
+            .viewport(.accordingToDevice),
+            .customFavicon(),
+            .unwrap(rssFeedPath, { path in
+                let title = rssFeedTitle ?? "Subscribe to \(site.name)"
+                return .rssFeedLink(path.absoluteString, title: title)
+            }),
+            .unwrap(location.imagePath ?? site.imagePath, { path in
+                let url = site.url(for: path)
+                return .socialImageLink(url)
+            })
+        )
+    }
+}
+
