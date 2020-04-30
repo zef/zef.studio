@@ -1,0 +1,96 @@
+
+.portfolio
+  text-align: left
+  max-width: 810px
+  margin: 0 auto
+
+  .headline-container
+    +row
+    +col(12)
+    +col-offset("sm", 3)
+    +col("sm", 9)
+
+    +tiny
+      text-align: center
+    +small
+      text-align: left
+
+    padding-top: 0px
+    padding-bottom: 0px
+
+    h1
+      +paperBg
+      margin-top: 10px
+      margin-bottom: 0px
+      box-shadow: 8px 0 0 $background, -8px 0 0 $background
+
+      +tiny
+        text-align: center
+        margin: 10px auto 0
+      +small
+        text-align: left
+
+    // Line that goes across headline
+    &:after
+      content: ""
+      position: absolute
+      background: $textColor
+      left: 0
+      right: 0
+      margin-top: 25px
+      height: 3px
+      z-index: -1
+
+  .item-description
+    +row
+    +end
+
+    >ul
+      +col(4)
+      +col("sm", 3)
+
+      +tiny
+        text-align: center
+      +small
+        text-align: right
+
+    >div
+      +col(8)
+      +col("sm")
+
+  p
+    padding-right: 6px
+
+  a.app-icon
+    display: inline-block
+    text-align: center
+    padding: 6px 0px
+    margin: 6px 0 0
+    +sans
+    text-decoration: none
+    color: $textColor
+    font-weight: normal
+
+    &:hover
+      background-color: rgba(0, 0, 0, 0.1)
+      border-radius: 12px
+
+  figure
+    margin: 6px 2px
+
+  $icon-width: 68px
+
+  img
+    padding-bottom: 2px
+    width: $icon-width
+
+  figcaption
+    +tiny
+      width: $icon-width + 36
+      font-size: 0.8em
+    +small
+      width: $icon-width + 50
+
+
+
+

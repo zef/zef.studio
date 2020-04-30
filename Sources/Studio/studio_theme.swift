@@ -17,9 +17,11 @@ extension Theme where Site == Studio {
         .lang(context.site.language),
         .customHead(for: location, on: context.site),
         .body(
-          .header(for: context, selectedSection: selectedSection),
           .div(.class("content"),
-            body()
+            .header(for: context, selectedSection: selectedSection),
+            .div(.class("body"),
+                 body()
+            )
           ),
           .footer(for: context.site),
           .googleAnalytics()
@@ -31,7 +33,6 @@ extension Theme where Site == Studio {
                        context: PublishingContext<Studio>) throws -> HTML {
       studioTemplate(location: index, context: context) {
         .group(
-          .h1(.text(index.title)),
           .itemList(
             for: context.allItems(
               sortedBy: \.date,
@@ -54,7 +55,7 @@ extension Theme where Site == Studio {
       } else {
         return studioTemplate(location: section, selectedSection: section.id, context: context) {
           .group(
-            .h1(.text(section.title)),
+//            .h1(.text(section.title)),
             .itemList(for: section.items, on: context.site)
           )
         }
@@ -67,6 +68,11 @@ extension Theme where Site == Studio {
         .group(
           .article(
             .div(.class("article-content"),
+                 .h1(.text(item.title)),
+                 .element(named: "time", nodes: [
+                  .attribute(named: "datetime", value: item.date.yearMonthDay),
+                  .text("\(item.date.long)")
+                 ]),
               .contentBody(item.body)
             ),
             .tagList(for: item, on: context.site)
@@ -79,7 +85,9 @@ extension Theme where Site == Studio {
                       context: PublishingContext<Studio>) throws -> HTML {
       studioTemplate(location: page, context: context) {
         .div(.class("page-\(page.title.lowercased())"),
-          .contentBody(page.body)
+          .article(
+            .contentBody(page.body)
+          )
         )
       }
     }
@@ -90,7 +98,7 @@ extension Theme where Site == Studio {
         .group(
           .h1("Browse all tags"),
           .ul(
-            .class("all-tags"),
+            .class("tags"),
             .forEach(page.tags.sorted()) { tag in
               .li(
                 .class("tag"),
@@ -137,16 +145,23 @@ extension Node where Context == HTML.BodyContext {
   static func header<T: Website>(for context: PublishingContext<T>, selectedSection: T.SectionID?) -> Node {
     let sectionIDs = T.SectionID.allCases
     var shouldShowNav = true
+    var headerClass = ""
 
     if let section = selectedSection as? Studio.SectionID, section == .portfolio {
         shouldShowNav = false
+        headerClass = "portfolio"
     }
 
     return .header(
+      .class(headerClass),
       .group(
-        .div(.class("logo")),
-        .a(.class("site-name"), .href("/"), .text(context.site.name)),
-        .p(.class("site-name-subtitle"), "Senior iOS App Developer &nbsp;•&nbsp; Boulder, Colorado"),
+        .a(.class("logo"), .href("/")),
+        .if(!shouldShowNav,
+          .group(
+            .a(.class("site-name"), .href("/"), .text(context.site.name)),
+            .p(.class("site-name-subtitle"), "Senior iOS App Developer &nbsp;•&nbsp; Boulder, Colorado")
+          )
+        ),
         .if(sectionIDs.count > 1 && shouldShowNav,
             .nav(
               .ul(.forEach(sectionIDs) { section in
@@ -167,14 +182,17 @@ extension Node where Context == HTML.BodyContext {
       .class("item-list"),
       .forEach(items) { item in
         .li(.article(
-          .h1(.a(
-            .href(item.path),
-            .text(item.title)
+          .div(.class("article-content"),
+            .h1(.a(
+              .href(item.path),
+              .text(item.title)
             )),
-//          .tagList(for: item, on: site),
-//          .text(item.metadata.appName),
-          .p(.text(item.description))
-          ))
+               //          .tagList(for: item, on: site),
+            //          .text(item.metadata.appName),
+            .p(.text(item.description))
+          )
+          )
+        )
       }
     )
   }
@@ -190,13 +208,34 @@ extension Node where Context == HTML.BodyContext {
 
   static func footer<T: Website>(for site: T) -> Node {
     .footer(
-//      .p(
-//        .text("Generated using "),
-//        .a(
-//          .text("Publish"),
-//          .href("https://github.com/johnsundell/publish")
-//        )
-//      ),
+      .div(.class("footer-content"),
+        .ul(
+          .li(
+            .a(
+              .text("@zefhous on Twitter"),
+              .href("https://twitter.com/zefhous/")
+            )
+          ),
+          .li(
+            .a(
+              .text("zefhous on Instagram"),
+              .href("https://www.instagram.com/zefhous/")
+            )
+          ),
+          .li(
+            .a(
+              .text("zef on GitHub"),
+              .href("https://github.com/zef")
+            )
+          ),
+          .li(
+            .a(
+              .text("zef@zef.studio"),
+              .href("mailto:zef@zef.studio")
+            )
+          )
+        )
+      )
 //      .p(
 //        .a(
 //          .text("RSS feed"),
