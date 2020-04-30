@@ -7,7 +7,8 @@ import SassPublishPlugin
 struct Studio: Website {
   enum SectionID: String, WebsiteSectionID {
     // Add the sections that you want your website to contain here:
-    case posts
+    case about
+    case journal
     case portfolio
   }
 
