@@ -1,0 +1,12 @@
+/* Webfont: Calluna-Light */@font-face {
+    font-family: 'CallunaLght';
+    src: url('Calluna-Light.eot'); /* IE9 Compat Modes */
+    src: url('Calluna-Light.eot?#iefix') format('embedded-opentype'), /* IE6-IE8 */
+         url('Calluna-Light.woff') format('woff'), /* Modern Browsers */
+         url('Calluna-Light.ttf') format('truetype'), /* Safari, Android, iOS */
+         url('Calluna-Light.svg#Calluna-Light') format('svg'); /* Legacy iOS */
+    font-style: normal;
+    font-weight: normal;
+    text-rendering: optimizeLegibility;
+}
+
