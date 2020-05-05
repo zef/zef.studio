@@ -209,31 +209,14 @@ extension Node where Context == HTML.BodyContext {
   static func footer<T: Website>(for site: T) -> Node {
     .footer(
       .div(.class("footer-content"),
-        .ul(
-          .li(
-            .a(
-              .text("@zefhous on Twitter"),
-              .href("https://twitter.com/zefhous/")
+          .ul(.forEach(IconLink.all) { icon in
+            .li(
+              .a(.class("icon \(icon.name)"),
+                .text(icon.text),
+                .href(icon.link)
+              )
             )
-          ),
-          .li(
-            .a(
-              .text("zefhous on Instagram"),
-              .href("https://www.instagram.com/zefhous/")
-            )
-          ),
-          .li(
-            .a(
-              .text("zef on GitHub"),
-              .href("https://github.com/zef")
-            )
-          ),
-          .li(
-            .a(
-              .text("zef@zef.studio"),
-              .href("mailto:zef@zef.studio")
-            )
-          )
+          }
         )
       )
 //      .p(
@@ -243,6 +226,42 @@ extension Node where Context == HTML.BodyContext {
 //        )
 //      )
     )
+  }
+
+  struct IconLink {
+    var text: String
+    var name: String
+    var link: String
+
+    static var all: [IconLink] {
+      [
+        IconLink(
+          text: "@zefhous on Twitter",
+          name: "twitter",
+          link: "https://twitter.com/zefhous/"
+        ),
+        IconLink(
+          text: "zefhous on Instagram",
+          name: "instagram",
+          link: "https://www.instagram.com/zefhous/"
+        ),
+        IconLink(
+          text: "Home",
+          name: "zef",
+          link: "/"
+        ),
+        IconLink(
+          text: "zef on GitHub",
+          name: "github",
+          link: "https://github.com/zef"
+        ),
+        IconLink(
+          text: "Email me at zef@zef.studio",
+          name: "email",
+          link: "mailto:zef@zef.studio"
+        ),
+      ]
+    }
   }
 
 
