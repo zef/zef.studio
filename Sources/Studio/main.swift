@@ -26,6 +26,21 @@ struct Studio: Website {
   var imagePath: Path? { "/images/favicon.png" }
 }
 
+func insertDate(body: String, date: Date) -> String {
+  var body = body
+
+  if let range = body.range(of: "</h1>") {
+    let date = Node<HTML.BodyContext>.element(named: "time", nodes: [
+        .attribute(named: "datetime", value: date.yearMonthDay),
+        .text("\(date.long)")
+    ]).render()
+
+    body.insert(contentsOf: date, at: range.upperBound)
+  }
+
+  return body
+}
+
 let studio = Studio()
 
 
@@ -35,6 +50,17 @@ try studio.publish(withTheme: .studio, additionalSteps: [
       if section.id == .portfolio {
         section.title = "iOS Development Portfolio"
         section.content.description = "Zef Houssney — iOS Development Portfolio"
+      }
+    }
+  },
+  .step(named: "Insert Post Date After Title") { context in
+    context.mutateAllSections { section in
+      if section.id == .journal {
+        section.mutateItems { item in
+          var body = item.body
+          body.html = insertDate(body: body.html, date: item.date)
+          item.body = body
+        }
       }
     }
   }

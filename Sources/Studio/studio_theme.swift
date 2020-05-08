@@ -68,11 +68,6 @@ extension Theme where Site == Studio {
         .group(
           .article(
             .div(.class("article-content"),
-                 .h1(.text(item.title)),
-                 .element(named: "time", nodes: [
-                  .attribute(named: "datetime", value: item.date.yearMonthDay),
-                  .text("\(item.date.long)")
-                 ]),
               .contentBody(item.body)
             ),
             .tagList(for: item, on: context.site)
