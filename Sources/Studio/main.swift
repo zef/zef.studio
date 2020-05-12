@@ -15,7 +15,7 @@ struct Studio: Website {
   struct ItemMetadata: WebsiteItemMetadata {
     // Add any site-specific metadata that you want to use here.
 //    var appName: String
-    // var Icon
+    var image: String?
   }
 
   // Update these properties to configure your website:
