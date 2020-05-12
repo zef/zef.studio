@@ -91,7 +91,7 @@ extension Theme where Site == Studio {
                          context: PublishingContext<Studio>) throws -> HTML? {
       studioTemplate(location: page, context: context) {
         .group(
-          .h1("Browse all tags"),
+          .h1("Tags"),
           .ul(
             .class("tags"),
             .forEach(page.tags.sorted()) { tag in
@@ -173,19 +173,21 @@ extension Node where Context == HTML.BodyContext {
   }
 
   static func itemList(for items: [Item<Studio>], on site: Studio) -> Node {
-    return .ul(
-      .class("item-list"),
+    return .ul(.class("article-list"),
       .forEach(items) { item in
-        .li(.article(
-          .div(.class("article-content"),
-            .h1(.a(
-              .href(item.path),
-              .text(item.title)
-            )),
-               //          .tagList(for: item, on: site),
-            //          .text(item.metadata.appName),
-            .p(.text(item.description))
-          )
+        .li(
+          .a(
+            .href(item.path),
+            .article(
+              .if(item.metadata.image != nil,
+                .img(.src(item.metadata.image ?? ""))
+              ),
+              .h2(
+                .text(item.title)
+              )
+              //            .tagList(for: item, on: site),
+              //            .p(.text(item.description))
+            )
           )
         )
       }
