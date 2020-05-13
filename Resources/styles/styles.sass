@@ -16,6 +16,7 @@
 $maxWidth: 624px
 
 $textColor: #333
+$lightTextColor: #666
 $textOnDark: white
 // $textColor: white
 $textInvertedColor: #333
@@ -25,7 +26,7 @@ $textInvertedColor: #333
 // $highlightColor: #4d639c
 
 $darkBgColor: #375686
-$highlightColor: #6C94E7
+$highlightColor: #2f69e3
 
 $secondaryColor: #ff3f45
 
@@ -287,40 +288,89 @@ h1
   +row
 
   a
-    color: lighten($textColor, 10)
-    border: 1px solid $textColor
+    color: $textColor
     // background-color: darken($background, 10)
-    margin: 0 0 1rem
+
+    +tiny
+      margin: 0 0 1rem
+    +small
+      margin: 0 0 2rem
     // padding: 0.4em 0.8em
     background-color: white
 
     box-shadow: rgba($textColor, 0.3) 0px 3px 4px
 
-    border-radius: $cornerRadius
+    border-radius: 8px
     overflow: hidden
+    transition: all 200ms ease-in-out
 
     &:hover
-      color: $textColor
       transform: scale(1.03)
-      transition: all 200ms ease-in-out
 
   img
     border: none
+    box-shadow: none
 
 
   li
-    +col("xs", 12)
-    +col("sm", 6)
+    +col(12)
     // +col("md", 4)
+    padding: 0
     display: flex
+
+    +small
+      +col(6)
+
+      &:nth-child(odd)
+        padding-left: 0
+
+      &:nth-child(even)
+        padding-right: 0
+
+    // +medium
+    //   +col(4)
+
+    //   &:nth-child(3n - 2)
+    //     padding-left: 0
+
+    //   &:nth-child(3n)
+    //     padding-right: 0
+
 
     article
       text-align: left
+      $hPad: 0.6em
 
       h2
         font-size: 1em
         margin: 0
-        padding: 0.4em
+        padding: 0.2em $hPad
+
+      time
+        padding: 0.2em $hPad 0.6em
+        display: inline-block
+        border: none
+        text-align: left
+        font-size: 0.9em
+        color: $lightTextColor
+        +regularFont
+
+      .image-count
+        font-variant-numeric: lining-nums
+        font-size: 0.9em
+        // color: $lightTextColor
+        float: right
+
+        &:after
+          content: ""
+          background-image: url(/images/icons/photos.svg)
+          background-repeat: no-repeat
+          background-position: center
+          display: inline-block
+          +svgSquare(24px)
+          padding: 0 $hPad
+
+
 
 
 article
@@ -384,7 +434,8 @@ article
 
   img
     width: 100%
-    border: 5px $textColor solid
+    // border: 3px $textColor solid
+    box-shadow: rgba(#000, 0.5) 0px 2px 6px
 
   ul.tags
     // +col-offset(3)

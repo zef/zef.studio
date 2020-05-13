@@ -26,6 +26,13 @@ struct Studio: Website {
   var imagePath: Path? { "/images/favicon.png" }
 }
 
+extension Item where Site == Studio {
+  var keyImage: String? {
+    guard let image = metadata.image else { return nil}
+    return "/\(path)/\(image)"
+  }
+}
+
 func insertDate(body: String, date: Date) -> String {
   var body = body
 
@@ -63,6 +70,10 @@ try studio.publish(withTheme: .studio, additionalSteps: [
         }
       }
     }
+  },
+  .copyFiles(at: "Content/journal/", to: "journal"),
+  .step(named: "Delete copied markdown fies") { context in
+
   }
 ], plugins: [
   .compileSass(

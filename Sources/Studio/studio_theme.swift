@@ -180,7 +180,7 @@ extension Node where Context == HTML.BodyContext {
             .href(item.path),
             .article(
               .if(item.metadata.image != nil,
-                .img(.src(item.metadata.image ?? ""))
+                .img(.src(item.keyImage ?? ""))
               ),
               .h2(
                 .text(item.title)
