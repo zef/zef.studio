@@ -89,6 +89,8 @@ A key part of this app was the use of ARKit and other iOS Vision libraries to fa
 <a href="https://planetary.social">Planetary</a> — currently in beta — is a new social network built on a distributed, open foundation. I came in to help accelerate the development of the app by lending a hand to the solo developer who had started the project. My primary goal was to refine and to improve polish in the app, fixing bugs along the way.
 
 I also got to implement a fun custom dynamic animation of the icon in their logo for use as a connectivity indicator inside the app. The number of balls on each of the circles is dynamic, indicating the number of connected peers, spinning, changing color to represent connection state, and smoothly animating changes to the real data.
+
+This code has been <a href="https://github.com/planetary-social/planetary-ios/">open sourced</a>. Although the git history was reset when the project was made public, doing a search for <a href="https://github.com/planetary-social/planetary-ios/search?q=zef">my name</a> reveals the files I created while working on the project.
 """),
 
       Client(name: "Boomerang",
