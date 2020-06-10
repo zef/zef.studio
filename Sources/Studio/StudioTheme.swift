@@ -13,10 +13,16 @@ extension Theme where Site == Studio {
   struct StudioHTMLFactory<Site: Website>: HTMLFactory {
 
     func studioTemplate(location: Location, selectedSection: Studio.SectionID? = nil, context: PublishingContext<Studio>, body: () -> Node<HTML.BodyContext>) -> HTML {
-      HTML(
+
+      var bodyClass = ""
+      if let section = selectedSection {
+        bodyClass = "section-\(section)"
+      }
+
+      return HTML(
         .lang(context.site.language),
         .customHead(for: location, on: context.site),
-        .body(
+        .body(.class(bodyClass),
           .div(.class("content"),
             .header(for: context, selectedSection: selectedSection),
             .div(.class("body"),
@@ -55,7 +61,7 @@ extension Theme where Site == Studio {
       } else {
         return studioTemplate(location: section, selectedSection: section.id, context: context) {
           .group(
-//            .h1(.text(section.title)),
+            .h1(.text(section.title)),
             .itemList(for: section.items, on: context.site)
           )
         }
@@ -111,14 +117,11 @@ extension Theme where Site == Studio {
     func makeTagDetailsHTML(for page: TagDetailsPage,
                             context: PublishingContext<Studio>) throws -> HTML? {
       studioTemplate(location: page, context: context) {
-        .group(
-          .h1(
-            "Tagged with ",
-            .span(.class("tag"), .text(page.tag.string))
-          ),
+        .div(.class("tag-title"),
+          .h1(.text(page.tag.string)),
           .a(
             .class("browse-all"),
-            .text("Browse all tags"),
+            .text("All Tags"),
             .href(context.site.tagListPath)
           ),
           .itemList(
@@ -184,9 +187,18 @@ extension Node where Context == HTML.BodyContext {
               ),
               .h2(
                 .text(item.title)
+              ),
+//                          .tagList(for: item, on: site),
+              .div(
+                .element(named: "time", nodes: [
+                  .attribute(named: "datetime", value: item.date.yearMonthDay),
+                  .text("\(item.date.long)")
+                  ]
+                )
+//                .span(.class("image-count"),
+//                      .text("\(Int.random(in: 0...20))")
+//                )
               )
-              //            .tagList(for: item, on: site),
-              //            .p(.text(item.description))
             )
           )
         )
