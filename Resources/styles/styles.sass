@@ -13,8 +13,7 @@
 +font-face('CallunaSemibold', '/styles/fonts/Calluna-Semibold', normal, normal)
 +font-face('Calluna', '/styles/fonts/Calluna-It', normal, italic)
 
-$maxWidth: 624px
-
+// $textColor: #333
 $textColor: #333
 $lightTextColor: #666
 $textOnDark: white
@@ -75,7 +74,7 @@ $cornerRadius: 16px
   width: $size
   background-size: $size
 
-=contentContainer
+=contentContainer($maxWidth: 624px)
   max-width: $maxWidth
   margin: 0 auto
 
@@ -118,19 +117,89 @@ body
     .body
       +contentContainer
 
+body.section-portfolio
+  .content
+    .body
+      +contentContainer(710px)
+
+header
+  +contentContainer
+
+  a.logo
+    background: url(/z.svg);
+    display: block
+    transition: all 200ms ease-in-out
+
+  .site-name
+    +headerText
+    color: $textColor
+
+    &:hover
+      color: $textColor
+
+  &:not(.portfolio)
+    +row
+    +between
+    align-items: center
+
+    .site-name
+      font-size: 2.2em
+      margin-top: 24px
+
+    a.logo
+      +svgSquare(36px)
+      margin: 20px 20px 20px 0
+
+      &:hover
+        transform: scale(1.2)
+
+    .site-name-subtitle
+      display: none
+
+  &.portfolio
+    text-align: center
+
+    .site-name
+      font-size: 3em
+
+    a.logo
+      +svgSquare(88px)
+      margin: 50px auto 30px
+
+      &:hover
+        transform: scale(1.06)
+
+    .site-name-subtitle
+      +italic
+      margin-top: 0
+      margin-bottom: 3em
+
+  nav
+    text-align: right
+    font-size: 18px
+
+    ul
+      margin: 0.6em 0
+      // display: flex
+      // flex-wrap: wrap
+
+    li
+      padding-bottom: 5px
+
+    a
+      color: $textColor
+      &:hover
+        &:before
+          content: ""
+          margin-right: 4px
+
+
 footer
   // background: darken($background, 10)
   +paperBgDark
   +lightFont
   font-size: 0.9em
   border-top: 1px solid darken($darkBgColor, 20)
-
-
-  h2
-    +deboss
-    font-size: 3em
-    color: #364768
-
 
   .footer-content
     +contentContainer
@@ -177,86 +246,13 @@ footer
       background-size: $size
       opacity: 0.2
       &:hover
-        opacity: 0.4
+        opacity: 0.5
 
     // &:hover
     //   color: $textOnDark
 
-header
-  +contentContainer
-
-  a.logo
-    background: url(/z.svg);
-    display: block
-    transition: all 200ms ease-in-out
-
-    &:hover
-      transform: scale(1.2)
-
-
-  .site-name
-    color: $textColor
-    +headerText
-
-  &:not(.portfolio)
-    +row
-    +between
-    align-items: center
-
-    .site-name
-      font-size: 2.2em
-      margin-top: 24px
-
-    a.logo
-      +svgSquare(36px)
-      margin: 20px 20px 20px 0
-
-    .site-name-subtitle
-      display: none
-
-  &.portfolio
-    text-align: center
-
-    .site-name
-      font-size: 3em
-
-    a.logo
-      +svgSquare(88px)
-      margin: 50px auto 30px
-
-      &:hover
-        transform: scale(1.06)
-
-    .site-name-subtitle
-      +italic
-      margin-top: 0
-      margin-bottom: 3em
-
-  nav
-    text-align: right
-    font-size: 18px
-
-    ul
-      margin: 0.6em 0
-      // display: flex
-      // flex-wrap: wrap
-
-    li
-      padding-bottom: 5px
-
-    a
-      color: $textColor
-      &:hover
-        &:before
-          content: ""
-          margin-right: 4px
-
-
 
 // general styles
-
-p
-  line-height: 1.3
 
 a
   color: $highlightColor
@@ -277,15 +273,26 @@ ul
 h1
   +headerText
   font-size: 2em
+  margin: 1em 0 0.5em
 
   +tiny
     font-size: 1.7em
 
+h2
+  margin: 1em 0 0.2em
+//   +italic
+
+p
+  line-height: 1.3
+  margin: 0.6em 0 1.2em
+
+
 ::selection
-  background: lighten($highlightColor, 50)
+  background: lighten($highlightColor, 20%)
 
 .article-list
   +row
+  margin-top: 0.5em
 
   a
     color: $textColor
@@ -372,6 +379,11 @@ h1
 
 
 
+// .section-title
+//   &:before, &:after
+//     content: ""
+//     padding: 0 10px
+
 
 article
   text-align: center
@@ -380,9 +392,10 @@ article
   .article-content
     &:after
       content: ""
+      display: block
       color: rgba($textColor, 0.5)
       font-size: 3em
-      margin-top: 0.7em
+      margin-top: .3em
 
 
   h1
@@ -420,6 +433,8 @@ article
     text-align: center
     // margin: 0 auto
     padding: 3px
+    display: inline-block
+    margin-bottom: 0.4em
     border-bottom: 1px solid $textColor
     +smallCaps
     +lightFont
@@ -434,27 +449,46 @@ article
 
   img
     width: 100%
-    // border: 3px $textColor solid
-    box-shadow: rgba(#000, 0.5) 0px 2px 6px
+    box-shadow: rgba(#000, 0.5) 0px 2px 3px
+    // +fancyShadow
+
 
   ul.tags
     // +col-offset(3)
+
+
+.tag-title
+  +row
+  +between
+  +bottom
+
+  .browse-all
+    // padding: 9px 14px 7px
+    padding: 7px 12px 5px
+    border-radius: 50px
+    border: 1px solid $highlightColor
+    margin-bottom: 1.2em
+    display: inline-block
 
 ul.tags
   display: flex
   flex-wrap: wrap
 
   li
-    margin-right: 10px
+    margin: 0 0.6em 0.6em 0
 
   a
     padding: 7px 12px 5px
     color: white
     border-radius: $cornerRadius
-    background-color: lighten($highlightColor, 6)
+    background-color: $darkBgColor
+    // background-color: lighten($highlightColor, 6)
+    display: block
+    transition: all 200ms ease-in-out
 
     &:hover
-      background-color: $highlightColor
+      background-color: lighten($darkBgColor, 10)
+      // background-color: $highlightColor
 
 @import 'portfolio'
 
