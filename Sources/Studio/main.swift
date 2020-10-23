@@ -9,7 +9,17 @@ struct Studio: Website {
     // Add the sections that you want your website to contain here:
     case about
     case journal
+    case projects
     case portfolio
+
+    var shouldInsertDate: Bool {
+        switch self {
+        case .journal, .projects:
+            return true
+        default:
+            return false
+        }
+    }
   }
 
   struct ItemMetadata: WebsiteItemMetadata {
@@ -21,7 +31,7 @@ struct Studio: Website {
   // Update these properties to configure your website:
   var url = URL(string: "https://zef.studio")!
   var name = "Zef Houssney"
-  var description = "My name is Zef. Welcome to my studio."
+  var description = ""
   var language: Language { .english }
   var imagePath: Path? { "/images/favicon.png" }
 }
@@ -62,7 +72,7 @@ try studio.publish(withTheme: .studio, additionalSteps: [
   },
   .step(named: "Insert Post Date After Title") { context in
     context.mutateAllSections { section in
-      if section.id == .journal {
+      if section.id.shouldInsertDate {
         section.mutateItems { item in
           var body = item.body
           body.html = insertDate(body: body.html, date: item.date)
@@ -72,6 +82,7 @@ try studio.publish(withTheme: .studio, additionalSteps: [
     }
   },
   .copyFiles(at: "Content/journal/", to: "journal"),
+  .copyFiles(at: "Content/projects/", to: "projects"),
   .step(named: "Delete copied markdown fies") { context in
 
   }
