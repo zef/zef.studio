@@ -61,7 +61,9 @@ extension Theme where Site == Studio {
       } else {
         return studioTemplate(location: section, selectedSection: section.id, context: context) {
           .group(
-            .h1(.text(section.title)),
+            .h1(.class("section-title"),
+              .text(section.title)
+            ),
             .itemList(for: section.items, on: context.site)
           )
         }
