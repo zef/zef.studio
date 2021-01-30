@@ -199,10 +199,12 @@ extension Node where Context == HTML.BodyContext {
                   .attribute(named: "datetime", value: item.date.yearMonthDay),
                   .text("\(item.date.long)")
                   ]
+                ),
+                .if(item.imageCount > 1,
+                  .span(.class("image-count"),
+                    .text("\(item.imageCount)")
+                  )
                 )
-//                .span(.class("image-count"),
-//                      .text("\(Int.random(in: 0...20))")
-//                )
               )
             )
           )
