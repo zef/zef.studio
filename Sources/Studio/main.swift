@@ -45,6 +45,12 @@ extension Item where Site == Studio {
     guard let image = metadata.image else { return nil}
     return "/\(path)/\(image)"
   }
+
+  var imageCount: Int {
+    let count = content.body.html.components(separatedBy: "img src").count - 1
+    return count
+  }
+
 }
 
 func insertDate(body: String, date: Date) -> String {
