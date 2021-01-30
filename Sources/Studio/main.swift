@@ -12,6 +12,10 @@ struct Studio: Website {
     case projects
     case portfolio
 
+    var includeInMainNav: Bool {
+      return self != .portfolio
+    }
+
     var shouldInsertDate: Bool {
         switch self {
         case .journal, .projects:
