@@ -143,7 +143,10 @@ extension Theme where Site == Studio {
 extension Node where Context == HTML.BodyContext {
 
   static func header<T: Website>(for context: PublishingContext<T>, selectedSection: T.SectionID?) -> Node {
-    let sectionIDs = T.SectionID.allCases
+    let sectionIDs = T.SectionID.allCases.filter { sectionID in
+      guard let section = sectionID as? Studio.SectionID else { return false }
+      return section.includeInMainNav
+    }
     var shouldShowNav = true
     var headerClass = ""
 
@@ -169,9 +172,9 @@ extension Node where Context == HTML.BodyContext {
                   .class(section == selectedSection ? "selected" : ""),
                   .href(context.sections[section].path),
                   .text(context.sections[section].title)
-                  ))
-                })
-          )
+                ))
+              })
+            )
         )
       )
     )
