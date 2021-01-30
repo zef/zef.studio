@@ -371,19 +371,25 @@ code
         +regularFont
 
       .image-count
+        position: relative
+        float: right
         font-variant-numeric: lining-nums
         font-size: 0.9em
-        // color: $lightTextColor
-        float: right
+        color: $lightTextColor
+        padding-top: 0.2em
+        margin-right: 34px
+        +regularFont
+        +smallCaps
 
         &:after
           content: ""
+          position: absolute
+          right: -25px
           background-image: url(/images/icons/photos.svg)
           background-repeat: no-repeat
           background-position: center
           display: inline-block
-          +svgSquare(24px)
-          padding: 0 $hPad
+          +svgSquare(20px)
 
 
 
