@@ -116,8 +116,9 @@ try studio.publish(withTheme: .studio, additionalSteps: [
   .compileSass(
       sassFilePath: "Resources/styles/styles.sass",
       cssFilePath: "styles.css"
-  )
+      ),
   .formatImages(),
+  .fancifyTitles()
 ])
 
 //try studio.publish(using: [
