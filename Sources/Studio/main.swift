@@ -43,6 +43,9 @@ struct Studio: Website {
 extension Item where Site == Studio {
   var keyImage: String? {
     guard let image = metadata.image else { return nil}
+    if image.starts(with: "/") {
+        return image
+    }
     return "/\(path)/\(image)"
   }
 
