@@ -117,6 +117,7 @@ try studio.publish(withTheme: .studio, additionalSteps: [
       sassFilePath: "Resources/styles/styles.sass",
       cssFilePath: "styles.css"
   )
+  .formatImages(),
 ])
 
 //try studio.publish(using: [
