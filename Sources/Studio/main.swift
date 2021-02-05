@@ -7,22 +7,35 @@ import SassPublishPlugin
 struct Studio: Website {
   enum SectionID: String, WebsiteSectionID {
     // Add the sections that you want your website to contain here:
-    case about
-    case journal
     case projects
+    case journal
+    case about
     case portfolio
 
     var includeInMainNav: Bool {
-      return self != .portfolio
+      return subtitle != nil
+    }
+
+    var subtitle: String? {
+      switch self {
+      case .about:
+        return "Me and this website"
+      case .journal:
+        return "Writing and photographs"
+      case .projects:
+        return "Building and design"
+      case .portfolio:
+        return nil
+      }
     }
 
     var shouldInsertDate: Bool {
-        switch self {
-        case .journal, .projects:
-            return true
-        default:
-            return false
-        }
+      switch self {
+      case .journal, .projects:
+        return true
+      default:
+        return false
+      }
     }
   }
 
