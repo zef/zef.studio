@@ -38,12 +38,11 @@ $cornerRadius: 16px
   font-family: "Calluna", "Times New Roman", Times, serif
 
 =lightFont
-  font-family: "Callunalight", "Calluna", "Times New Roman", Times, serif
+  font-family: "CallunaLight", "Calluna", "Times New Roman", Times, serif
 
 =semibold
   font-family: "CallunaSemibold", "Calluna", "Times New Roman", Times, serif
-  // font-family: "Calluna", "Times New Roman", Times, serif
-  // font-weight: bold
+  font-weight: normal
 
 =italic
   font-family: "CallunaIt", "Times New Roman", Times, serif
@@ -52,11 +51,12 @@ $cornerRadius: 16px
 =smallCaps
   font-variant: small-caps
 
-=headerText
-  font-variant: small-caps
+=headerText($caps: false)
   +semibold
   text-shadow: white 1px 1px 1px
 
+  @if $caps
+    +smallCaps
 
 =sans
   font-family: -apple-system, verdana, "Lucida Grande", "Lucida Sans Unicode", helvetica, arial, sans-serif
@@ -133,7 +133,7 @@ header
     transition: all 200ms ease-in-out
 
   .site-name
-    +headerText
+    +headerText($caps: true)
     color: $textColor
 
     &:hover
@@ -142,15 +142,19 @@ header
   &:not(.portfolio)
     +row
     +between
-    align-items: center
+    align-items: flex-start
+    flex-wrap: nowrap
 
     .site-name
       font-size: 2.2em
       margin-top: 24px
 
+    .logo-container
+      margin: 20px 20px 20px 0
+
     a.logo
       +svgSquare(36px)
-      margin: 20px 20px 20px 0
+
 
       &:hover
         transform: scale(1.2)
@@ -177,23 +181,29 @@ header
       margin-bottom: 3em
 
   nav
-    text-align: right
+    text-align: left
     font-size: 18px
 
     ul
-      margin: 0.6em 0
-      // display: flex
-      // flex-wrap: wrap
+      margin: 0
+      padding: 1em 0 0.6em
+      display: flex
+      flex-wrap: wrap
 
     li
-      padding-bottom: 5px
+      padding: 0.4em 0.6em
 
     a
       color: $textColor
-      &:hover
-        &:before
-          content: ""
-          margin-right: 4px
+      +semibold
+
+      span
+        display: block
+
+      .subtitle
+        font-size: .8em
+        +lightFont
+        margin-top: 2px
 
 
 footer
@@ -273,17 +283,23 @@ ul
   padding: 0
 
 h1
-  +headerText
+  +headerText($caps: true)
   font-size: 2em
-  margin: 1em 0 0.5em
+  margin: 0.4em 0
 
   +tiny
     font-size: 1.7em
 
+  span
+    font-variant: none
+    +italic
+
 h2
+  +headerText
   margin: 1em 0 0.2em
 
 h3
+  +headerText
   margin: 1em 0 0.2em
 
 p
@@ -352,11 +368,18 @@ code
     article
       text-align: left
       $hPad: 0.6em
+      width: 100%
 
       img
         width: 100%
         border: none
         box-shadow: none
+
+        &.no-image
+          height: 0px
+
+          +small
+            height: auto
 
       h2
         font-size: 1em
@@ -401,6 +424,15 @@ code
 //     padding: 0 10px
 
 
+.page article h1
+  margin: 0.4em 0
+  display: block
+  border-top: none
+  padding: 0
+
+  &:before, &:after
+    display: none
+
 article
   text-align: center
   // +row
@@ -432,10 +464,10 @@ article
         height: 2px
         position: absolute
         top: 50%
-        // display: inline-block
         width: 0.8em
-
+        // display: inline-block
         // transform: translateY(-50%) translateX(-.3em)
+
       &:before
         left: -1em
 
@@ -474,11 +506,11 @@ article
       display: table
 
     figcaption
-      // +italic
-      +smallCaps
-      +lightFont
+      +italic
+      // +smallCaps
+      // +lightFont
       color: $lightTextColor
-      padding: 0.3em 0 0.2em
+      padding: 0.3em 0.5em 0.2em
       font-size: 0.9em
       border-top: 1px solid rgba(#000, 0.2)
 
