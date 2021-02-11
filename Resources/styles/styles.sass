@@ -113,6 +113,19 @@ $cornerRadius: 16px
     @content
 
 
+// used inside a ul. Extracted so we can target different screen sizes with different padding values
+=styleImageColumns($padding: 0.5rem)
+  li
+    margin-bottom: $padding * 2
+    +twoColumnContent($padding)
+
+    +targetSiblingCount(3)
+      +threeColumnContent($padding)
+
+    +targetSiblingCount(4)
+      +twoColumnContent($padding)
+
+
 ////////////////////
 // sticky footer
 
@@ -515,15 +528,14 @@ article
     +row
     margin: 0
 
-    li
-      +twoColumnContent
+    // in this context we'll remove the default `figure` margin and provide our own vertical space in the column styles
+    figure
+      margin: 0
 
-      +targetSiblingCount(3)
-        +threeColumnContent
+    +styleImageColumns(0.2rem)
 
-      +targetSiblingCount(4)
-        +twoColumnContent
-
+    +small
+      +styleImageColumns(0.5rem)
 
   figure
     margin: 0 0 1rem
