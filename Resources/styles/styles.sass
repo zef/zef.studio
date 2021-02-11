@@ -371,28 +371,14 @@ code
 
   li
     +col(12)
-    // +col("md", 4)
     padding: 0
     display: flex
 
-    +small
-      +col(6)
+    +small-only
+      +twoColumnContent(1rem)
 
-      &:nth-child(odd)
-        padding-left: 0
-
-      &:nth-child(even)
-        padding-right: 0
-
-    // +medium
-    //   +col(4)
-
-    //   &:nth-child(3n - 2)
-    //     padding-left: 0
-
-    //   &:nth-child(3n)
-    //     padding-right: 0
-
+    +medium
+      +threeColumnContent
 
     article
       text-align: left
@@ -464,7 +450,6 @@ code
 
 article
   text-align: center
-  // +row
 
   .article-content
     &:after
@@ -523,11 +508,23 @@ article
   p
     text-align: left
 
+  ul.image-list
+    +row
+    margin: 0
+
+    li
+      +twoColumnContent
+
+      +targetSiblingCount(3)
+        +threeColumnContent
+
+      +targetSiblingCount(4)
+        +twoColumnContent
+
+
   figure
-    width: 100%
-    margin: 0 0 1em
+    margin: 0 0 1rem
     padding: 0
-    display: table
     box-shadow: rgba(#000, 0.5) 0px 2px 3px
 
     img
