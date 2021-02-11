@@ -79,27 +79,33 @@ struct CaptionParser {
 
     var caption = textElements.first?.trimmingCharacters(in: .whitespaces)
 
+    var htmlClass: String? = nil
+    if let classMatch = alt.range(of: #"^\.\S+\s"#, options: .regularExpression) {
+      htmlClass = alt[classMatch.lowerBound..<classMatch.upperBound]
+        .replacingOccurrences(of: ".", with: " ")
+        .trimmingCharacters(in: .whitespaces)
+
+      alt = String(alt[classMatch.upperBound...])
+    }
+
     if caption == useAltAsCaptionIndicator {
       caption = alt
     }
 
-    return (alt, caption)
+    return (alt, caption, htmlClass)
   }
 }
 
 extension Node where Context: HTML.BodyContext {
-    static func figure(_ imagePath: String, alt: String, caption: String?) -> Self {
-        if let caption = caption {
-            return .element(named: "figure", nodes: [
-                .img(.src(imagePath), .alt(alt)),
-                .element(named: "figcaption", text: caption)
-            ])
-        } else {
-            return .element(named: "figure", nodes: [
-                .img(.src(imagePath), .alt(alt))
-            ])
-        }
-    }
+  static func figure(_ imagePath: String, alt: String, caption: String?, classes: String?) -> Self {
+    return .element(named: "figure", nodes: [
+      .img(.src(imagePath), .alt(alt)),
+      .if(caption != nil,
+          .element(named: "figcaption", text: caption ?? "")
+      ),
+      .if(classes != nil, .class(classes ?? ""))
+    ])
+  }
 }
 
 extension String {
