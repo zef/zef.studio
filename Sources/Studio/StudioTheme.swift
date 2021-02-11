@@ -87,7 +87,7 @@ extension Theme where Site == Studio {
     func makePageHTML(for page: Page,
                       context: PublishingContext<Studio>) throws -> HTML {
       studioTemplate(location: page, context: context) {
-        .div(.class("page-\(page.title.lowercased())"),
+        .div(.class("page"),
           .article(
             .contentBody(page.body)
           )
@@ -158,7 +158,7 @@ extension Node where Context == HTML.BodyContext {
     return .header(
       .class(headerClass),
       .group(
-        .a(.class("logo"), .href("/")),
+        .div(.a(.class("logo"), .href("/")), .class("logo-container")),
         .if(!shouldShowNav,
           .group(
             .a(.class("site-name"), .href("/"), .text(context.site.name)),
@@ -169,9 +169,12 @@ extension Node where Context == HTML.BodyContext {
             .nav(
               .ul(.forEach(sectionIDs) { section in
                 .li(.a(
-                  .class(section == selectedSection ? "selected" : ""),
+                  // .class(section == selectedSection ? "selected" : ""),
                   .href(context.sections[section].path),
-                  .text(context.sections[section].title)
+                  .group(
+                    .span(.text(context.sections[section].title)),
+                    .span(.class("subtitle"), .text((context.sections[section].id as? Studio.SectionID)?.subtitle ?? ""))
+                  )
                 ))
               })
             )
@@ -187,8 +190,9 @@ extension Node where Context == HTML.BodyContext {
           .a(
             .href(item.path),
             .article(
-              .if(item.metadata.image != nil,
-                .img(.src(item.keyImage ?? ""))
+              .img(
+                .src(item.keyImage ?? "/no-image.png"),
+                .class(item.keyImage == nil ? "no-image" : "")
               ),
               .h2(
                 .text(item.title)
