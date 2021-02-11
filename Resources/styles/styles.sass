@@ -374,11 +374,14 @@ code
     padding: 0
     display: flex
 
-    +small-only
+    +small
       +twoColumnContent(1rem)
 
-    +medium
-      +threeColumnContent
+    // +small-only
+    //   +twoColumnContent(1rem)
+
+    // +medium
+    //   +threeColumnContent
 
     article
       text-align: left
