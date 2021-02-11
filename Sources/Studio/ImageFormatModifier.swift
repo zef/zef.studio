@@ -15,6 +15,9 @@ public extension Plugin {
       context.markdownParser.addModifier(
         .formatImages()
       )
+      context.markdownParser.addModifier(
+        .formatImageLists()
+      )
     }
   }
 }
