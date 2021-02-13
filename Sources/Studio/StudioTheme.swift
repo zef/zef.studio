@@ -191,7 +191,7 @@ extension Node where Context == HTML.BodyContext {
             .href(item.path),
             .article(
               .img(
-                .src(item.keyImage ?? "/no-image.png"),
+                .src(item.keyImage ?? "/images/no-image.png"),
                 .class(item.keyImage == nil ? "no-image" : "")
               ),
               .h2(

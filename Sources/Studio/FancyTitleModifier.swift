@@ -13,7 +13,6 @@ import Ink
 public extension Plugin {
   static func fancifyTitles() -> Self {
     Plugin(name: "InsertDate") { context in
-      print("Context", context.pages)
       context.markdownParser.addModifier(
         .fancifyTitle()
       )
