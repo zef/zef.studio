@@ -41,7 +41,7 @@ struct Studio: Website {
 
   struct ItemMetadata: WebsiteItemMetadata {
     // Add any site-specific metadata that you want to use here.
-//    var appName: String
+    // var appName: String
     var image: String?
   }
 
@@ -56,17 +56,20 @@ struct Studio: Website {
 extension Item where Site == Studio {
   var keyImage: String? {
     guard let image = metadata.image else { return nil}
+    var url: String
     if image.starts(with: "/") {
-        return image
+        url = image
+    } else {
+      url = "/\(path)/\(image)"
     }
-    return "/\(path)/\(image)"
+
+    return ImageConverter.Size.small.url(url)
   }
 
   var imageCount: Int {
     let count = content.body.html.components(separatedBy: "img src").count - 1
     return count
   }
-
 }
 
 func insertDate(body: String, date: Date) -> String {
@@ -107,16 +110,17 @@ try studio.publish(withTheme: .studio, additionalSteps: [
       }
     }
   },
-  .copyFiles(at: "Content/journal/", to: "journal"),
-  .copyFiles(at: "Content/projects/", to: "projects"),
-  .step(named: "Delete copied markdown fies") { context in
-
-  }
+  .step(named: "Convert and place images.") { context in
+    guard let folder = try? context.folder(at: "") else { return }
+    ImageConverter(root: folder).convertImages()
+  },
+//  .copyFiles(at: "Resources/projects", to: ""),
+//  .copyFiles(at: "Resources/journal", to: "")
 ], plugins: [
   .compileSass(
-      sassFilePath: "Resources/styles/styles.sass",
-      cssFilePath: "styles.css"
-      ),
+    sassFilePath: "Resources/styles/styles.sass",
+    cssFilePath: "styles.css"
+    ),
   .formatImages(),
   .fancifyTitles()
 ])
