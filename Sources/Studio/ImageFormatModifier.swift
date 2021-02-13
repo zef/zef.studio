@@ -101,8 +101,10 @@ struct CaptionParser {
 
 extension Node where Context: HTML.BodyContext {
   static func figure(_ imagePath: String, alt: String, caption: String?, classes: String?) -> Self {
+    let imageSource = ImageConverter.Size.small.url(imagePath)
+
     return .element(named: "figure", nodes: [
-      .img(.src(imagePath), .alt(alt)),
+      .img(.src(imageSource), .alt(alt)),
       .if(caption != nil,
           .element(named: "figcaption", text: caption ?? "")
       ),
