@@ -10,10 +10,10 @@ $gutter: 0 1rem !default; // Set gutter size
 
 $content-well-max-width: "none" !default; // Set the max-width of the content well
 
-$sm-start: ($xs-max + 1); // Generate sm breakpoint's min width
-$md-start: ($sm-max + 1); // Generate md breakpoint's min width
-$lg-start: ($md-max + 1); // Generate lg breakpoint's min width
-$xl-start: ($lg-max + 1); // Generate xl breakpoint's min width
+$sm-start: ($xs-max); // Generate sm breakpoint's min width
+$md-start: ($sm-max); // Generate md breakpoint's min width
+$lg-start: ($md-max); // Generate lg breakpoint's min width
+$xl-start: ($lg-max); // Generate xl breakpoint's min width
 
 // Breakpoints
 // Create breakpoint range statements to be used in media queries
