@@ -172,6 +172,8 @@ header
   a.logo
     background: url(/images/z.svg);
     display: block
+
+  a.logo, .hamburger label
     transition: all 200ms ease-in-out
 
   .site-name
@@ -194,9 +196,8 @@ header
     .logo-container
       margin: 20px 20px 20px 0
 
-    a.logo
+    a.logo, .hamburger label
       +svgSquare(36px)
-
 
       &:hover
         transform: scale(1.2)
@@ -226,11 +227,44 @@ header
     text-align: left
     font-size: 18px
 
-    ul
-      margin: 0
-      padding: 1em 0 0.6em
-      display: flex
-      flex-wrap: wrap
+    .hamburger
+      ul
+        display: none
+        clear: both
+
+      +medium
+        ul
+          display: flex
+
+      input
+        display: none
+
+        &:checked
+          +tiny
+            ~ ul
+              display: block
+
+          +smallOnly
+            ~ ul
+              display: flex
+
+      label
+        margin: 20px 0 20px 20px
+        background: url(/images/icons/more.svg);
+        display: block
+        float: right
+
+        +medium
+          display: none
+
+        // &:hover ~ ul
+        //   display: flex
+
+      ul
+        margin: 0
+        padding: 1em 0 0.6em
+        flex-wrap: wrap
+
 
     li
       padding: 0.4em 0.6em
