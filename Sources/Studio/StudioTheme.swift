@@ -167,22 +167,16 @@ extension Node where Context == HTML.BodyContext {
         ),
         .if(sectionIDs.count > 1 && shouldShowNav,
             .nav(
-              .form(
-                .class("hamburger"),
-                .label(.for("hamburger")),
-                .input(.id("hamburger"), .type(.checkbox)),
-
-                .ul(.forEach(sectionIDs) { section in
-                  .li(.a(
-                    // .class(section == selectedSection ? "selected" : ""),
-                    .href(context.sections[section].path),
-                    .group(
-                      .span(.text(context.sections[section].title)),
-                      .span(.class("subtitle"), .text((context.sections[section].id as? Studio.SectionID)?.subtitle ?? ""))
-                    )
-                  ))
-                })
-              )
+              .ul(.forEach(sectionIDs) { section in
+                .li(.a(
+                  // .class(section == selectedSection ? "selected" : ""),
+                  .href(context.sections[section].path),
+                  .group(
+                    .span(.text(context.sections[section].title)),
+                    .span(.class("subtitle"), .text((context.sections[section].id as? Studio.SectionID)?.subtitle ?? ""))
+                  )
+                ))
+              })
             )
         )
       )
