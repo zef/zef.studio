@@ -10,6 +10,7 @@ struct ImageConverter {
 
     func url(_ path: String) -> String {
       var parts = path.components(separatedBy: ".")
+      guard let ext = parts.last, ext == "jpg" else { return path }
       parts.insert("-\(rawValue).", at: parts.count - 1)
       return parts.joined(separator: "")
     }
@@ -104,14 +105,14 @@ struct ImageConverter {
       "82",
       "-define",
       "jpeg:fancy-upsampling=off",
-      "-define",
-      "png:compression-filter=5",
-      "-define",
-      "png:compression-level=9",
-      "-define",
-      "png:compression-strategy=1",
-      "-define",
-      "png:exclude-chunk=all",
+      // "-define",
+      // "png:compression-filter=5",
+      // "-define",
+      // "png:compression-level=9",
+      // "-define",
+      // "png:compression-strategy=1",
+      // "-define",
+      // "png:exclude-chunk=all",
       "-interlace",
       "none",
       "-colorspace",
