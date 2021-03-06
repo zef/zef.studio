@@ -40,13 +40,17 @@ struct ImageConverter {
   var outputPath = "Resources"
   var sourcePath = "Content/images"
 
-  func targetPath(file: File, width: Int) -> (location: Path, filename: String)? {
+  func targetPath(file: File, width: Int? = nil) -> (location: Path, filename: String)? {
     guard let imageType = ImageType(extension: file.extension ?? ""),
           let location = file.parent?.path.components(separatedBy: sourcePath).last else {
       return nil
     }
+    var imageSize = ""
+    if let width = width {
+      imageSize = "-\(width)"
+    }
     let path = Path(root.path).appendingComponent(outputPath).appendingComponent(location)
-    let filename = "\(file.nameExcludingExtension)-\(width).\(imageType)"
+    let filename = "\(file.nameExcludingExtension)\(imageSize).\(imageType)"
     return (path, filename)
   }
 
@@ -55,21 +59,37 @@ struct ImageConverter {
       try root.subfolder(at: sourcePath).subfolders.recursive.forEach { folder in
 
         for file in folder.files {
-          for size in Size.allCases {
-            guard let target = targetPath(file: file, width: size.rawValue) else { continue }
-            let targetPath = target.location.appendingComponent(target.filename).string
-
-            if !fileExists(path: targetPath) {
-              createFolder(at: target.location.string)
-
-              convertImage(inputPath: file.path, targetPath: targetPath, size: size.rawValue)
-            }
+          guard let imageType = ImageType(extension: file.extension ?? "") else { continue }
+          switch imageType {
+          case .jpg:
+            createSizesForImage(file: file)
+          case .png:
+            copyImageToTarget(file: file)
           }
         }
       }
     } catch let error {
       fatalError("Image Conversion Error: \(error)")
     }
+  }
+
+  func createSizesForImage(file: File) {
+    for size in Size.allCases {
+      guard let target = targetPath(file: file, width: size.rawValue) else { continue }
+      let targetPath = target.location.appendingComponent(target.filename).string
+
+      if !fileExists(path: targetPath) {
+        createFolder(at: target.location.string)
+
+        convertImage(inputPath: file.path, targetPath: targetPath, size: size.rawValue)
+      }
+    }
+  }
+
+  func copyImageToTarget(file: File) {
+    guard let target = targetPath(file: file) else { return }
+    let targetPath = target.location.appendingComponent(target.filename).string
+    let _ = shell("cp \(file.path) \(targetPath)")
   }
 
   // spent too long trying to do this in Swift with Files, but this is way easier
@@ -105,14 +125,6 @@ struct ImageConverter {
       "82",
       "-define",
       "jpeg:fancy-upsampling=off",
-      // "-define",
-      // "png:compression-filter=5",
-      // "-define",
-      // "png:compression-level=9",
-      // "-define",
-      // "png:compression-strategy=1",
-      // "-define",
-      // "png:exclude-chunk=all",
       "-interlace",
       "none",
       "-colorspace",
