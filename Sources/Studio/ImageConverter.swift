@@ -142,9 +142,22 @@ struct ImageConverter {
     // }
   }
 
+  static func sizeForImage(file: String) -> (width: Int, height: Int) {
+    let size = shell("identify -format \"%wx%h\" \(file)").components(separatedBy: "x")
+    guard let width = Int(size.first ?? ""), let height = Int(size.last ?? "") else {
+      fatalError("Unexpected data encountered in sizeForImage")
+    }
+    return (width, height)
+  }
+
+
+  func shell(_ command: String) -> String {
+    Self.shell(command)
+  }
+
   // not sure why shellOut won't do this one properly
   // so I'm just using this directly
-  func shell(_ command: String) -> String {
+  static func shell(_ command: String) -> String {
       let task = Process()
       let pipe = Pipe()
 
