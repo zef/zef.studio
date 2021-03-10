@@ -30,7 +30,7 @@ public extension Modifier {
       // parse out the text and image path from the markddown
       let elements = String(markdown).deletingPrefix("![").deletingSuffix(")").components(separatedBy: "](")
       guard elements.count == 2, let text = elements.first, let path = elements.last else {
-        fatalError("Unexpected format found when parsing image markdown...")
+        fatalError("Unexpected format found when parsing image markdown: \(markdown)")
       }
 
       let captionData = CaptionParser.parse(text)
@@ -102,9 +102,11 @@ struct CaptionParser {
 extension Node where Context: HTML.BodyContext {
   static func figure(_ imagePath: String, alt: String, caption: String?, classes: String?) -> Self {
     let imageSource = ImageConverter.Size.small.url(imagePath)
-
     return .element(named: "figure", nodes: [
-      .img(.src(imageSource), .alt(alt)),
+      .a(
+        .href(ImageConverter.Size.large.url(imagePath)),
+        .img(.src(imageSource), .alt(alt))
+      ),
       .if(caption != nil,
           .element(named: "figcaption", text: caption ?? "")
       ),

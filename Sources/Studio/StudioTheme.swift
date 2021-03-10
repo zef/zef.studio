@@ -382,7 +382,9 @@ public extension Node where Context == HTML.DocumentContext {
             .unwrap(location.imagePath ?? site.imagePath, { path in
                 let url = site.url(for: path)
                 return .socialImageLink(url)
-            })
+            }),
+          .script(.src("/javascript/photoswipe.min.js")),
+          .script(.src("/javascript/photoswipe-ui-default.min.js"))
         )
     }
 }
