@@ -284,6 +284,15 @@ extension Node where Context == HTML.BodyContext {
     }
   }
 
+  // static func readFile(path: Path, context: PublishingContext<Studio>) -> Node {
+  //   do {
+  //     let file = try context.file(at: path)
+  //     let html = try file.readAsString()
+  //     return .raw(html)
+  //   } catch let error{
+  //     fatalError("Could not read file. \(error)")
+  //   }
+  // }
 
   static func googleAnalytics(userToken: String = "UA-118277061-2") -> Node {
     .raw(
