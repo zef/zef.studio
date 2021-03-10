@@ -143,9 +143,11 @@ struct ImageConverter {
   }
 
   static func sizeForImage(file: String) -> (width: Int, height: Int) {
-    let size = shell("identify -format \"%wx%h\" \(file)").components(separatedBy: "x")
+    let identifyOutput = shell("identify -format \"%wx%h\" \(file)")
+    let size = identifyOutput.components(separatedBy: "x")
+
     guard let width = Int(size.first ?? ""), let height = Int(size.last ?? "") else {
-      fatalError("Unexpected data encountered in sizeForImage")
+      fatalError("Unexpected data encountered in sizeForImage. \(identifyOutput)")
     }
     return (width, height)
   }

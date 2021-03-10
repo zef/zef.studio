@@ -87,6 +87,7 @@ func insertDate(body: String, date: Date) -> String {
   return body
 }
 
+
 let studio = Studio()
 
 
@@ -107,6 +108,20 @@ try studio.publish(withTheme: .studio, additionalSteps: [
           body.html = insertDate(body: body.html, date: item.date)
           item.body = body
         }
+      }
+    }
+  },
+  .step(named: "Add Image Gallery") { context in
+    guard let resourceFolder = try? context.folder(at: "resources") else {
+      fatalError()
+    }
+
+    context.mutateAllSections { section in
+      section.mutateItems { item in
+        let relativePath = resourceFolder.path.appending(item.path.string)
+        var body = item.body
+        body.html = ImageGallery(body: body.html, basePath: relativePath).bodyWithGallery
+        item.body = body
       }
     }
   },
