@@ -13,16 +13,10 @@
 +font-face('CallunaSemibold', '/styles/fonts/Calluna-Semibold', normal, normal)
 +font-face('CallunaIt', '/styles/fonts/Calluna-It', normal, italic)
 
-// $textColor: #333
 $textColor: #333
 $lightTextColor: #666
 $textOnDark: white
-// $textColor: white
 $textInvertedColor: #333
-
-// $highlightColor: #4764BB
-// $highlightColor: #5e6aa0
-// $highlightColor: #4d639c
 
 $darkBgColor: #375686
 $highlightColor: #2f69e3
@@ -128,9 +122,6 @@ $cornerRadius: 16px
 
 ////////////////////
 // sticky footer
-
-
-// @media (prefers-color-scheme: dark) {
 
 html, body
   height: 100%
@@ -447,14 +438,6 @@ code
           display: inline-block
           +svgSquare(20px)
 
-
-
-// .section-title
-//   &:before, &:after
-//     content: ""
-//     padding: 0 10px
-
-
 .page article h1
   margin: 0.4em 0
   display: block
@@ -591,8 +574,7 @@ ul.tags
 
     &:hover
       background-color: lighten($darkBgColor, 10)
-      // background-color: $highlightColor
 
 @import 'portfolio'
-
 @import 'photoswipe/main'
+
