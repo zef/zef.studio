@@ -373,7 +373,7 @@ public extension Node where Context == HTML.DocumentContext {
             .description(description),
             .twitterCardType(location.imagePath == nil ? .summary : .summaryLargeImage),
             .forEach(stylesheetPaths, { .stylesheet($0) }),
-            .viewport(.accordingToDevice),
+            .meta(.name("viewport"), .content("width=device-width, initial-scale=1.0, viewport-fit=cover")),
             .customFavicon(),
             .unwrap(rssFeedPath, { path in
                 let title = rssFeedTitle ?? "Subscribe to \(site.name)"
