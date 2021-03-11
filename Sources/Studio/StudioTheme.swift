@@ -171,10 +171,7 @@ extension Node where Context == HTML.BodyContext {
                 .li(.a(
                   // .class(section == selectedSection ? "selected" : ""),
                   .href(context.sections[section].path),
-                  .group(
-                    .span(.text(context.sections[section].title)),
-                    .span(.class("subtitle"), .text((context.sections[section].id as? Studio.SectionID)?.subtitle ?? ""))
-                  )
+                  .text(context.sections[section].title)
                 ))
               })
             )

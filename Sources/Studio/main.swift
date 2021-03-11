@@ -13,20 +13,7 @@ struct Studio: Website {
     case portfolio
 
     var includeInMainNav: Bool {
-      return subtitle != nil
-    }
-
-    var subtitle: String? {
-      switch self {
-      case .about:
-        return "Me and this website"
-      case .journal:
-        return "Writing and photographs"
-      case .projects:
-        return "Building and design"
-      case .portfolio:
-        return nil
-      }
+      return self != .portfolio
     }
 
     var shouldInsertDate: Bool {
