@@ -4,7 +4,22 @@
 /.swiftpm
 /*.xcodeproj
 .publish
-/* /Output */
+/Output
+
+
+# These are the uncompressed originals:
+#
+# - large
+# - including all EXIF data
+# - maybe not fully edited, some things I'm not using yet?
+#
+# maybe I'll just ignore these from git, and only include in the output
+
+/Content/images/
+
+# These are basically an image cache, don't need to commit, as they get copied to /Output
+/Resources/projects/
+/Resources/journal/
 
 /Resources/ignored/
 /Output/drafts/
