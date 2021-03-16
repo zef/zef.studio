@@ -147,7 +147,9 @@ struct ImageConverter {
     let size = identifyOutput.components(separatedBy: "x")
 
     guard let width = Int(size.first ?? ""), let height = Int(size.last ?? "") else {
-      fatalError("Unexpected data encountered in sizeForImage. \(identifyOutput)")
+      // fatalError("Unexpected data encountered in sizeForImage. \(identifyOutput)")
+      print("ERROR: Could not get data in sizeForImage. The image probably doesn't exist yet, regenerate the project.")
+      return (0,0)
     }
     return (width, height)
   }
