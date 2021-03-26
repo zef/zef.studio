@@ -19,6 +19,7 @@ struct ImageConverter {
   enum ImageType: String {
     case jpg
     case png
+    case gif
 
     init?(extension: String) {
       switch `extension` {
@@ -63,7 +64,7 @@ struct ImageConverter {
           switch imageType {
           case .jpg:
             createSizesForImage(file: file)
-          case .png:
+          case .png, .gif:
             copyImageToTarget(file: file)
           }
         }
