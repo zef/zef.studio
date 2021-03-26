@@ -38,10 +38,12 @@ struct ImageGallery {
 
     let range = NSRange(body.startIndex..<body.endIndex, in: body)
     regex.enumerateMatches(in: body, options: [], range: range) { (match, _, _) in
-
       guard let match = match,
             let pathRange = Range(match.range(at: 1), in: body),
-            let smallPathRange = Range(match.range(at: 2), in: body) else { return }
+            let smallPathRange = Range(match.range(at: 2), in: body) else {
+              print("Matches not found in image gallery...")
+              return
+            }
 
       let path = String(body[pathRange])
       let smallPath = String(body[smallPathRange])
