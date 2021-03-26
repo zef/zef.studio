@@ -347,9 +347,9 @@ a.pswp__share--download {
 .pswp__caption__center {
 	text-align: center;
 	max-width: 600px;
-	margin: 0 auto;
+	margin: 0 auto env(safe-area-inset-bottom);
 	font-size: 1rem;
-	padding: 10px;
+	padding: 10px 10px 6px;
 	line-height: 20px;
 	color: #CCC;
 }
