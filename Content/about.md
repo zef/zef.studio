@@ -6,7 +6,7 @@ My name is Zef Houssney. I live in Boulder, Colorado with my wife and four child
 
 This website is my personal journal; a place for me to catalog and share my projects, thoughts, and whatever else is interesting to me. I love building and making all sorts of things, and that's primarily what I'm sharing on this website right now.
 
-Professionally, I have been working as a freelance software developer for over 10 years. I love creating excellent and useful software, especially for iOS, which has been my primary focus for most of my career. I have also worked professionally as a full-stack web developer, especially building web applications with Ruby on Rails.
+Professionally, I have been working as a freelance software developer since 2007. I love creating excellent and useful software, especially for iOS, which has been my primary focus for most of my career. I have also worked professionally as a full-stack web developer, especially building web applications with Ruby on Rails.
 
 Check out some of the iOS software I've created for clients at my [iOS Development Portfolio](/portfolio).
 
