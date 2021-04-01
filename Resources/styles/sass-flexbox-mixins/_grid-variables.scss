@@ -1,7 +1,9 @@
 // Grid
 $grid-columns: 12 !default; // Set number of columns in the grid
 
-$xs-max: 40rem !default; // Set xs breakpoint's max width
+// iPhone 12 Pro breaks at 24.5
+// iPhone 12 Pro Max breaks at 26.9
+$xs-max: 28rem !default; // Set xs breakpoint's max width
 $sm-max: 64rem !default; // Set sm breakpoint's max width
 $md-max: 90rem !default; // Set md breakpoint's max width
 $lg-max: 120rem !default; // Set lg breakpoint's max width
