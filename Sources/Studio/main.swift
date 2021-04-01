@@ -57,6 +57,11 @@ extension Item where Site == Studio {
     let count = content.body.html.components(separatedBy: "img src").count - 1
     return count
   }
+
+  var excerpt: String {
+    let parts = content.body.html.components(separatedBy: "</time>")
+    return parts.last ?? ""
+  }
 }
 
 func insertDate(body: String, date: Date) -> String {
