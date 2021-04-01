@@ -187,9 +187,10 @@ extension Node where Context == HTML.BodyContext {
           .a(
             .href(item.path),
             .article(
-              .img(
-                .src(item.keyImage ?? "/images/no-image.png"),
-                .class(item.keyImage == nil ? "no-image" : "")
+              .if(item.keyImage == nil,
+                .div(.class("excerpt"), .div(.raw(item.excerpt))),
+                else:
+                  .img(.src(item.keyImage ?? "/images/no-image.png"))
               ),
               .h2(
                 .text(item.title)
