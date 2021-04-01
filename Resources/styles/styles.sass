@@ -344,6 +344,7 @@ code
   font-family: "Menlo", monospace, monospace
   font-size: .9em
   color: $lightTextColor
+  background-color: white
 
 
 ::selection
@@ -396,17 +397,51 @@ code
         width: 100%
         border: none
         box-shadow: none
+        display: block
 
-        &.no-image
-          height: 0px
+      .excerpt
+        position: relative
+        color: #555
 
-          +small
-            height: auto
+        // don't want to show this in the 1-up configuration, but only when multiple columns are displayed
+        height: 0
+        overflow: hidden
+
+        background-image: url(/images/no-image.png)
+        background-repeat: no-repeat
+        background-position: center
+        background-size: 100%
+
+        +small
+          display: block
+
+          // these 2 styles get us the correct aspect ratio that we want for the container,
+          // along with the inherited height: 0
+          width: 100%
+          padding-bottom: 75%
+
+          &:after
+            content: ""
+            position: absolute
+            bottom: 0
+            left: 0
+            right: 0
+            height: 6em
+            background: linear-gradient(to bottom, rgba(255, 255, 255, 0), rgba(255, 255, 255, 1) 92%)
+
+        > div
+          padding: 0 0.6em
+
+        // gives us a little more top padding when the excerpt is hidden, as on portrait iPhone
+
+        & + h2
+          +tiny
+            padding-top: 0.9em
 
       h2
         font-size: 1em
         margin: 0
-        padding: 0.2em $hPad
+        padding: 0.5em $hPad 0.2em
 
       time
         padding: 0.2em $hPad 0.6em
