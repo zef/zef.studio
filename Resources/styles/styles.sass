@@ -125,7 +125,7 @@ $cornerRadius: 16px
 
 html, body
   height: 100%
-  font-size: 16px
+  font-size: 17px
 
 body
   display: flex
@@ -589,7 +589,7 @@ article
       display: table
 
     figcaption
-      +italic
+      // +italic
       // +smallCaps
       // +lightFont
       color: $lightTextColor
@@ -605,7 +605,9 @@ article
     li
       +col(6)
       +semibold
-      font-size: 2em
+      font-size: 1.6em
+      +small
+        font-size: 2em
 
     .cash
       font-size: 2em
@@ -631,6 +633,7 @@ article
 ul.tags
   display: flex
   flex-wrap: wrap
+  list-style-type: none
 
   li
     margin: 0 0.6em 0.6em 0
