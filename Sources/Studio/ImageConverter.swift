@@ -144,7 +144,7 @@ struct ImageConverter {
   }
 
   static func sizeForImage(file: String) -> (width: Int, height: Int) {
-    let identifyOutput = shell("identify -format \"%wx%h\" \(file)")
+    let identifyOutput = shell("identify -format \"%wx%h\" \"\(file)\"")
     let size = identifyOutput.components(separatedBy: "x")
 
     guard let width = Int(size.first ?? ""), let height = Int(size.last ?? "") else {
