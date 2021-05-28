@@ -323,13 +323,16 @@ h1
     font-variant: none
     +italic
 
-h2
+h2, h3, h4
   +headerText
   margin: 1em 0 0.2em
 
+h2
+  font-size: 1.5em
 h3
-  +headerText
-  margin: 1em 0 0.2em
+  font-size: 1.3em
+h4
+  font-size: 1.15em
 
 p
   line-height: 1.4
@@ -551,7 +554,7 @@ article
       display: block
       padding-bottom: 5px
 
-  h3, p, ul
+  h3, h4, p, ul
     text-align: left
 
   ul
