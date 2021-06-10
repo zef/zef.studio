@@ -80,5 +80,5 @@ I mention this publicly as a small form of personal accountability to encourage
 me to follow through with publishing these posts.
 
 So welcome. I hope you like it here, and that you come often. Even if you don't,
-I hope that at least _I_ come often.
+I hope that at least _I come often_.
 
