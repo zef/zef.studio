@@ -1,15 +1,18 @@
-// swift-tools-version:5.1
+// swift-tools-version:5.2
 
 import PackageDescription
 
 let package = Package(
     name: "Studio",
     products: [
-        .executable(name: "Studio", targets: ["Studio"])
+      .executable(
+        name: "Studio",
+        targets: ["Studio"])
     ],
     dependencies: [
-        .package(url: "https://github.com/johnsundell/publish.git", from: "0.7.0"),
-        .package(url: "https://github.com/hejki/sasspublishplugin", from: "0.1.0")
+        .package(name: "Publish", url: "https://github.com/johnsundell/publish.git", from: "0.8.0"),
+        .package(name: "SassPublishPlugin", url: "https://github.com/hejki/sasspublishplugin", from: "0.1.0")
+
     ],
     targets: [
         .target(
