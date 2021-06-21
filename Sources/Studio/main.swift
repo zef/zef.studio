@@ -64,10 +64,11 @@ extension Item where Site == Studio {
     let range = NSRange(body.startIndex..<body.endIndex, in: body)
     guard let regex = try? NSRegularExpression(pattern: #"<p>.+?<\/p>"#, options: []) else { fatalError() }
     let matches = regex.matches(in: body, options: [], range: range)
-    let text = matches[0...1].map { match in
+    let text = matches.prefix(2).map { match in
       guard let range = Range(match.range(at: 0), in: body) else { return "" }
       return String(body[range])
     }.joined(separator: "")
+
     return text
   }
 }
