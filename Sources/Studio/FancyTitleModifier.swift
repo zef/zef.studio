@@ -29,7 +29,7 @@ public extension Modifier {
       }
       // now we surround all lowercase words within the content with a span tag.
       return html.replacingOccurrences(
-        of: #"\b([a-z]\w+)\b"#,
+        of: #"\b([a-z]\S+)\b"#,
         with: "<span>$1</span>",
         options: .regularExpression,
         range: Range(uncheckedBounds: (openTag, closeTag))
