@@ -33,8 +33,8 @@ can.
 
 ### The Design
 
-I modeled the part in [OpenSCAD](https://www.openscad.org), and you can [check
-out the code here](https://gist.github.com/zef/627e90036cb3d8f6fa40e9f1fe95a4a3).
+I modeled the part in [OpenSCAD](https://www.openscad.org), and the
+[code is available here](https://gist.github.com/zef/627e90036cb3d8f6fa40e9f1fe95a4a3).
 
 I designed it to be easily 3d printable with no supports, so it isn't shaped
 quite like commercially available clips. I initially started modeling the design
@@ -53,16 +53,15 @@ Furthermore, you can see its failure mode that got us here in the first place
 — that tab that retains the bar breaks off. Since my two existing clips were
 different colors, I'm pretty sure that's happened before on this tailgate and
 that the broken part is a replacement part itself. My goal here is simply to
-retain that rod in position, while allowing free rotation.
+retain that rod in position — creating a solid connection to the center plate
+while allowing free rotation when the handle is actuated.
 
 I think the press-in design I ended up with will do that, and as long as the fit
 is tight enough to hold the rod in, I think it will actually be a bit tougher
 than the original part. Time will tell, and if it does break, then I will have
 learned a lesson, and I'll have to use up another few cents of plastic filament.
 
-
-
-[]: # ![spinning latch clip | The 3d design](rotating-clip.gif)
+- ![spinning latch clip | The 3d design](rotating-clip.gif)
 - ![3d printed tailgate latch rod clip. | I didn't realize how blurry this shot was before I installed the part. We regret the error.](3d-printed-clip.jpg)
 - ![My 3d printed tailgate latch rod clip installed. |&](printed-clip-installed.jpg)
 
