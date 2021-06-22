@@ -18,10 +18,10 @@ struct Studio: Website {
 
     var shouldInsertDate: Bool {
       switch self {
-      case .journal, .projects:
-        return true
-      default:
+      case .about, .portfolio:
         return false
+      default:
+        return true
       }
     }
   }
@@ -90,8 +90,6 @@ func insertDate(body: String, date: Date) -> String {
 
 
 let studio = Studio()
-
-
 try studio.publish(withTheme: .studio, additionalSteps: [
   .step(named: "Add Portfolio Description") { context in
     context.mutateAllSections { section in
