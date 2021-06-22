@@ -17,7 +17,7 @@ don't want to share much on the platforms I had available to me.
 
 Regarding the major social media platforms, they just aren't somewhere I want to
 invest my time an energy. I do intend to post links to my website on social
-media platforms, but using social media platforms as a distribution networks is
+media platforms, but using social media platforms as distribution networks is
 a very different thing than using them as content platforms.
 
 I love the open, distributed, personalized web. The web in it's purest,
