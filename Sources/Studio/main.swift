@@ -136,6 +136,7 @@ try studio.publish(withTheme: .studio, additionalSteps: [
     cssFilePath: "styles.css"
     ),
   .formatImages(),
+  .formatFootnotes(),
   .fancifyTitles()
 ])
 

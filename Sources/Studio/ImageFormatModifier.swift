@@ -27,7 +27,7 @@ public extension Modifier {
   static func formatImages() -> Self {
     Modifier(target: .images) { html, markdown in
 
-      // parse out the text and image path from the markddown
+      // parse out the text and image path from the markdown
       let elements = String(markdown).deletingPrefix("![").deletingSuffix(")").components(separatedBy: "](")
       guard elements.count == 2, let text = elements.first, let path = elements.last else {
         fatalError("Unexpected format found when parsing image markdown: \(markdown)")
