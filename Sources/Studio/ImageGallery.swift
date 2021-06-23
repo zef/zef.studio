@@ -60,15 +60,18 @@ struct ImageGallery {
       images.append(ImageData(path: path, placeholderPath: smallPath, width: size.width, height: size.height, caption: caption))
     }
 
-    let data = """
-    <script>
-      ready(function() {
-        window.pswpSlides = \(images.toJSON);
-      });
-    </script>
-    """
+    if images.isEmpty {
+      return ""
+    } else {
+      return """
+      <script>
+        ready(function() {
+          window.pswpSlides = \(images.toJSON);
+        });
+      </script>
+      """
+    }
 
-    return data
   }
 
 }
