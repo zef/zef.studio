@@ -11,7 +11,7 @@ So I've had this itch to have my own website — a vague picture of what I want 
 do with this website. I've put a lot of work into it already now, and as I try
 to clarify my intentions, I am asking myself: what do I want to get out of this?
 
-### _I want to play my part in making the internet what I want it to be._
+### I want to play my part in making the internet what I want it to be.
 
 Sometimes it feels like there’s just everything available somewhere online. But
 I think that’s really quite far from the truth. There is so much information
@@ -25,25 +25,29 @@ to fill in these gaps as I find them, and I do hope that others will find them
 useful. That's just one category of things that I would like to post, but it's
 something I think is important.
 
-### _I want to do my best work for myself._
+### I want to do my best work for myself.
 
-For years as a freelance software engineer, I have done my best work for my
-clients, and largely neglected my own projects, ideas, and online involvement.
-This has bothered me for a long time, and I'd like to do a better job of
-investing in my own personal work.
+For years as a freelance software engineer, I have invested myself deeply in the
+work of my clients, and largely neglected my own projects, ideas, and online
+involvement. This neglect has bothered me for a long time, and I'd like to do a
+better job of investing in my own personal work.
 
 It's not that I haven't spent time on my own projects — but for the most part I
 have not seen them through to fruition.
 
-I have a hard time sharing work that I'm not proud of, and for me that's a high
-bar. I'd like to get over this.
+### I want to stretch my comfort zone.
 
-### _I want people to find it inspiring, useful, and educational._
+I have a hard time sharing work that I'm not proud of, and for me that's a high
+bar. I'd like to have a healthier view of this and be more willing to share
+things that aren't my best work, or that don't meet my highest expectations or
+desires.
+
+### I want people to find it inspiring, useful, and educational.
 
 Although I want to do this for its own intrinsic value and the value that I will
 derive from the process, I do want others to see and value it.
 
-### _I want to learn._
+### I want to learn.
 
 Writing and sharing is a catalyst for learning. I believe that the process
 itself will be a learning experience, but I also have hopes that some of the
@@ -58,7 +62,7 @@ I don't really have any kind of audience right now.
 
 
 
-### _I want to grow in the practice of writing._
+### I want to grow in the practice of writing.
 
 I'm a strong believer in the idea that _writing is thinking_. Writing
 articulately is invaluable, and it's something I'd like to spend more time
@@ -80,31 +84,16 @@ Given the effort
 I suppose I do a decent amount of writing, and I enjoy that. But I haven't been
 doing any writing _in public_, and I'd like to.
 
-## What Does Success Look Like?
 
-I will consider this website a success if I can follow through in posting and
-improving it.
+### I want to keep looking forward.
 
-I will consider this website a failure if end up having spent more time building
-the site than I do contributing to it. I've done this a number of times on past
-projects. In the early days of my web development career, I built a fairly
-full-featured [Content Management
-System](https://en.wikipedia.org/wiki/Content_management_system) and blogging
-engine from scratch. This is basically a rite of passage for a new web
-developer, and I have no regrets in that regard. The system hosted six different
-sites over its lifetime (well, it's still running), and served its purpose
-decently. A couple of these sites were for my personal and freelance
-websites, and I never utilized them to the extent that I hoped to.
+Most of the things I've been planning to post on this site are reflective in
+nature. I want to keep a healthy balance of reflection and sharing what has
+passed, but keep pushing forward to new things.
 
-For instance, on the website for my freelance software engineering business, I
-spent a long time obsessing over the presentation of blocks of code. I created a
-custom color scheme for the code, and I carefully implemented an expansion
-animation so that the code block would look excellent and well-aligned within
-the borders of the blog post, but would expand to allow users to view the full
-horizontal width of the code block. The expansion animation was snappy and
-smooth, and the collapse animation was slower, providing a balanced experience.
+Steve Jobs:
 
-I used this functionality exactly once on my website for a 16 line code snippet.
+> "If you do something and it turns out pretty good, then you should go do
+> something else wonderful, not dwell on it for too long. Just figure out what's
+> next."
 
-Similarly, on the personal website I made for my wife and I, I created only two
-posts.
