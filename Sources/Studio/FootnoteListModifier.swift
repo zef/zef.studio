@@ -9,8 +9,7 @@ import Publish
 import Ink
 import Foundation
 
-// this takes title-cased h1 tags and surround the lowercase words with span tags
-// this allows us to style the lowercase words in a specific manner
+// Inserts ids in the footnote links, and inserts a back link into each footnote
 public extension Plugin {
   static func formatFootnotes() -> Self {
     Plugin(name: "FormatFootnotes") { context in
@@ -37,8 +36,6 @@ public extension Modifier {
         let id = "id=\"footnote-\(reference)\""
         return html.replacingOccurrences(of: "<a ", with: "<a \(id) ")
       }
-
-      // href="#footnotes">1<
 
       return html
     }
