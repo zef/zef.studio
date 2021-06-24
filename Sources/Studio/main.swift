@@ -9,6 +9,7 @@ struct Studio: Website {
     // Add the sections that you want your website to contain here:
     case projects
     case journal
+    // case drafts
     case about
     case portfolio
 
