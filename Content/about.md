@@ -31,7 +31,7 @@ on [Twitter](https://twitter.com/zefhous/) or
 
 []: # You could even [send me a pull request]() for extra credit.
 
-### Technical Details
+<h3 class="centered">Technical Details</h3>
 
 This website is written in [Swift](https://swift.org) and generated as a static
 site using [Publish by John Sundell](https://github.com/JohnSundell/Publish).
