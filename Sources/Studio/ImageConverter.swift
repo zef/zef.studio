@@ -96,7 +96,7 @@ struct ImageConverter {
   // spent too long trying to do this in Swift with Files, but this is way easier
   func fileExists(path: String) -> Bool {
     do {
-      try shellOut(to: "test -f \(path)")
+      try shellOut(to: "test -f \"\(path)\"")
       return true
     } catch {
       return false
@@ -108,9 +108,11 @@ struct ImageConverter {
   }
 
   func convertImage(inputPath: String, targetPath: String, size: Int) {
+    print("Converting image:", targetPath)
+
     let arguments = [
       "convert",
-      inputPath,
+      "\"\(inputPath)\"",
       "-thumbnail \(size)",
       "-filter",
       "Triangle",
@@ -130,11 +132,14 @@ struct ImageConverter {
       "none",
       "-colorspace",
       "sRGB",
+      // "-profile",
+      // "/Users/zef/icc_profiles/Rec2020-Rec1886.icc",
       "-strip",
-      targetPath
+      "\"\(targetPath)\"",
     ]
 
-    let _ = shell(arguments.joined(separator: " "))
+    let command = arguments.joined(separator: " ")
+    let _ = shell(command)
     // do {
     //   try shellOut(to: arguments)
     //   print("Converted \(targetPath)")
