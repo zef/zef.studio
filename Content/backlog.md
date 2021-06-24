@@ -21,11 +21,13 @@ partial list of some things from past projects I would like to post._
 - prairie dress
 - doll clothes hanger
 - BoxKit
+- tailgate latch clip
 - pegboard holders
 - leatherworking tool case
 - cleaning kit case, other accessories
 - soldering station, cheap helping hands
 - masks
+- water/sand kitchen
 - wooden swords
 - wooden rifles
 - wooden car
@@ -36,11 +38,6 @@ partial list of some things from past projects I would like to post._
 - toy for 1-year-old
 - wall hooks
 - basketball hoop
+- closet shelves
 - various repairs
 
-## Posts
-
-- Amazon, AliExpress
-- Well Pump
-- Cars around the world
-- Cars with padlocks
