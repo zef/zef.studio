@@ -16,10 +16,12 @@
 # maybe I'll just ignore these from git, and only include in the output
 
 /Content/images/
+/Content/drafts/
 
 # These are basically an image cache, don't need to commit, as they get copied to /Output
 /Resources/projects/
 /Resources/journal/
+/Resources/drafts/
 
 /Resources/ignored/
 /Output/drafts/
