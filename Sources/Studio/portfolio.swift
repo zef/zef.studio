@@ -45,7 +45,7 @@ struct Client {
              description: """
 Hello! My name is Zef, and I'm passionate about creating excellent software.
 
-I've been working as a freelance software engineer since 2009, and my software has been used by millions of people around the world. I seek to deliver excellent value by providing great code, team leadership, and insight in design, user-experience, and business value.
+I've been working as a freelance software engineer since 2007, and my software has been used by millions of people around the world. I seek to deliver excellent value by providing great code, team leadership, and insight in design, user-experience, and business value.
 
 In addition to working with code, I'm great at working with clients and designers. I am skilled in clear communication with people from all backgrounds.
 
