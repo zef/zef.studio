@@ -15,7 +15,7 @@ say, but I have realized that that's not really the case. I think it's more that
 I don't want to share much on the platforms I have had available to me.
 
 Regarding the major social media platforms, they just aren't somewhere I want to
-invest my time an energy.[1](#footnotes)
+invest my time and energy.[1](#footnotes)
 
 I love the open, distributed, personalized web. The web in its purest,
 uncontaminated form. Personal websites epitomize some of the best of what the

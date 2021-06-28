@@ -22,7 +22,7 @@ Portfolio](/portfolio).
 ## Contact Me
 
 I'd love to hear from you if you have any questions or thoughts you'd like to
-share with me. If there are any typos, bugs, innacuracies, or other errors of
+share with me. If there are any typos, bugs, inaccuracies, or other errors of
 any kind, I would _really like_ to hear about them!
 
 Send me an email at [zef@zef.studio](mailto:zef@zef.studio), or send me a note
