@@ -113,6 +113,6 @@ amounts.  I found [some colors on Amazon](https://amzn.to/3mInk5p), and there
 are also distributors on eBay and Etsy.
 
 I like to use [Neatsfoot Oil](https://amzn.to/3wQhzY0) on most of the items I've
-made with Leather. It does darken the leather a bit, so test on scrap before
-committing, but I like the look on the leathers I've tried it on.
+made with Leather. It does darken the leather a bit, so it's a good idea to test
+on a scrap before committing, but I generally like the look of it.
 
