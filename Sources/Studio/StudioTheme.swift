@@ -367,6 +367,13 @@ public extension Node where Context == HTML.DocumentContext {
             description = site.description
         }
 
+        let mainImage: Path?
+        if let item = location as? Item<Studio> {
+          mainImage = item.keyImagePath ?? site.imagePath
+        } else {
+          mainImage = location.imagePath ?? site.imagePath
+        }
+
         return .head(
             .encoding(.utf8),
             .siteName(site.name),
@@ -381,7 +388,7 @@ public extension Node where Context == HTML.DocumentContext {
                 let title = rssFeedTitle ?? "Subscribe to \(site.name)"
                 return .rssFeedLink(path.absoluteString, title: title)
             }),
-            .unwrap(location.imagePath ?? site.imagePath, { path in
+            .unwrap(mainImage, { path in
                 let url = site.url(for: path)
                 return .socialImageLink(url)
             }),
