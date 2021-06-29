@@ -38,7 +38,7 @@ struct Studio: Website {
   var name = "Zef Houssney"
   var description = ""
   var language: Language { .english }
-  var imagePath: Path? { "/images/favicon.png" }
+  var imagePath: Path? { "/images/site-icon.png" }
 }
 
 extension Item where Site == Studio {
@@ -52,6 +52,11 @@ extension Item where Site == Studio {
     }
 
     return ImageConverter.Size.small.url(url)
+  }
+
+  var keyImagePath: Path? {
+    guard let keyImage = keyImage else { return nil }
+    return Path(keyImage)
   }
 
   var imageCount: Int {
