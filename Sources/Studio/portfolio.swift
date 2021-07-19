@@ -68,7 +68,7 @@ We shipped a great app on time, and I continued to work on it throughout its ent
       description: """
 I worked with and helped lead a small team to build <a href="https://moviesanywhere.com">Movies Anywhere</a> from scratch. Worked with backend teams and frontend teams for other platforms to determine approaches for the architecture of app and server interaction. Conceptualized and implemented iOS architecture, which included the use of GraphQL and the Realm database.
 
-We launched into a high traffic environment, yet maintained an extremely low crash rate from launch day forward. I continued to work with the team at Movies Anywhere after launch, eventually interviewing, hiring, and onboarding new team members as the team transitioned to only full-time, on-site employees
+We launched into a high traffic environment, yet maintained an extremely low crash rate from launch day forward. I continued to work with the team at Movies Anywhere after launch, eventually interviewing, hiring, and onboarding new team members as the team transitioned to only full-time, on-site employees.
 
 When wrapping up this project, my good friend Aaron said something really nice about me:
 
