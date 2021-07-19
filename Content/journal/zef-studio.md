@@ -22,9 +22,9 @@ uncontaminated form. Personal websites epitomize some of the best of what the
 web has to offer, and I have long desired and intended to have one for
 myself.[2](#footnotes)
 
-I want this to be my little corner of the internet that embodies the web
-that I wish were more ubiquitous. No ads. Just sharing a small part of my life
-with anyone who might be interested.
+I want this to be my little corner of the internet that embodies the web that I
+wish were more ubiquitous. No ads. Just sharing a small part of my life with
+anyone who might be interested.
 
 ## What Will I Post About?
 
@@ -35,8 +35,9 @@ physical objects.
 
 I have a wide range of interests outside of those areas too, and ultimately I
 don't know what I will be wanting to share over time, but my goal is that this
-would be a place where I don't feel the need to limit myself based on what I think other
-people will be be interested in, but to do my own thing and follow my own whims.
+would be a place where I don't feel the need to limit myself based on what I
+think other people will be be interested in, but to do my own thing and follow
+my own whims.
 
 I'd also like to share some travel photos, and perhaps share some occasional
 thoughts about some subject or another, though my intentions in that regard are
@@ -45,16 +46,16 @@ much less formed.
 When thinking about what justifies a post, I find there is a tension regarding
 what I think is worth posting and what isn’t. Even when writing this very post I
 doubt myself, and want to just throw the whole thing out. Why should I write the
-cliche “my first post” that exists on countless blogs, just prior to their probable
-abandonment? Who cares? Why would anyone want to read that?
+cliche “my first post” that exists on countless blogs, just prior to their
+probable abandonment? Who cares? Why would anyone want to read that?
 
 My own insecurities such as these are part of what has inhibited me from
 contributing and sharing very much of my work online. This is something I'm
 trying to get over.
 
 I’ve realized that the answer to the question “who cares?” really doesn't matter
-beyond the fact that _I care_. I want to do this for myself — even if nobody else
-reads it. With that mindset, I intend to treat it as a personal journal and
+beyond the fact that _I care_. I want to do this for myself — even if nobody
+else reads it. With that mindset, I intend to treat it as a personal journal and
 archive of some of my projects. Somewhere to reflect on what I have made and
 what I am learning. Something that will be valuable to me for years to come, and
 to look back upon, many years into the future.
@@ -86,9 +87,8 @@ I hope that at least _I come often_.
 
 
 1) I do intend to post links to my website on social media platforms, but using
-social media platforms as distribution networks is a very different thing
-than using them as content platforms.
-2) I have had a website for my software business, but it's never been a very
-personal place and it hasn't been something I'm particularly proud of. I
-designed and built it in the infancy of my software development journey, and I
-have seldom updated it in the past 10 years.
+social media platforms as distribution networks is a very different thing than
+using them as content platforms.  2) I have had a website for my software
+business, but it's never been a very personal place and it hasn't been something
+I'm particularly proud of. I designed and built it in the infancy of my software
+development journey, and I have seldom updated it in the past 10 years.
