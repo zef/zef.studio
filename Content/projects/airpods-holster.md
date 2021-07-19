@@ -1,6 +1,6 @@
 ---
 date: 2019-05-01 12:00
-description: Making a leather belt holster for my AirPods
+description: Making a leather belt holster for my AirPods.
 tags: Leather, Wet Forming
 image: aged-on-belt.jpg
 ---
