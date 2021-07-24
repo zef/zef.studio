@@ -98,7 +98,7 @@ children.
 One problem is that the leather has stretched out over time, naturally. I've
 dealt with this by cutting an insert that I slid in behind the AirPods, and that
 has tightened up the fit again to be nice and snug. When the fit isn't snug,
-they can easily get knocked out of the holder, or pop out when running, but when
+they can easily get knocked out of the holder, or pop out when running. But when
 the fit is tight, it's really not an issue at all.
 
 Functionally, I love the open-top design, as it really makes the AirPods easy to
