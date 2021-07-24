@@ -73,7 +73,7 @@ This post touches on a number of subjects that I would like to elaborate on and
 think through more deeply. I intend to do this through some future posts, with
 tentative titles:
 
-- What I Want for This Website
+- [What I Want from This Website](/journal/what-I-want-from-this-site)
 - The Web I Love
 - How I Built This Site
 - Why I Haven't Been Sharing Things on the Internet
