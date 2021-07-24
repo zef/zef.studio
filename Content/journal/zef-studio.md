@@ -88,7 +88,8 @@ I hope that at least _I come often_.
 
 1) I do intend to post links to my website on social media platforms, but using
 social media platforms as distribution networks is a very different thing than
-using them as content platforms.  2) I have had a website for my software
-business, but it's never been a very personal place and it hasn't been something
-I'm particularly proud of. I designed and built it in the infancy of my software
-development journey, and I have seldom updated it in the past 10 years.
+using them as content platforms.
+2) I have had a website for my software business, but it's never been a very
+personal place and it hasn't been something I'm particularly proud of. I
+designed and built it in the infancy of my software development journey, and I
+have seldom updated it in the past 10 years.
