@@ -360,6 +360,17 @@ code
 
 .italic
   +italic
+
+// double column, but not on +tiny
+ul.double
+  +row
+
+  li
+    list-style-type: none
+    +col(12)
+
+    +small
+      +twoColumnContent
 ////////////////////
 
 ::selection
