@@ -45,6 +45,11 @@ $cornerRadius: 16px
 =smallCaps
   font-variant: small-caps
 
+=codeFont
+  font-family: "Menlo", monospace, monospace
+  font-size: .9em
+
+
 =headerText($caps: false)
   +semibold
   text-shadow: white 1px 1px 1px
@@ -335,7 +340,7 @@ h4
   font-size: 1.15em
 
 p
-  line-height: 1.4
+  line-height: 1.4em
   margin: 0.6em 0 1.2em
 
 hr
@@ -344,11 +349,9 @@ hr
   margin: 0.5rem 0 1.5rem
 
 code
-  font-family: "Menlo", monospace, monospace
-  font-size: .9em
+  +codeFont
   color: $lightTextColor
   background-color: white
-
 
 // a few various styles for inline usage inside markdown
 .note
@@ -372,6 +375,37 @@ ul.double
     +small
       +twoColumnContent
 ////////////////////
+
+table
+  border-collapse: collapse
+  line-height: 1.8em
+  +codeFont
+  margin: 0 auto 2em
+
+  thead tr
+    border-bottom: 2px solid $lightTextColor
+    margin-bottom: 10px
+
+  tbody
+    text-align: left
+    color: $lightTextColor
+
+    tr
+      &:first-child td
+        padding-top: 0.4em
+
+      td
+        padding: 0 1.8em
+        border-left: 1px solid $lightTextColor
+        border-right: 1px solid $lightTextColor
+
+        &:first-child
+          padding-left: 0
+          border-left: none
+        &:last-child
+          padding-right: 0
+          border-right: none
+
 
 ::selection
   background: lighten($highlightColor, 20%)
