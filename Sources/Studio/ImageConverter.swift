@@ -134,7 +134,6 @@ struct ImageConverter {
       "sRGB",
       // "-profile",
       // "/Users/zef/icc_profiles/Rec2020-Rec1886.icc",
-      "-strip",
       "\"\(targetPath)\"",
     ]
 
