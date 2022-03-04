@@ -19,7 +19,7 @@ investigating.
 
 The process of the investigation is documented in this video:
 
-(coming soon)
+<div class="video-container"><iframe src="https://www.youtube.com/embed/Zy2pvFM5nD4" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe></div>
 
 ## MaxxFan Ethernet Port Wiring
 
