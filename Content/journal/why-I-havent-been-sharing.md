@@ -1,5 +1,5 @@
 ---
-date: 2021-05-30 12:00
+date: 2022-03-09 12:00
 description: Why I haven't been sharing things on the internet
 tags: zef.studio
 image:
@@ -84,7 +84,7 @@ anyone start following me?
 > and helpful communities that they can interact with and learn from as they share
 > what they are doing.
 
-I've never pursued having a community like that in earnest, and while I _never_
+I haven't pursued having a community like that in earnest, and while I never
 want follower counts to be my goal, I do desire to have the attention of people
 who care about the things I do.
 
@@ -99,11 +99,12 @@ doing what is considered normal.
 I’m going to do what I am interested in without concerning myself with
 questions of audience.
 
-Another thing I've realized is that sometimes exposure to new interests is
-driven by seeing someone share things that are completely unrelated to the
-subject for which I started following them. I just hope and trust that some
-people will feel the same and can benefit from my sharing things from a diverse
-range of subjects.
+Another thing I've noticed is that exposure to new subjects is sometimes a nice
+surpise that can spark a new interest in something that I probably wouldn't be
+aware of otherwise. Seeing people share things that are completely unrelated to
+the subject for which I started following them has been a fun catalyst to expand
+my knowledge and awareness of the world. I hope and trust that some people will
+feel similarly about me sharing things from a diverse range of subjects.
 
 
 ### I don't share because I don't want to re-express thoughts that are not original.
@@ -111,19 +112,24 @@ range of subjects.
 I'm not quite sure why I care about this — why it affects me. But it does.
 
 It's sort of like when you hear a cover of a song that doesn't do anything new.
-Same arrangement, tempo, feel. The same flourishes, just trying to faithfully
-emulate the original. But who want's to hear that? It will just never be as
-good. What's the point?[1](#footnotes) You just listen to the source.
+The same arrangement, tempo, feel. The same flourishes, just trying to
+faithfully emulate the original. But who want's to hear that? It will simply
+never be as good. What's the point?[1](#footnotes)
+
+I know at some level that when I share what I've learned, it's not just a
+meaningless cover. But I have trouble really trusting that.
 
 Part of what I'm averse to is the trite, soulless content that is so commonly
 farmed for views and provides little value. But I know I'm not going to just
 regurgitate random useless information, and I need to be willing to talk about
 things that have already been discussed elsewhere.
 
-Most thought, even if arrived at independently, simply isn't original. There is
-nothing new under the sun. But I know that it's part of the nature of the
-dissemination of knowledge and ideas. The original hardly matters. Even if I'm
-saying something obvious, maybe I can help someone become [one of today's lucky 10,000](https://xkcd.com/1053/).
+Most thought — even if arrived at independently — simply isn't original. There
+is nothing new under the sun. But I know that expressing and re-expressing what
+has been said before is a natural and essential part in the dissemination of
+ideas and knowledge. The original hardly matters. Even if I'm saying something
+that seems obvious to me, I should trust that there are people for whom it could
+provide value. And who knows? Maybe I can help someone become [one of today's lucky 10,000](https://xkcd.com/1053/).
 
 That gets me wondering though — _who was the first person to express trepidation
 about expressing unoriginal thoughts?_ 🤔.
@@ -155,6 +161,6 @@ it.
 
 
 1) Okay I realize this sounds a little harsh. I've recorded covers like this
-before, and I will again. It could be a tribute or a test of recording skills.
+before, and I will again. It could be a tribute. Or a test of recording skills.
 There are valid reasons. I'm just saying that it doesn't generally add much
 value.
