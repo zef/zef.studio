@@ -53,7 +53,7 @@ My own insecurities such as these are part of what has inhibited me from
 contributing and sharing very much of my work online. This is something I'm
 trying to get over.
 
-I’ve realized that the answer to the question “who cares?” really doesn't matter
+I've realized that the answer to the question "who cares?" really doesn't matter
 beyond the fact that _I care_. I want to do this for myself — even if nobody
 else reads it. With that mindset, I intend to treat it as a personal journal and
 archive of some of my projects. Somewhere to reflect on what I have made and
