@@ -78,11 +78,15 @@ There's obviously a chicken and egg problem with sharing things online. I don't
 post because nobody would see it. But if I'm not posting anything, why would
 anyone start following me?
 
-When I see people who have cultivated a community of friends and followers
-who share common interests and passions, I see the richness it can bring, and
-I'm inspired to do the same. I've never pursued that in earnest, and while I
-_never_ want follower counts to be my goal, I do desire to have the attention of
-people who care about the things I do.
+[Previously](/journal/what-i-want-from-this-site):
+
+> I'm inspired when I see people online who have fostered and cultivated healthy
+> and helpful communities that they can interact with and learn from as they share
+> what they are doing.
+
+I've never pursued having a community like that in earnest, and while I _never_
+want follower counts to be my goal, I do desire to have the attention of people
+who care about the things I do.
 
 
 ### I don’t share because I have a wide range of interests.
@@ -137,10 +141,10 @@ It's hard for me to trust that if someone is following and seeing what I post,
 that they _want_ to see it, and that if they don't, then they can deal with that
 in whatever way they see fit.
 
-I think part of my fear stems from the way that I personally pay attention to
-those that I follow. I tend to pay close attention to those that I follow, and I
-naturally hope that the kind of people who follow me will do likewise, even
-though it seems like that's rare these days.
+I think part of my fear stems from the way that I personally tend to pay close
+attention to those that I follow. And I naturally hope that the kind of people
+who follow me will do likewise — even though it seems like that's rare these
+days.
 
 I've also been getting better at skipping content that isn't worth my time and
 attention, and I think that's an important thing for me to be more discerning
