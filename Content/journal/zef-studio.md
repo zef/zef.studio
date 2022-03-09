@@ -76,7 +76,8 @@ tentative titles:
 - [What I Want from This Website](/journal/what-I-want-from-this-site)
 - The Web I Love
 - How I Built This Site
-- Why I Haven't Been Sharing Things on the Internet
+- [Why I Haven't Been Sharing Things on the
+Internet](/journal/why-I-havent-been-sharing)
 - What Defines Success for This Site?
 
 I mention this publicly as a small form of personal accountability to encourage
