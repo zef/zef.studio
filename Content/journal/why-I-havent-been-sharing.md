@@ -113,7 +113,7 @@ I'm not quite sure why I care about this — why it affects me. But it does.
 
 It's sort of like when you hear a cover of a song that doesn't do anything new.
 The same arrangement, tempo, feel. The same flourishes, just trying to
-faithfully emulate the original. But who want's to hear that? It will simply
+faithfully emulate the original. But who wants to hear that? It will simply
 never be as good. What's the point?[1](#footnotes)
 
 I know at some level that when I share what I've learned, it's not just a
