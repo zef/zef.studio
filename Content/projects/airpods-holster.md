@@ -109,10 +109,10 @@ access and put back.
 
 For thread, I use 0.8mm Ritza "Tiger" thread, which is excellent. You can buy it
 in small quantities from resellers that purchase large spools and resell small
-amounts.  I found [some colors on Amazon](https://amzn.to/3mInk5p), and there
+amounts.  I found [some colors on Amazon](https://amzn.to/3t2vtWW), and there
 are also distributors on eBay and Etsy.
 
-I like to use [Neatsfoot Oil](https://amzn.to/3wQhzY0) on most of the items I've
+I like to use [Neatsfoot Oil](https://amzn.to/3sZp4ff) on most of the items I've
 made with Leather. It does darken the leather a bit, so it's a good idea to test
 on a scrap before committing, but I generally like the look of it.
 
