@@ -66,8 +66,41 @@ base pin, and is detailed in the video above.
 
 ![Transistor as a switch](circuit-schematic.jpg)
 
+I used an 2N2222 transistor with a 1kΩ 1/4 watt resistor.
+
+I haven't tested this personally, but I believe another good option would be to
+use a MOSFET Trigger Switch Board to do this. They are affordable and include
+screw terminals that would make the connection to the switched device easy.
+
+These boards are designed for higher loads and can drive lights or motors with
+[PWM](https://en.wikipedia.org/wiki/Pulse-width_modulation)
+signals, but I believe they can be used as a simple switch too, as it is
+basically a more robust version of the schematic above. I believe you would wire
+one side of your switch to the negative input, and the other side to the
+negative output, as the ground side of the circuit is switched.
+
+![Trigger Switch Board Diagrams](trigger-switch-boards.png)
+
+### Products
+
+- [MOSFET Trigger Switch (10pc)](https://amzn.to/3CCW3sR)
+- [MOSFET Trigger Switch (4pc)](https://amzn.to/3KymYsI)
+- [MOSFET Trigger Switch (4pc AliExpress)](https://s.click.aliexpress.com/e/_ABq7FZ)
+
+- [4 Channel MOSFET Trigger Switch](https://amzn.to/3MUt3Sv)
+- [4 Channel MOSFET Trigger Switch (AliExpress)](https://s.click.aliexpress.com/e/_ALZIun)
+
+- [Assorted Transistor Kit](https://amzn.to/3I0vpvb)
+- [2N2222 NPN Transistors (AliExpress)](https://s.click.aliexpress.com/e/_A6M69h)
+
+- [MaxxFan Deluxe with manual lid](https://amzn.to/3I68ajx)
+- [MaxxFan Deluxe with automatic lid and remote](https://amzn.to/3iicGRD)
+
+
 1) I am using the term "ethernet" because it is known colloquially, but of
 course the fan does not use the ethernet protocol, but rather simply utilizes
 the cable and RJ45 connector because it's a cheap and easy way to get an
 eight-wire connection.
+
+
 
