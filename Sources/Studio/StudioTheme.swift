@@ -78,7 +78,10 @@ extension Theme where Site == Studio {
             .div(.class("article-content"),
               .contentBody(item.body)
             ),
-            .tagList(for: item, on: context.site)
+            .tagList(for: item, on: context.site),
+            .if(item.metadata.postscript != nil,
+              .div(.class("postscript"), .text(item.metadata.postscript ?? ""))
+            )
           )
         )
       }
