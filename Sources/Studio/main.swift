@@ -31,6 +31,7 @@ struct Studio: Website {
     // Add any site-specific metadata that you want to use here.
     // var appName: String
     var image: String?
+    var postscript: String?
   }
 
   // Update these properties to configure your website:
