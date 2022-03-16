@@ -55,8 +55,8 @@ perspective is often better than trying to force things to work by following the
 initial approach too far.
 
 Existing designs are good sources of inspiration, but it's good to question them
-when there's a good reason to. In this case, the original design is made to be
-cheap and well-suited for mass production, but would be hard to 3d print.
+when there's a reason to. In this case, the original design is made to be cheap
+and well-suited for mass production, but would be hard to 3d print.
 Furthermore, you can see its failure mode that got us here in the first place
 — that tab that retains the bar breaks off. Since my two existing clips were
 different colors, I'm pretty sure that's happened before on this tailgate, and
