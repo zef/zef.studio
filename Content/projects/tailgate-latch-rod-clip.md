@@ -38,8 +38,8 @@ can. And the more I model things, the faster I get at it.
 
 I modeled the part in [OpenSCAD](https://www.openscad.org). You can
 [check out the code](https://gist.github.com/zef/627e90036cb3d8f6fa40e9f1fe95a4a3)
-and the `.stl` is on my
-[Prusa Printers page](https://www.prusaprinters.org/prints/151460-tailgate-latch-rod-clip).
+and the `.stl` is available on
+[Printables](https://www.printables.com/model/151460-tailgate-latch-rod-clip).
 
 I designed it to be easily 3d printable with no supports, so it isn't shaped
 quite like commercially available clips. It cost about $0.03 in plastic and is
