@@ -1,6 +1,6 @@
 ---
 date: 2021-06-24 12:00
-description: Thoughts about my new website, zef.studio
+description: Thoughts about my new website, zef.studio.
 tags: zef.studio
 ---
 
