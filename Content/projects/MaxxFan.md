@@ -1,6 +1,6 @@
 ---
 date: 2022-02-25 12:00
-description: "Controlling the MaxxFan Deluxe over the Ethernet port"
+description: "Controlling the MaxxFan Deluxe over the Ethernet port."
 tags: Electronics
 image: MaxxFan.jpg
 ---

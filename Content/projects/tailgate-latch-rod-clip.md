@@ -1,7 +1,7 @@
 ---
 date: 2021-03-16 12:00
 postscript: Published on March 16, 2022
-description: A 3d printed tailgate latch rod clip that fits my 1995 Toyota T100
+description: A 3d printed tailgate latch rod clip that fits my 1995 Toyota T100.
 tags: 3d Printing, 3d Modeling, Repair
 image: broken-clip.jpg
 ---
