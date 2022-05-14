@@ -1,6 +1,6 @@
 ---
 date: 2022-03-09 12:00
-description: Why I haven't been sharing things on the internet
+description: Why I haven't been sharing things on the internet.
 tags: zef.studio
 image:
 ---
