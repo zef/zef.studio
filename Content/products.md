@@ -18,6 +18,12 @@ mostly for my own reference, so I can easily find and modify them._
 - [0.8mm Ritza Tiger Thread](https://amzn.to/3t2vtWW)
 - [Neatsfoot Oil](https://amzn.to/3sZp4ff)
 
+- [WUTA Button Studs](https://s.click.aliexpress.com/e/_A8T4nD)
+- [WUTA brass keyrings (50pc AliExpress)](https://s.click.aliexpress.com/e/_97Gu9l)
+- [Brass Button Studs](https://s.click.aliexpress.com/e/_AFmbcn)
+
+- [Craftool Buttonhole Punch](https://amzn.to/3NcdfKD)
+
 
 ## Electronics
 
@@ -32,3 +38,6 @@ mostly for my own reference, so I can easily find and modify them._
 - [4 Channel MOSFET Trigger Switch (AliExpress)](https://s.click.aliexpress.com/e/_ALZIun)
 
 
+## 3D Printing
+
+- [TPU Flexible Filament](https://amzn.to/39kgqAC)
