@@ -1,6 +1,6 @@
-
-
 # About
+
+![.rounded.trailing Zef Houssney](zef-houssney.jpg)
 
 My name is Zef Houssney. I live in Boulder, Colorado with my wife and four
 children.
@@ -19,11 +19,8 @@ with Ruby on Rails.
 Some of the iOS software I've created for clients is in my [iOS Development
 Portfolio](/portfolio).
 
-- ![Zef Houssney with a large beard](zef-beard.jpg)
-- ![Zef Houssney with a small beard](zef-small-beard.jpg)
-- ![Zef Houssney with no beard](zef-no-beard.jpg)
-
 ## Contact Me
+
 
 I'd love to hear from you if you have any questions or thoughts you'd like to
 share with me. If there are any typos, bugs, inaccuracies, or other errors of
