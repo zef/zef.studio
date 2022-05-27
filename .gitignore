@@ -21,6 +21,7 @@
 # These are basically an image cache, don't need to commit, as they get copied to /Output
 /Resources/projects/
 /Resources/journal/
+/Resources/about/
 /Resources/drafts/
 
 /Resources/ignored/
