@@ -75,6 +75,10 @@ extension Item where Site == Studio {
     return count
   }
 
+  var hasYouTubeEmbed: Bool {
+    content.body.html.contains("video-container")
+  }
+
   // returns the first two <p> tags from the content body
   var excerpt: String {
     let body = content.body.html
