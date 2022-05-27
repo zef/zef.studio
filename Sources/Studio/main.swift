@@ -40,6 +40,16 @@ struct Studio: Website {
   var description = ""
   var language: Language { .english }
   var imagePath: Path? { "/images/site-icon.png" }
+
+  // custom stuff
+
+  var rootPath: Path = {
+    Path(Shell.execute("pwd").trimmingCharacters(in: .whitespacesAndNewlines))
+  }()
+
+  var resourcesPath: Path {
+    rootPath.appendingComponent("resources")
+  }
 }
 
 extension Item where Site == Studio {
@@ -117,19 +127,20 @@ try studio.publish(withTheme: .studio, additionalSteps: [
       }
     }
   },
-  .step(named: "Add Image Gallery") { context in
-    guard let resourceFolder = try? context.folder(at: "resources") else {
-      fatalError()
-    }
-
-    context.mutateAllSections { section in
-      section.mutateItems { item in
-        let relativePath = resourceFolder.path.appending(item.path.string)
-        var body = item.body
-        body.html = ImageGallery(body: body.html, basePath: relativePath).bodyWithGallery
-        item.body = body
-      }
-    }
+  // add image gallery
+  .mutateAllItems { item in
+      let resourceFolder = studio.resourcesPath
+      let absoluteItemPath = resourceFolder.appendingComponent(item.path.string)
+      var body = item.body
+      body.html = ImageGallery(body: body.html, basePath: absoluteItemPath.string).bodyWithGallery
+      item.body = body
+  },
+  .mutateAllPages { item in
+      let resourceFolder = studio.resourcesPath
+      let absoluteItemPath = resourceFolder.appendingComponent(item.path.string)
+      var body = item.body
+      body.html = ImageGallery(body: body.html, basePath: absoluteItemPath.string).bodyWithGallery
+      item.body = body
   },
   .step(named: "Convert and place images.") { context in
     guard let folder = try? context.folder(at: "") else { return }
