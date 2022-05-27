@@ -39,7 +39,7 @@ struct Studio: Website {
   var name = "Zef Houssney"
   var description = ""
   var language: Language { .english }
-  var imagePath: Path? { "/images/site-icon.png" }
+  var imagePath: Path? { "/about/zef-houssney-1248.jpg" }
 
   // custom stuff
 
