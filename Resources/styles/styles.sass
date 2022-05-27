@@ -602,6 +602,9 @@ article
       display: block
       padding-bottom: 8px
 
+  h1, h2, h3, h4
+    +clearbefore
+
   h3, h4, p, ul, ol
     text-align: left
 
@@ -656,6 +659,19 @@ article
       padding: 0.3em 0.5em 0.2em
       font-size: 0.9em
       border-top: 1px solid rgba(#000, 0.2)
+
+    &.leading
+      float: left
+      width: 28%
+      margin: 0 0.6em 0.6em 0
+    &.trailing
+      float: right
+      width: 28%
+      margin: 0 0 0.6em 0.6em
+
+    &.rounded
+      border-radius: 50%
+      overflow: hidden
 
   .video-container
     position: relative
