@@ -5,10 +5,14 @@ DRAFT_PATH = "/Users/zef/code/studio-drafts/"
 CODE_PATH = "/Users/zef/code/studio/"
 
 
-task :default do
+task :default => [:sync] do
+end
+
+task :sync do
   `rsync -a Output/ ~/code/zef-studio-output`
 end
 
+desc "Move drafts out of the content folder."
 task :drafts_out do
   `mv #{CODE_PATH}/Content/drafts/*.md #{DRAFT_PATH}`
   `mv #{CODE_PATH}/Content/images/drafts/ #{DRAFT_PATH}/images`
@@ -17,6 +21,7 @@ task :drafts_out do
   `sed -i -e 's#case drafts#// case drafts#g' ./Sources/Studio/main.swift`
 end
 
+desc "Bring drafts back into the content folder."
 task :drafts_in do
   `mv #{DRAFT_PATH}*.md #{CODE_PATH}Content/drafts/`
   `mv #{DRAFT_PATH}images/scaled/ #{CODE_PATH}Resources/drafts`
