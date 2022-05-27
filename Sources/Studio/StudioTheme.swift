@@ -205,6 +205,9 @@ extension Node where Context == HTML.BodyContext {
                   .text("\(item.date.long)")
                   ]
                 ),
+                .if(item.hasYouTubeEmbed,
+                  .span(.class("youtube-icon"))
+                ),
                 .if(item.imageCount > 1,
                   .span(.class("image-count"),
                     .text("\(item.imageCount)")
@@ -328,6 +331,7 @@ public extension Node where Context == HTML.HeadContext {
 <meta name="theme-color" content="#ffffff">
 <meta name="application-name" content="zef.studio">
 <meta name="apple-mobile-web-app-title" content="zef.studio">
+<meta name="twitter:site" content="@zefhous" />
 """.replacingOccurrences(of: "\n", with: "")
     )
   }

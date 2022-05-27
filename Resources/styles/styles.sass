@@ -515,6 +515,7 @@ table
         color: $lightTextColor
         +regularFont
 
+      .youtube-icon,
       .image-count
         position: relative
         float: right
@@ -530,11 +531,19 @@ table
           content: ""
           position: absolute
           right: -25px
-          background-image: url(/images/icons/photos.svg)
           background-repeat: no-repeat
           background-position: center
           display: inline-block
-          +svgSquare(20px)
+
+      .image-count:after
+        background-image: url(/images/icons/photos.svg)
+        +svgSquare(20px)
+
+      .youtube-icon
+        margin-top: -1px
+        &:after
+          background-image: url(/images/icons/youtube.svg)
+          +svgSquare(23px)
 
 .page article h1
   margin: 0.4em 0
