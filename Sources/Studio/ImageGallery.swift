@@ -34,7 +34,7 @@ struct ImageGallery {
     // 2: small image
     // 3: figcaption tag, optional
     // 4: caption, optional
-    guard let regex = try? NSRegularExpression(pattern: #"<figure><a href="(.+?)".*?src="(.+?)".*?(<figcaption>(.+?)<\/figcaption>)?<\/figure>"#, options: []) else { fatalError() }
+    guard let regex = try? NSRegularExpression(pattern: #"<figure[^>]*><a href="(.+?)".*?src="(.+?)".*?(<figcaption>(.+?)<\/figcaption>)?<\/figure>"#, options: []) else { fatalError() }
 
     let range = NSRange(body.startIndex..<body.endIndex, in: body)
     regex.enumerateMatches(in: body, options: [], range: range) { (match, _, _) in
