@@ -90,7 +90,7 @@ struct ImageConverter {
   func copyImageToTarget(file: File) {
     guard let target = targetPath(file: file) else { return }
     let targetPath = target.location.appendingComponent(target.filename).string
-    let _ = shell("cp \(file.path) \(targetPath)")
+    let _ = Shell.execute("cp \(file.path) \(targetPath)")
   }
 
   // spent too long trying to do this in Swift with Files, but this is way easier
@@ -138,7 +138,7 @@ struct ImageConverter {
     ]
 
     let command = arguments.joined(separator: " ")
-    let _ = shell(command)
+    let _ = Shell.execute(command)
     // do {
     //   try shellOut(to: arguments)
     //   print("Converted \(targetPath)")
@@ -148,7 +148,7 @@ struct ImageConverter {
   }
 
   static func sizeForImage(file: String) -> (width: Int, height: Int) {
-    let identifyOutput = shell("identify -format \"%wx%h\" \"\(file)\"")
+    let identifyOutput = Shell.execute("identify -format \"%wx%h\" \"\(file)\"")
     let size = identifyOutput.components(separatedBy: "x")
 
     guard let width = Int(size.first ?? ""), let height = Int(size.last ?? "") else {
@@ -160,28 +160,4 @@ struct ImageConverter {
     }
     return (width, height)
   }
-
-
-  func shell(_ command: String) -> String {
-    Self.shell(command)
-  }
-
-  // not sure why shellOut won't do this one properly
-  // so I'm just using this directly
-  static func shell(_ command: String) -> String {
-      let task = Process()
-      let pipe = Pipe()
-
-      task.standardOutput = pipe
-      task.standardError = pipe
-      task.arguments = ["-c", command]
-      task.launchPath = "/bin/zsh"
-      task.launch()
-
-      let data = pipe.fileHandleForReading.readDataToEndOfFile()
-      let output = String(data: data, encoding: .utf8)!
-
-      return output
-  }
-
 }
