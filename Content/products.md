@@ -37,6 +37,11 @@ mostly for my own reference, so I can easily find and modify them._
 - [4 Channel MOSFET Trigger Switch](https://amzn.to/3MUt3Sv)
 - [4 Channel MOSFET Trigger Switch (AliExpress)](https://s.click.aliexpress.com/e/_ALZIun)
 
+- [Nubee NUB8550H Infrared Thermometer](https://amzn.to/3OuWlXF)
+- [Etekcity Infrared Thermometer](https://amzn.to/3tUneMG)
+
+- [Anemometer](https://amzn.to/3OfPQIr)
+
 
 ## 3D Printing
 
