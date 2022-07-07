@@ -155,7 +155,7 @@ struct ImageConverter {
       // fatalError("Unexpected data encountered in sizeForImage. \(identifyOutput)")
 
       let imageName = file.components(separatedBy: "/").last ?? "unknown"
-      print("ERROR: Could not get data in sizeForImage. The image doesn't exist yet, or is incorrectly named, regenerate the project. \(imageName)")
+      print("ERROR: Could not get data in sizeForImage. The image doesn't exist yet, or is incorrectly named. Regenerate the project. \(imageName)")
       return (0,0)
     }
     return (width, height)
