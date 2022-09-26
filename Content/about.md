@@ -19,6 +19,9 @@ with Ruby on Rails.
 Some of the iOS software I've created for clients is in my [iOS Development
 Portfolio](/portfolio).
 
+I also teach a class on iOS app development at the University of Colorado's [ATLAS
+Institute](https://www.colorado.edu/atlas/)
+
 ## Contact Me
 
 I'd love to hear from you if you have any questions or thoughts you'd like to
