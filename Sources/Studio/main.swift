@@ -32,6 +32,7 @@ struct Studio: Website {
     // var appName: String
     var image: String?
     var postscript: String?
+    var excerpt: String?
   }
 
   // Update these properties to configure your website:
@@ -81,6 +82,10 @@ extension Item where Site == Studio {
 
   // returns the first two <p> tags from the content body
   var excerpt: String {
+    metadata.excerpt ?? excerptFromBody
+  }
+
+  var excerptFromBody: String {
     let body = content.body.html
     let range = NSRange(body.startIndex..<body.endIndex, in: body)
     guard let regex = try? NSRegularExpression(pattern: #"<p>.+?<\/p>"#, options: []) else { fatalError() }
