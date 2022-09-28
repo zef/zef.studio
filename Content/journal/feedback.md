@@ -27,9 +27,9 @@ and more significant: the growth and improvement of the people involved.
 
 ## Receiving Feedback
 
-People are sensitive about their work. I am. It's uncomfortable. And the
-more care and thought you put into it, the easier it is to feel defensive or
-hurt when criticized.
+People are sensitive about their work. I am. Hearing feedback about your work
+can be uncomfortable. And the more care and thought you put into it, the easier
+it is to feel defensive or hurt when criticized.
 
 Most people simply can't receive "negative" feedback in a constructive
 manner[1](#footnotes).
