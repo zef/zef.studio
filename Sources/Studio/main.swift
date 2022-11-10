@@ -12,9 +12,16 @@ struct Studio: Website {
     // case drafts
     case about
     case portfolio
+    // case printing = "3d-printing"
 
     var includeInMainNav: Bool {
-      return self != .portfolio
+      switch self {
+      // case .portfolio, .printing:
+      case .portfolio:
+        return false
+      default:
+        return true
+      }
     }
 
     var shouldInsertDate: Bool {
