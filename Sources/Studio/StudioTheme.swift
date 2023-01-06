@@ -30,7 +30,7 @@ extension Theme where Site == Studio {
             )
           ),
           .footer(for: context.site),
-          .googleAnalytics()
+          .analytics()
         )
       )
     }
@@ -298,10 +298,10 @@ extension Node where Context == HTML.BodyContext {
   //   }
   // }
 
-  static func googleAnalytics(userToken: String = "UA-118277061-2") -> Node {
+  static func analytics() -> Node {
     .raw(
       """
-      <script async src="https://www.googletagmanager.com/gtag/js?id=\(userToken)"></script><script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','\(userToken)');</script>
+      <script>if (window.location.host !== 'zef.studio') window.goatcounter = {no_onload: true}</script><script data-goatcounter="https://zef.goatcounter.com/count" async src="//gc.zgo.at/count.js"></script>
       """
     )
   }
