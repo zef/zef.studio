@@ -1,7 +1,7 @@
 import Foundation
 import Publish
 import Plot
-import SassPublishPlugin
+// import SassPublishPlugin
 
 // This type acts as the configuration for your website.
 struct Studio: Website {
@@ -165,10 +165,10 @@ try studio.publish(withTheme: .studio, additionalSteps: [
 //  .copyFiles(at: "Resources/projects", to: ""),
 //  .copyFiles(at: "Resources/journal", to: "")
 ], plugins: [
-  .compileSass(
-    sassFilePath: "Resources/styles/styles.sass",
-    cssFilePath: "styles.css"
-    ),
+  // .compileSass(
+  //   sassFilePath: "Resources/styles/styles.sass",
+  //   cssFilePath: "styles.css"
+  //   ),
   .formatImages(),
   .formatFootnotes(),
   .fancifyTitles()
