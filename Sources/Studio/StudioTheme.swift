@@ -10,7 +10,7 @@ extension Theme where Site == Studio {
     )
   }
 
-  struct StudioHTMLFactory<Site: Website>: HTMLFactory {
+  struct StudioHTMLFactory<CustomSite: Website>: HTMLFactory {
 
     func studioTemplate(location: Location, selectedSection: Studio.SectionID? = nil, context: PublishingContext<Studio>, body: () -> Node<HTML.BodyContext>) -> HTML {
 
