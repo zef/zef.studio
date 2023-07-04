@@ -43,11 +43,15 @@ The MaxxFan Deluxe models `00-07000K` and `00-07500K` also include an auto-open
 feature that is triggered by simultaneously triggering both the `Up` and `Down`
 buttons.
 
+The LED for the "HOLD" indicator is triggered with a positive voltage on
+pin 3 connected to pin 1.
+
 There are other MaxxFan models with different button panels, such as the MaxxFan
 Plus model that has a Rain Sensor button on its control panel. If you are aware
 of any wiring differences on other models, [let me know](mailto:zef@zef.studio)
 and I will update this post to reflect those.
 
+I have added some new info on [the phone jack](#phone-jack) below.
 
 ## Electronics
 
@@ -95,6 +99,49 @@ negative output, as the ground side of the circuit is switched.
 
 - [MaxxFan Deluxe with manual lid](https://amzn.to/3I68ajx)
 - [MaxxFan Deluxe with automatic lid and remote](https://amzn.to/3iicGRD)
+
+
+<h3 id="phone-jack">The Phone Jack</h3>
+
+Chris wrote in with some info about the phone jack, and here's what I've
+figured out, although have not tested any of this myself.
+
+It seems that while the ethernet jack is pretty much just an interface to the
+built-in button panel, the phone jack ties into the control chip on the circuit
+board in its own way and provides some different functionality than just
+pressing the buttons on the built-in control panel. MaxxAir uses the phone jack
+for their
+[4-key wired remote](https://www.etrailer.com/Accessories-and-Parts/Maxxair/MA00A03550K.html),
+which has some different functionality, like toggling between fan speeds with a single
+button.
+
+What's known as a "phone jack" is technically the
+[RJ11, RJ14, or RJ25 connector](https://en.wikipedia.org/wiki/Registered_jack#RJ11).
+These represent a connection with 2, 4, or 6 wires, respectively. In this case,
+the MaxxFan has 6-wire connection, so it is using the RJ25 connector. A 4-wire
+or 6-wire connection is capable of controlling the the fan as follows:
+
+| Function             | Pins        |
+| -----------          | ----------- |
+| Fan On, Cycle Speeds | 2, 4        |
+| Fan Off              | 2, 5        |
+| Vent Open            | 3, 5        |
+| Vent Closed          | 3, 4        |
+
+I'm not sure what's on pins 1 and 6, though it appears from the circuit board
+traces that pin 6 on the RJ25 is connected to pin 3 on the RJ45. It also looks
+like pin 5 on the RJ25 is pin 7 on the RJ45.
+
+Chris also had the great idea of filling the piezo buzzer with some hot glue to
+almost silence the beep sound.
+
+Finally, Chris wrote a bit about detecting the fan speed and direction. The fan
+speed is set using a [PWM signal](https://en.wikipedia.org/wiki/Pulse-width_modulation).
+I believe that the "white" wire referenced in the following is pin 5 and "black"
+is pin 2. I will reach out for more clarification, but this is what he wrote
+about that:
+
+> I finally ended up figuring out that the full voltage is on one terminal and then some variation on the other terminal. at 100% it’s 0, but it increases as the speed goes down. For example, at 100% in exhaust the black wire goes from 0v to 11.52v in a few volt increments until its at roughly 0v at 100% speed. For intake, it’s the white wire that changes. In both cases, the other wire has the full voltage. That was enough for me as I was trying to hook up a [shelly uni](https://www.shelly.cloud/en-us/products/shop/shelly-uni) and detect fan direction. with your help I was able to control the direction and with the RJ11 I can toggle between three speeds. The uni has two outputs, two binary inputs, and an ADC input. So I can detect the voltage change on one wire and use the sensor to detect 1 or > .6V on the other so I can determine state.
 
 
 1) I am using the term "ethernet" because it is known colloquially, but of
