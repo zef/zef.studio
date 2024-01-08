@@ -162,6 +162,9 @@ try studio.publish(withTheme: .studio, additionalSteps: [
     guard let folder = try? context.folder(at: "") else { return }
     ImageConverter(root: folder).convertImages()
   },
+  .step(named: "Compile CSS") { context in
+    let _ = Shell.execute("sass Resources/styles/styles.sass Output/styles.css")
+  },
 //  .copyFiles(at: "Resources/projects", to: ""),
 //  .copyFiles(at: "Resources/journal", to: "")
 ], plugins: [
