@@ -62,12 +62,12 @@ $cornerRadius: 16px
 
 =paperBg
   background-color: $background
-  background: url(/images/bg-texture.svg);
+  background: url(/images/bg-texture.svg)
   background-position: center
 
 =paperBgDark
   background-color: $darkBgColor
-  background: url(/images/bg-texture-dark.svg);
+  background: url(/images/bg-texture-dark.svg)
   background-position: center
 
 =svgSquare($size)
@@ -95,7 +95,7 @@ $cornerRadius: 16px
 
 =threeColumnContent($padding: 0.5rem)
   +col(4)
-  padding: 0 $padding/2
+  padding: 0 calc($padding/2)
 
   &:nth-child(3n - 2)
     padding-left: 0
@@ -167,7 +167,7 @@ header
   +contentContainer
 
   a.logo
-    background: url(/images/z.svg);
+    background: url(/images/z.svg)
     display: block
     transition: all 200ms ease-in-out
 
