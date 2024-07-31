@@ -7,26 +7,26 @@ image: duffel-bags-sunset.jpg
 
 # Duffel Bags
 
-Here are a some simple duffle bags I made for my family.
+Here are some simple duffel bags I made for my family.
 
 I documented the process of sewing one of these on [this Instagram story](https://www.instagram.com/stories/highlights/17922903128925067/),
 so check that out if you're interested.
 
 I don't have too many details in this post, but I'd like to write up more about
-making these in the future, and produce a more in-depth video about it.
+making these in the future, and produce an in-depth video about it.
 
 ![Duffel Bags made by Zef Houssney | Camping at Antelope Island State Park in Utah while on a road trip.](duffel-bags-sunset.jpg)
 
 I like to call this design the "Dead-Simple Duffel" because it's about as simple
 as you can get, as it's just a cylinder with a zipper and straps.
 
-I love the materials and the simplicity of the design. The fabric is a Cordura
-500 nylon, with an 8mm matte-black water-resistant zipper. I used 1" webbing for
+I love the materials and the simplicity of the design. The fabric is Cordura
+500D nylon, with an 8mm matte-black water-resistant zipper. I used 1" webbing for
 most of these, but the two-tone bag has 3/4" instead because I didn't have any
 1" in that color.
 
 - ![Grey Duffel Bags made by Zef Houssney | Two sizes of duffels in grey and charcoal that I made for my kids.](duffel-bags-grey.jpg)
-- ![Duffel Bags made by Zef Houssney | All four duffle's I've made so far together, ready for a trip!](duffel-bags-4.jpg)
+- ![Duffel Bags made by Zef Houssney | All four duffels I've made so far together, ready for a trip!](duffel-bags-4.jpg)
 
 After making the grey/charcoal bags, I added some end-straps across the cylinder end,
 which I like a lot.
