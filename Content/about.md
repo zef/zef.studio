@@ -12,10 +12,12 @@ website right now.
 
 Professionally, I have been working as a freelance software developer since
 2007. I love creating excellent and useful software, especially for iOS, which
-has been my primary focus for most of my career. I am also interested in
-electronics hardware and firmware development. Previously, I have worked
+has been my primary focus for most of my career. Previously, I have worked
 professionally as a full-stack web developer, mainly building web applications
 with Ruby on Rails.
+
+I am currently working on projects in electronics hardware and firmware
+development, and working on opportunities in manufacturing.
 
 Some of the iOS software I've created for clients is in my [iOS Development
 Portfolio](/portfolio).
