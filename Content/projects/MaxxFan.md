@@ -1,5 +1,6 @@
 ---
 date: 2022-02-25 12:00
+postscript: Updated October 25, 2025
 description: "Controlling the MaxxFan Deluxe over the Ethernet port."
 tags: Electronics
 image: MaxxFan.jpg
@@ -64,42 +65,33 @@ circuit board and control panel.
 - ![MaxxFan Circuit Board Top.](circuit-board-top.jpg)
 - ![MaxxFan Circuit Board Bottom](circuit-board-bottom.jpg)
 
-I had success using a simple NPN transistor circuit to control each button. This
-can be wired as follows, using a resistor to connect the signal wire to the
-base pin, and is detailed in the video above.
+I had success using a simple NPN transistor circuit to control each button
+individually, the details of which can [be seen below](#transistor-circuit).
 
-![Transistor as a switch](circuit-schematic.jpg)
+**However, I made a large oversight** when testing this out in the video, and
+using plain transistors wired as described to control all the buttons will not
+work because the buttons are implemented as a [key matrix](https://www.tinkeringjournal.com/post/2021/the-matrix-explained)
+with shared connections. For example, if I were to tie pin 8 to ground to
+control `up`/`down`, and pin 7 to ground for the other functions, 8 and 7 would
+now be connected and we could not individually control the signals.
 
-I used an 2N2222 transistor with a 1kΩ 1/4 watt resistor.
+This did not occur to me at the time, and I never made it past prototyping the
+simple control that I showed in the video.
 
-I haven't tested this personally, but I believe another good option would be to
-use a MOSFET Trigger Switch Board to do this. They are affordable and include
-screw terminals that would make the connection to the switched device easy.
+A great solution to this would be to use [optocouplers](https://en.wikipedia.org/wiki/Opto-isolator)
+instead of transistors, which would keep the signals electrically isolated and is a
+more pure representation of simulating the button press.
 
-These boards are designed for higher loads and can drive lights or motors with
-[PWM](https://en.wikipedia.org/wiki/Pulse-width_modulation)
-signals, but I believe they can be used as a simple switch too, as it is
-basically a more robust version of the schematic above. I believe you would wire
-one side of your switch to the negative input, and the other side to the
-negative output, as the ground side of the circuit is switched.
+In fact, someone created a great looking custom PCB that you can buy called the
+[VanTurtle Fan Controller](https://vanturtle.com/control-a-maxxfan-deluxe-with-raspberry-pi-or-esp32/)
+that does this, and can control two MaxxFan units at once. This would be pretty
+cool for automating intake from one and exhaust from the other.
 
-![Trigger Switch Board Diagrams](trigger-switch-boards.png)
+Controlling the board requires an external microcontroller like an ESP32 or Raspberry Pi,
+which communicates with the device over I2C, and has a library written in Python
+that can be used to get up and going.
 
-### Products
-
-- [MOSFET Trigger Switch (10pc)](https://amzn.to/3CCW3sR)
-- [MOSFET Trigger Switch (4pc)](https://amzn.to/3KymYsI)
-- [MOSFET Trigger Switch (4pc AliExpress)](https://s.click.aliexpress.com/e/_ABq7FZ)
-
-- [4 Channel MOSFET Trigger Switch](https://amzn.to/3MUt3Sv)
-- [4 Channel MOSFET Trigger Switch (AliExpress)](https://s.click.aliexpress.com/e/_ALZIun)
-
-- [Assorted Transistor Kit](https://amzn.to/3I0vpvb)
-- [2N2222 NPN Transistors (AliExpress)](https://s.click.aliexpress.com/e/_A6M69h)
-
-- [MaxxFan Deluxe with manual lid](https://amzn.to/3I68ajx)
-- [MaxxFan Deluxe with automatic lid and remote](https://amzn.to/3iicGRD)
-
+You could also probably use something like [this 8-channel Optocoupler board](https://amzn.to/4qpr3VM).
 
 <h3 id="phone-jack">The Phone Jack</h3>
 
@@ -119,7 +111,7 @@ What's known as a "phone jack" is technically the
 [RJ11, RJ14, or RJ25 connector](https://en.wikipedia.org/wiki/Registered_jack#RJ11).
 These represent a connection with 2, 4, or 6 wires, respectively. In this case,
 the MaxxFan has 6-wire connection, so it is using the RJ25 connector. A 4-wire
-or 6-wire connection is capable of controlling the the fan as follows:
+or 6-wire connection is capable of controlling the fan as follows:
 
 | Function             | Pins        |
 | -----------          | ----------- |
@@ -144,10 +136,47 @@ about that:
 > I finally ended up figuring out that the full voltage is on one terminal and then some variation on the other terminal. at 100% it’s 0, but it increases as the speed goes down. For example, at 100% in exhaust the black wire goes from 0v to 11.52v in a few volt increments until its at roughly 0v at 100% speed. For intake, it’s the white wire that changes. In both cases, the other wire has the full voltage. That was enough for me as I was trying to hook up a [shelly uni](https://www.shelly.cloud/en-us/products/shop/shelly-uni) and detect fan direction. with your help I was able to control the direction and with the RJ11 I can toggle between three speeds. The uni has two outputs, two binary inputs, and an ADC input. So I can detect the voltage change on one wire and use the sensor to detect 1 or > .6V on the other so I can determine state.
 
 
+<h3 id="transistor-circuit">Transistor Circuit</h3>
+
+For posterity, the transistor circuit I used can be wired as follows, using a
+resistor to connect the signal wire to the base pin, and is detailed in the
+video above.
+
+![Transistor as a switch | Transistor Circuit](circuit-schematic.jpg)
+
+I used an 2N2222 transistor with a 1kΩ 1/4 watt resistor.
+
+I haven't tested this personally, but I believe another good option would be to
+use a MOSFET Trigger Switch Board to do this. They are affordable and include
+screw terminals that would make the connection to the switched device easy.
+
+These boards are designed for higher loads and can drive lights or motors with
+[PWM](https://en.wikipedia.org/wiki/Pulse-width_modulation)
+signals, but I believe they can be used as a simple switch too, as it is
+basically a more robust version of the schematic above. I believe you would wire
+one side of your switch to the negative input, and the other side to the
+negative output, as the ground side of the circuit is switched.
+
+![Trigger Switch Board Diagrams](trigger-switch-boards.png)
+
+#### Products
+
+- [MOSFET Trigger Switch (10pc)](https://amzn.to/3CCW3sR)
+- [MOSFET Trigger Switch (4pc)](https://amzn.to/3KymYsI)
+- [MOSFET Trigger Switch (4pc AliExpress)](https://s.click.aliexpress.com/e/_ABq7FZ)
+
+- [4 Channel MOSFET Trigger Switch](https://amzn.to/3MUt3Sv)
+- [4 Channel MOSFET Trigger Switch (AliExpress)](https://s.click.aliexpress.com/e/_ALZIun)
+
+- [Assorted Transistor Kit](https://amzn.to/3I0vpvb)
+- [2N2222 NPN Transistors (AliExpress)](https://s.click.aliexpress.com/e/_A6M69h)
+
+- [MaxxFan Deluxe with manual lid](https://amzn.to/3I68ajx)
+- [MaxxFan Deluxe with automatic lid and remote](https://amzn.to/3iicGRD)
+
+
 1) I am using the term "ethernet" because it is known colloquially, but of
 course the fan does not use the ethernet protocol, but rather simply utilizes
 the cable and RJ45 connector because it's a cheap and easy way to get an
 eight-wire connection.
-
-
 
