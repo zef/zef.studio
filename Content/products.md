@@ -42,6 +42,7 @@ mostly for my own reference, so I can easily find and modify them._
 
 - [Anemometer](https://amzn.to/3OfPQIr)
 
+- [8-Channel Optocoupler Board](https://amzn.to/4qpr3VM)
 
 ## 3D Printing
 
