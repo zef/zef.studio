@@ -1,0 +1,11 @@
+layout: page
+scopes:
+  - scope:
+      path: journal
+    values:
+      collection: "journal"
+
+  - scope:
+      path: projects
+    values:
+      collection: "projects"

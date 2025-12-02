@@ -16,3 +16,8 @@ The template and design is handcoded by me, and I use the excellent
 I also used [PhotoSwipe](https://photoswipe.com) for the image gallery that is
 activated when an image is selected.
 
+
+# Bridgetown Migration
+
+[ ] Metadata like Twitter cards
+

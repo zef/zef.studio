@@ -1,0 +1,27 @@
+<% locals[:resources].to_a.each do |post| %>
+  <% image = post.data[:image] %>
+  <% img_url = image ? File.join(post.relative_url, "#{image}-1248.jpg") : nil %>
+  <% count = post.data[:image_count] || 0 %>
+
+  <li>
+    <a href="<%= post.relative_url %>">
+      <article>
+        <% if img_url %>
+          <img src="<%= img_url %>" alt="<%= post.data.title %>">
+        <% end %>
+
+        <h2><%= post.data.title %></h2>
+
+        <div>
+          <time datetime="<%= post.date.strftime("%Y-%m-%d") %>">
+            <%= post.date.strftime("%B %-d, %Y") %>
+          </time>
+
+          <% if count > 0 %>
+            <span class="image-count"><%= count %></span>
+          <% end %>
+        </div>
+      </article>
+    </a>
+  </li>
+<% end %>
