@@ -1,0 +1,27 @@
+---
+layout: collection
+---
+
+<!-- <%= render "collection_index", collection_name: "posts" %> -->
+<!-- <%= site.collections.inspect %> -->
+
+<% resources = site.collections
+  .reject { |label, collection| %w{pages data}.include?(label) }
+  .map { |name, collection| collection.resources }
+  .flatten
+  .reject { |page| page.data["layout"] == "collection" }
+  .select { |doc| doc.data["date"] }
+  .sort_by { |doc| doc.data["date"] }
+  .reverse
+%>
+
+
+<% site.collections.each do |thing| %>
+<%= thing %>
+<br/>
+<br/>
+<% end %>
+
+<%= resources.count %>
+<%#= resources.map { |i| i.data } %>
+<%= render "collection_index", resources: resources %>

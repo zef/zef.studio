@@ -1,0 +1,43 @@
+<!doctype html>
+<html lang="<%= site.locale %>">
+  <head>
+  <%= render "head" %>
+  </head>
+  <!--
+  -->
+  <body>
+    <div class="content">
+      <header class="<%= 'portfolio' if resource.collection.label == 'portfolio' %>">
+        <div class="logo-container"><a class="logo" href="/"></a></div>
+        <% if resource.collection.label == 'portfolio' %>
+          <a class="site-name" href="/"><%= site.metadata.title %></a>
+          <p class="site-name-subtitle">Senior iOS App Developer &nbsp;•&nbsp; Boulder, Colorado</p>
+        <% else %>
+          <nav>
+            <ul>
+              <li><a href="/journal">Journal</a></li>
+              <li><a href="/projects">Projects</a></li>
+              <li><a href="/about">About</a></li>
+            </ul>
+          </nav>
+        <% end %>
+      </header>
+      <div class="body">
+        <%= yield %>
+      </div>
+    </div>
+    <footer>
+      <div class="footer-content">
+        <ul>
+          <li><a class="icon twitter" href="https://twitter.com/zefhous/">@zefhous on Twitter</a></li>
+          <li><a class="icon instagram" href="https://www.instagram.com/zefhous/">zefhous on Instagram</a></li>
+          <li><a class="icon zef" href="/">Home</a></li>
+          <li><a class="icon github" href="https://github.com/zef">zef on GitHub</a></li>
+          <li><a class="icon email" href="mailto:zef@zef.studio">Email me at zef@zef.studio</a></li>
+        </ul>
+      </div>
+    </footer>
+    <script>if (window.location.host !== 'zef.studio') window.goatcounter = {no_onload: true}</script>
+    <script data-goatcounter="https://zef.goatcounter.com/count" async src="//gc.zgo.at/count.js"></script>
+  </body>
+</html>

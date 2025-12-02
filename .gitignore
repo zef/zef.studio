@@ -1,32 +1,45 @@
+# Bridgetown
+output
+.bridgetown-cache
+.bridgetown-metadata
+.routes.json
+
+# Dependency folders
+node_modules
+
+# Caches
+.sass-cache
+.npm
+.node_repl_history
+
+# Ignore bundler config.
+/.bundle
+
+# Ignore Byebug command history file.
+.byebug_history
+
+# dotenv environment variables file
+.env
+
+# Mac files
 .DS_Store
-/build
-/.build
-/.swiftpm
-/*.xcodeproj
-.publish
-/Output
 
+# Yarn
+yarn-error.log
+yarn-debug.log*
+.pnp/
+.pnp.js
+# Yarn Integrity file
+.yarn-integrity
 
-# These are the uncompressed originals:
-#
-# - large
-# - including all EXIF data
-# - maybe not fully edited, some things I'm not using yet?
-#
-# maybe I'll just ignore these from git, and only include in the output
+# Ignore all tempfiles.
+/tmp/*
+!/tmp/.keep
 
-/Content/images/
-/Content/drafts/
+# Ignore pidfiles, but keep the directory.
+/tmp/pids/*
+!/tmp/pids/
+!/tmp/pids/.keep
 
-# These are basically an image cache, don't need to commit, as they get copied to /Output
-/Resources/projects/
-/Resources/journal/
-/Resources/about/
-/Resources/drafts/
-/Resources/3d-printing/
-
-/Resources/ignored/
-/Output/drafts/
-/Output/ignored/
-/Output/**/*.sass
-/Output/**/*.scss
+publish/
+src/images/

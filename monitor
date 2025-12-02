@@ -1,5 +1,0 @@
-#!/bin/bash
-
-trap '{ echo "👋" ; exit 1; }' INT
-
-fswatch --one-event -0 . | xargs -n1 -I{} echo "Building..." && publish generate; echo ""; ./monitor;

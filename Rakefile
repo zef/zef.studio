@@ -1,38 +1,49 @@
-require 'fileutils'
+require "bridgetown"
 
-# DRAFT_PATH = "/Users/zef/Library/Mobile Documents/com~apple~CloudDocs/studio-drafts/"
-DRAFT_PATH = "/Users/zef/code/studio-drafts/"
-CODE_PATH = "/Users/zef/code/studio/"
+Bridgetown.load_tasks
 
+# Run rake without specifying any command to execute a deploy build by default.
+task default: :deploy
 
-task :default => [:sync] do
+#
+# Standard set of tasks, which you can customize if you wish:
+#
+desc "Build the Bridgetown site for deployment"
+task :deploy => [:clean, "frontend:build"] do
+  Bridgetown::Commands::Build.start
 end
 
-task :sync do
-  `rsync -a Output/ ~/code/zef-studio-output`
+desc "Build the site in a test environment"
+task :test do
+  ENV["BRIDGETOWN_ENV"] = "test"
+  Bridgetown::Commands::Build.start
 end
 
-desc "Move drafts out of the content folder."
-task :drafts_out do
-  `mv #{CODE_PATH}/Content/drafts/*.md #{DRAFT_PATH}`
-  `mv #{CODE_PATH}/Content/images/drafts/ #{DRAFT_PATH}/images`
-  `mv #{CODE_PATH}/Resources/drafts/ #{DRAFT_PATH}/images/scaled`
-
-  `sed -i -e 's#case drafts#// case drafts#g' ./Sources/Studio/main.swift`
+desc "Runs the clean command"
+task :clean do
+  Bridgetown::Commands::Clean.start
 end
 
-desc "Bring drafts back into the content folder."
-task :drafts_in do
-  `mv #{DRAFT_PATH}*.md #{CODE_PATH}Content/drafts/`
-  `mv #{DRAFT_PATH}images/scaled/ #{CODE_PATH}Resources/drafts`
-  `mv #{DRAFT_PATH}images/ #{CODE_PATH}Content/images/drafts`
+namespace :frontend do
+  desc "Build the frontend with esbuild for deployment"
+  task :build do
+    sh "npm run esbuild"
+  end
 
-  `sed -i -e 's#// case drafts#case drafts#g' ./Sources/Studio/main.swift`
+  desc "Watch the frontend with esbuild during development"
+  task :dev do
+    sh "npm run esbuild-dev"
+  rescue Interrupt
+  end
 end
 
-
-desc "List Drafts"
-task :drafts do
-  puts Dir[ "#{DRAFT_PATH}*.md" ]
-end
-
+#
+# Add your own Rake tasks here! You can use `environment` as a prerequisite
+# in order to write automations or other commands requiring a loaded site.
+#
+# task :my_task => :environment do
+#   puts site.root_dir
+#   automation do
+#     say_status :rake, "I'm a Rake tast =) #{site.config.url}"
+#   end
+# end

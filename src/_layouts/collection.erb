@@ -1,0 +1,11 @@
+---
+layout: default
+---
+
+<% unless title.nil? %>
+<h1><%= title %></h1>    
+<% end %>
+
+<ul class="article-list">
+    <%= yield %>
+</ul>

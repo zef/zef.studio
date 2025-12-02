@@ -1,0 +1,33 @@
+@use "grid-variables"
+
+// the other files are downloaded from http://sassflexboxgrid.com/
+// but this one is custom, since they didn't have any mixin helpers.
+
+=tiny
+  @media #{grid-variables.$breakpoint-xs-only}
+    @content
+
+=smallOnly
+  @media #{grid-variables.$breakpoint-sm-only}
+    @content
+
+=small
+  @media #{grid-variables.$breakpoint-sm-up}
+    @content
+
+=mediumOnly
+  @media #{grid-variables.$breakpoint-md-only}
+    @content
+
+=medium
+  @media #{grid-variables.$breakpoint-md-up}
+    @content
+
+=largeOnly
+  @media #{grid-variables.$breakpoint-lg-only}
+    @content
+
+=large
+  @media #{grid-variables.$breakpoint-lg-up}
+    @content
+
