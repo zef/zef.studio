@@ -41,8 +41,8 @@ piece to match. But then, we had the idea to use some
 strips I had to add some color and interest between the layers. I decided to
 glue this up as a solid block, so I ended up not needing the second piece.
 
-- ![Tracing out the shape from my template |&](matching-pattern.jpg)
-- ![Wooden block made of layers of pine and padauk ready to go. | Padauk was used for the accent wood.](wood-block.jpg)
+- ![Tracing out the shape from my template](matching-pattern.jpg "&")
+- ![Wooden block made of layers of pine and padauk ready to go.](wood-block.jpg "Padauk was used for the accent wood.")
 
 After gluing up the block of wood, I traced out the shape, cut it out on the
 band saw, and sanded everything smooth. I used my drill press with a 1.75"
@@ -50,8 +50,8 @@ forstner bit to drill out the wheel wells, and then followed up with a 3/8" bit
 to create the hole for the axles to fit inside. Then I smoothed and shaped the
 transition between the wheel wells and the body with files and sand paper.
 
-- ![Clamping oak dowels onto some pine disks to make axles. |&](clamping-axles.jpg)
-- ![Ready to assemble the wheels. | Axle caps shaped and ready to assemble.](wheels-ready.jpg)
+- ![Clamping oak dowels onto some pine disks to make axles.](clamping-axles.jpg "&")
+- ![Ready to assemble the wheels.](wheels-ready.jpg "Axle caps shaped and ready to assemble.")
 
 I used some 3/8" oak dowel for the axles, and glued on some pine blanks I cut
 out with a smaller hole saw to cap them off. It was easiest to round off and

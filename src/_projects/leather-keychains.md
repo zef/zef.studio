@@ -28,7 +28,7 @@ I cut out some strips of leather by hand, but wanting to make a lot of them
 I later went over to a friend's place and we cut out a bunch with his industrial
 laser cutter. I'll share details about that in a separate post.
 
-![Keychains made from Leather | Hand-cut strips on the left, and some finished laser-cut keychains.](leather-keychains.jpg)
+![Keychains made from Leather](leather-keychains.jpg "Hand-cut strips on the left, and some finished laser-cut keychains.")
 
 The design is simple. Two small holes are punched in a squared end of the
 leather strip. These are fastened around a key ring by the screw-end of a button
@@ -45,8 +45,8 @@ It's important that the slit be made in the opposite direction of the tension
 that will be primarily applied to it, so it will not come easily undone when
 the leather ring is being pulled.
 
-- ![Hand-cut keychain blanks, laid out before oil treatment and assembly. |&](hand-cut-keychains.jpg)
-- ![Testing out neatsfoot oil and dark dye. |&](flat-keychain-blanks.jpg)
+- ![Hand-cut keychain blanks, laid out before oil treatment and assembly.](hand-cut-keychains.jpg "&")
+- ![Testing out neatsfoot oil and dark dye.](flat-keychain-blanks.jpg "&")
 
 
 ## Materials

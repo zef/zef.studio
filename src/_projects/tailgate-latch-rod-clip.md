@@ -15,8 +15,8 @@ happens I have to remove a couple screws and reconnect the rod. It's easy, but
 very inconvenient. Sometimes it would stay connected for a while, sometimes it
 would come out right away.
 
-- ![Broken tailgate latch rod clip. | The broken red clip.](broken-clip.jpg)
-- ![Toyota tailgate latch rod clip. | A closer look at the good clip.](intact-clip.jpg)
+- ![Broken tailgate latch rod clip.](broken-clip.jpg "The broken red clip.")
+- ![Toyota tailgate latch rod clip.](intact-clip.jpg "A closer look at the good clip.")
 
 As a truck owner, friends and family often borrow my truck. When someone needed
 to borrow it recently, I went to clear some snow from the bed and the tailgate
@@ -69,9 +69,9 @@ is tight enough to hold the rod in, I think it will actually be a bit tougher
 than the original part. Time will tell, and if it does break, then I will have
 learned a lesson, and I'll have to use up another few cents of plastic filament.
 
-- ![spinning latch clip | The 3d design](rotating-clip.gif)
-- ![3d printed tailgate latch rod clip. | I didn't realize how blurry this shot was before I installed the part. We regret the error.](3d-printed-clip.jpg)
-- ![My 3d printed tailgate latch rod clip installed. |&](printed-clip-installed.jpg)
+- ![spinning latch clip](rotating-clip.gif "The 3d design")
+- ![3d printed tailgate latch rod clip.](3d-printed-clip.jpg "I didn't realize how blurry this shot was before I installed the part. We regret the error.")
+- ![My 3d printed tailgate latch rod clip installed.](printed-clip-installed.jpg "&")
 
 The immediacy for a project like this is really unparalleled with 3d printing.
 Despite having to model the part myself because I couldn't find an existing
