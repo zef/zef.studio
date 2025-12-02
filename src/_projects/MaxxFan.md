@@ -59,8 +59,8 @@ I have added some new info on [the phone jack](#phone-jack) below.
 To determine the wiring of the connector, I took apart the fan and inspected the
 circuit board and control panel.
 
-- ![Controlling a MaxxFan with an ESP8266 microcontroller | Controlling the fan with a microcontroller.](MaxxFan.jpg)
-- ![MaxxFan Control Panel, lit from back | The traces in the control panel are visible when backlit.](control-panel-backlit.jpg)
+- ![Controlling a MaxxFan with an ESP8266 microcontroller](MaxxFan.jpg "Controlling the fan with a microcontroller.")
+- ![MaxxFan Control Panel, lit from back](control-panel-backlit.jpg "The traces in the control panel are visible when backlit.")
 
 - ![MaxxFan Circuit Board Top.](circuit-board-top.jpg)
 - ![MaxxFan Circuit Board Bottom](circuit-board-bottom.jpg)
@@ -142,7 +142,7 @@ For posterity, the transistor circuit I used can be wired as follows, using a
 resistor to connect the signal wire to the base pin, and is detailed in the
 video above.
 
-![Transistor as a switch | Transistor Circuit](circuit-schematic.jpg)
+![Transistor as a switch](circuit-schematic.jpg "Transistor Circuit")
 
 I used an 2N2222 transistor with a 1kΩ 1/4 watt resistor.
 

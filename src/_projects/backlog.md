@@ -70,7 +70,7 @@ to post about individually.
 - wooden swords
 
 - ![Wood Sword](wood-sword/wood-sword.jpg)
-- ![Wood Sword | Every Tool's a Hammer](wood-sword/hammer-sword.jpg)
+- ![Wood Sword](wood-sword/hammer-sword.jpg "Every Tool's a Hammer")
 
 - wooden rifles
 
@@ -132,7 +132,7 @@ to post about individually.
 - drill press stand from bedframe
 
 - ![Drill Press Stand](drill-press-stand/drill-press-stand.jpg)
-- ![Drill Press Stand | The old stand.](drill-press-stand/old-stand.jpg)
+- ![Drill Press Stand](drill-press-stand/old-stand.jpg "The old stand.")
 - ![Drill Press Stand](drill-press-stand/drawer-test-fit.jpg)
 
 - forge
@@ -142,7 +142,7 @@ to post about individually.
 - ![Forge](forge/mudding.jpg)
 
 - ![Forge](forge/forge-on.jpg)
-- ![Forge | New anvil!](forge/new-anvil.jpg)
+- ![Forge with Anvil](forge/new-anvil.jpg "New anvil!")
 
 - tongs
 - lightsaber

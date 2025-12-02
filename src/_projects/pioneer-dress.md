@@ -37,7 +37,7 @@ a size, and copying the templates onto some tracing paper. At some point I took
 over the project, and tried to keep my daughter involved as much as possible.
 Hopefully for her next dress she'll be able to do a lot more on her own.
 
-![Tracing out the patterns onto the fabric and cutting them out with a rotary cutter. |&](tracing-patterns.jpg)
+![Tracing out the patterns onto the fabric and cutting them out with a rotary cutter.](tracing-patterns.jpg "&")
 
 I was pretty nervous about sewing the curves for the shoulders, and was
 intimidated by gathering and attaching the skirt to the bodice. I did some
@@ -45,11 +45,11 @@ research on YouTube, was careful, and it went surprisingly well. I did have a
 wrinkle I didn't like in one of the shoulder curves, but I pulled out some
 stitches and got it fixed without too much trouble.
 
-- ![A sleeve ready to sew. I like using these clips where possible. |&](sleeve.jpg)
-- ![Sleeves and bodice ready to be lined up and attached. |&](parts-laid-out.jpg)
-- ![The bodice attached to the gathered skirt. |&](gather.jpg)
+- ![A sleeve ready to sew. I like using these clips where possible.](sleeve.jpg "&")
+- ![Sleeves and bodice ready to be lined up and attached.](parts-laid-out.jpg "&")
+- ![The bodice attached to the gathered skirt.](gather.jpg "&")
 
-- ![Zipper pinned onto dress | Pinning the zipper.](pinning-zipper.jpg)
+- ![Zipper pinned onto dress](pinning-zipper.jpg "Pinning the zipper.")
 - ![At the sewing machine](at-sewing-machine.jpg)
 
 - ![Test fitting the bodice with sleeves attached.](bodice-with-sleeves.jpg)
@@ -87,7 +87,7 @@ stiffness. I sewed the cuffs, but did not end up attaching them. She loves
 wearing the apron and bonnet. The collar is meant to sit on top of the dress,
 but my daughter doesn't wear that much.
 
-![.trailing A stay stitch around the neckline. |&](neck-stitch.jpg)
+![.trailing A stay stitch around the neckline.](neck-stitch.jpg "&")
 One thing I wish I had done differently is to add a hem to the neck line. The
 pattern called for a stay stitch around the neck, and that's meant to be covered
 by the collar overlaid around the neck. But even if it were always covered, it

@@ -30,7 +30,7 @@ You can
 and the STL is
 [available on printables](https://www.printables.com/model/58872-anemometer-pegboard-mount).
 
-![Anemometer mount in Fusion 360, showing the parameters. | The Fusion 360 model, showing the parameters.](anemometer-parametric.png)
+![Anemometer mount in Fusion 360, showing the parameters.](anemometer-parametric.png "The Fusion 360 model, showing the parameters.")
 
 There are a couple design considerations related to printability.
 

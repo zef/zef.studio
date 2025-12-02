@@ -22,7 +22,7 @@ keys — and not all my pants have the pocket.
 I wanted a better and more consistent way to store and hold my AirPods,
 regardless of what pants I am wearing, and I decided to put them on my belt.
 
-![AirPods case on belt.| Trying on the finished case.](new-on-belt.jpg)
+![AirPods case on belt.](new-on-belt.jpg "Trying on the finished case.")
 
 I thought this project would be a nice place to try an alternating color
 stitching pattern. This kind of thing is enabled by the nature of the saddle
@@ -44,8 +44,8 @@ maintains its shape and can then be cut down to size and stitched.
 
 I don't have pictures of the clamp setup, but here it is after drying.
 
-- ![Wet Forming AirPods Case | Dried case after wet-forming.](wet-forming-airpods-case.jpg)
-- ![Wet Formed Cut Out | The rough-cut front piece with some uncut leather that will make up the back.](rough-cut-front.jpg)
+- ![Wet Forming AirPods Case](wet-forming-airpods-case.jpg "Dried case after wet-forming.")
+- ![Wet Formed Cut Out](rough-cut-front.jpg "The rough-cut front piece with some uncut leather that will make up the back.")
 
 I cut out an access hole at the bottom of the case, which allows me to push the
 case up to remove them from the holster. I roughly cut out the entire top piece,
@@ -56,21 +56,21 @@ It was then time to cut out a back piece and start punching holes for stitching.
 I selected a slightly thicker and tougher cut of leather from the same side to form
 the back.
 
-- ![I cut out a back piece a bit oversized, excess to be cut later. Here it is folded back, with the back side out of view. |&](back-piece.jpg)
-- ![I used some rubber cement adhesive to join the top to the backing piece. Once joined with the glue, I transferred the stitching holes from the front piece to the back.|&](glue.jpg)
+- ![I cut out a back piece a bit oversized, excess to be cut later. Here it is folded back, with the back side out of view.](back-piece.jpg "&")
+- ![I used some rubber cement adhesive to join the top to the backing piece. Once joined with the glue, I transferred the stitching holes from the front piece to the back.](glue.jpg "&")
 
 I then beveled and burnished the edges that I would not later have access to,
 and treated the leather with neatsfoot oil, which nourishes, softens, and darkens
 the leather.
 
-![My leather case ready to stitch | Ready to stitch!](ready-to-stitch.jpg)
+![My leather case ready to stitch](ready-to-stitch.jpg "Ready to stitch!")
 
-- ![Spools of red and blue thread | I used a simple squareknot to join the two thread colors.](red+blue.jpg)
-- ![Setting up the first stitch |&](first-stitch.jpg)
+- ![Spools of red and blue thread](red+blue.jpg "I used a simple squareknot to join the two thread colors.")
+- ![Setting up the first stitch](first-stitch.jpg "&")
 
-- ![The beginning of my stitch | Laying out the overlapping colors on my first couple stitches.](overlapping-colors.jpg)
-- ![First overlapping stitches, pulled tight. |&](overlapping-stitches.jpg)
-- ![Stitching the back of my AirPods case | I love the grain in the back of the leather.](stitching-the-back.jpg)
+- ![The beginning of my stitch](overlapping-colors.jpg "Laying out the overlapping colors on my first couple stitches.")
+- ![First overlapping stitches, pulled tight.](overlapping-stitches.jpg "&")
+- ![Stitching the back of my AirPods case](stitching-the-back.jpg "I love the grain in the back of the leather.")
 
 After stitching the top two pieces of leather together on one side, I folded
 down the back flap and stitched through all three layers across the bottom of
