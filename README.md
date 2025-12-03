@@ -21,3 +21,8 @@ activated when an image is selected.
 
 [ ] Metadata like Twitter cards
 
+
+## Customizations
+
+- `title` is inferred and set by the first header in markdown files.
+- `short_title` can be added to the Front Matter to be used for the post preview on the index pages.

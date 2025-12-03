@@ -2,7 +2,7 @@
 layout: default
 ---
 
-<% unless title.nil? %>
+<% unless title.nil? || title == "Index" %>
 <h1><%= title %></h1>    
 <% end %>
 

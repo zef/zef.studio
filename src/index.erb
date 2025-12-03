@@ -6,8 +6,6 @@ layout: collection
   .reject { |label, collection| %w{pages data}.include?(label) }
   .map { |name, collection| collection.resources }
   .flatten
-  .reject { |page| page.data["layout"] == "collection" }
-  .select { |doc| doc.data["date"] }
   .sort_by { |doc| doc.data["date"] }
   .reverse
 %>
