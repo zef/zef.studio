@@ -4,7 +4,7 @@ import build from "./config/esbuild.defaults.js"
 //
 // ```
 // import { copy } from 'esbuild-plugin-copy'
-// 
+//
 // const esbuildOptions = {
 //   plugins: [
 //     copy({
@@ -36,6 +36,9 @@ import build from "./config/esbuild.defaults.js"
 const esbuildOptions = {
   entryPoints: ["./frontend/javascript/index.js", "./frontend/styles/index.sass"],
   plugins: [ ],
+  // tried to use this to get CSS from the photoswipe package, but no luck.
+  // for now I'm importing the photoswipe CSS in my sass
+  // loader: { '.css': 'css' },
   globOptions: {
     excludeFilter: /\.(dsd|lit)\.css$/
   }

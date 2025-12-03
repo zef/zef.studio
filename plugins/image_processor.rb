@@ -1,4 +1,5 @@
 require "image_processing/vips"
+require "ruby-vips"
 
 class ImageProcessor < SiteBuilder
     def build
@@ -106,13 +107,13 @@ class ImageProcessor < SiteBuilder
         # puts resource.methods
         # puts "processing image: #{src}"
         
-        small_src = convert_image(source_path, 1248)
-        large_src = convert_image(source_path, 3000)
+        small_src, _, _ = convert_image(source_path, 1248)
+        large_src, width, height = convert_image(source_path, 3000)
         
         # Render using ERB template
         template = ERB.new(<<~ERB.strip, trim_mode: "-")
         <figure<%= css_class ? %( class="\#{css_class}") : "" %>>
-            <a href="<%= large_src %>">
+            <a href="<%= large_src %>" data-pswp-width="<%= width %>" data-pswp-height="<%= height %>">
             <img src="<%= small_src %>" alt="<%= alt %>">
             </a>
             <%- if caption -%>
@@ -141,17 +142,16 @@ class ImageProcessor < SiteBuilder
             Bridgetown.logger.debug "Resized image exists: #{destination}"
         end
 
-        # relative = path.sub(/^_/, "").sub(/^src\//, "")
-        # puts("Registering file: #{full_path}, was #{path}, relative: #{relative}")
+        image = Vips::Image.new_from_file(destination)
 
-    #   unless site.static_files.any? { |sf| sf.relative_path == "/#{File.basename(path)}" }
-        # site.static_files << Bridgetown::StaticFile.new(
-        # site,
-        # source,           
-        # File.dirname(destination),
-        # File.basename(destination)
-        # )
-    #   end
-        return relative_distination
+        #   unless site.static_files.any? { |sf| sf.relative_path == relative_distination }
+        #     site.static_files << Bridgetown::StaticFile.new(
+        #       site,
+        #       site.in_source_dir,
+        #       File.dirname(relative_distination),
+        #       File.basename(destination)
+        #     )
+        #   end
+        return relative_distination, image.width, image.height
     end
 end

@@ -870,8 +870,12 @@ ul.tags
     +grid-breakpoints.small
       width: $icon-width + 50
 
+@import "photoswipe/style.css"
+@import "photoswipe-dynamic-caption-plugin/photoswipe-dynamic-caption-plugin.css"
 
+.pswp__counter
+  font-size: 18px
 
-
-@include meta.load-css('photoswipe/main')
-
+.pswp__dynamic-caption.pswp__dynamic-caption--below
+  max-width: 10000px
+  padding: 10px

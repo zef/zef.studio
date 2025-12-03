@@ -1,6 +1,7 @@
 <meta charset="UTF-8"/>
 <title><%= data.title %> | <%= site.metadata.title %></title>
 <link rel="stylesheet" href="<%= asset_path :css %>" type="text/css"/>
+<script type="module" src="<%= asset_path :js %>"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover"/>
 <link rel="apple-touch-icon" sizes="57x57" href="/images/favicons/apple-icon-57x57.png">
 <link rel="apple-touch-icon" sizes="60x60" href="/images/favicons/apple-icon-60x60.png">
@@ -27,7 +28,3 @@
 <!-- TODO: Check description content, add for socials. -->
 <meta name="description" content="<%= data.description %>" />
 <%= live_reload_dev_js %>
-<!--
-<script src="/javascript/photoswipe.min.js"></script>
-<script src="/javascript/photoswipe-ui-default.min.js"></script>
--->
