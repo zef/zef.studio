@@ -50,17 +50,17 @@ class ImageProcessor < SiteBuilder
     def parse_img_attributes(attr_string, resource)
         attrs = {}
         
-        if attr_string =~ /src=["']([^"']+)["']/
-            attrs[:src] = $1
+        if attr_string =~ /src=(["'])(.*?)\1/
+            attrs[:src] = $2
         end
         
-        if attr_string =~ /alt=["']([^"']+)["']/
-            attrs[:alt] = $1
+        if attr_string =~ /alt=(["'])(.*?)\1/
+            attrs[:alt] = $2
         end
         
         # Parse title attribute to use as caption
-        if attr_string =~ /title=["']([^"']+)["']/
-            title_text = $1
+        if attr_string =~ /title=(["'])(.*?)\1/
+            title_text = $2
             if title_text == "&amp;"
                 attrs[:caption] = attrs[:alt]
             else
@@ -68,10 +68,10 @@ class ImageProcessor < SiteBuilder
             end
         end
         
-        if attr_string =~ /class=["']([^"']+)["']/
-            attrs[:class] = $1
+        if attr_string =~ /class=(["'])(.*?)\1/
+            attrs[:class] = $2
         end
-        
+
         attrs
     end
 
