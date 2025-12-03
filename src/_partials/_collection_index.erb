@@ -1,6 +1,6 @@
 <% locals[:resources].to_a.each do |post| %>
   <% image = post.data[:image] %>
-  <% img_url = image ? File.join(post.relative_url, "#{image}-1248.jpg") : nil %>
+  <% img_url = image ? File.join(post.relative_url, image.sub(".jpg", "-1248.jpg")) : nil %>
   <% count = post.data[:image_count] || 0 %>
 
   <li>
@@ -8,6 +8,16 @@
       <article>
         <% if img_url %>
           <img src="<%= img_url %>" alt="<%= post.data.title %>">
+        <% else %>
+          <div class="excerpt">
+            <div>
+              <% if excerpt = post.data.excerpt %>
+                <%= excerpt.html_safe %>
+              <% else %>
+                <%= post.summary %>
+              <% end %>
+            </div>
+          </div>
         <% end %>
 
         <h2><%= post.data.title %></h2>
@@ -19,6 +29,10 @@
 
           <% if count > 0 %>
             <span class="image-count"><%= count %></span>
+          <% end %>
+
+          <% if post.content.include?("youtube.com/embed") %>
+            <span class="youtube-icon"></span>
           <% end %>
         </div>
       </article>

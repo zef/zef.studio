@@ -2,9 +2,6 @@
 layout: collection
 ---
 
-<!-- <%= render "collection_index", collection_name: "posts" %> -->
-<!-- <%= site.collections.inspect %> -->
-
 <% resources = site.collections
   .reject { |label, collection| %w{pages data}.include?(label) }
   .map { |name, collection| collection.resources }
@@ -15,13 +12,4 @@ layout: collection
   .reverse
 %>
 
-
-<% site.collections.each do |thing| %>
-<%= thing %>
-<br/>
-<br/>
-<% end %>
-
-<%= resources.count %>
-<%#= resources.map { |i| i.data } %>
 <%= render "collection_index", resources: resources %>
