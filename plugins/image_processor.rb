@@ -1,0 +1,157 @@
+require "image_processing/vips"
+
+class ImageProcessor < SiteBuilder
+    def build
+        hook :resources, :post_render do |resource|
+
+        # puts "-"
+        # puts resource.path
+        # puts resource.layout
+        next unless resource.data.layout == "page"
+        next unless resource.output_ext == ".html"
+        next unless resource.content
+
+        # Process images and wrap in figure tags
+        resource.output = process_images(resource.output, resource)
+        
+        # Count images after processing
+        image_count = resource.output.scan(/<figure[^>]*>.*?<\/figure>/m).length
+        resource.data["image_count"] = image_count if image_count > 0
+
+        ## TODO make gallery for pswp
+        end
+    end
+
+    private
+
+    def process_images(content, resource)
+        # convert post-based image defined in front matter, because they are not always included in the content
+        if image = resource.data["image"]
+            # puts "res image: " + image
+            source_path = image_disk_source_path(image, resource)
+            convert_image(source_path, 1248)
+            convert_image(source_path, 3000)
+        end
+
+        # Match img tags that aren't already wrapped in figures
+        content.gsub(/<img\s+([^>]*?)>/) do |match|
+            attributes = parse_img_attributes($1, resource)
+            
+            # Skip if already in a figure (shouldn't happen but safety check)
+            next match if content[0...content.index(match)].rindex("<figure") &&
+                            content[0...content.index(match)].rindex("<figure") >
+                            (content[0...content.index(match)].rindex("</figure") || -1)
+
+            build_figure(attributes, resource)
+        end
+    end
+
+
+    def parse_img_attributes(attr_string, resource)
+        attrs = {}
+        
+        if attr_string =~ /src=["']([^"']+)["']/
+            attrs[:src] = $1
+        end
+        
+        if attr_string =~ /alt=["']([^"']+)["']/
+            attrs[:alt] = $1
+        end
+        
+        # Parse title attribute to use as caption
+        if attr_string =~ /title=["']([^"']+)["']/
+            title_text = $1
+            if title_text == "&amp;"
+                attrs[:caption] = attrs[:alt]
+            else
+                attrs[:caption] = title_text
+            end
+        end
+        
+        if attr_string =~ /class=["']([^"']+)["']/
+            attrs[:class] = $1
+        end
+        
+        attrs
+    end
+
+    def image_disk_source_path(src, resource)
+        source_path = site.in_source_dir(src)
+
+        # look for image that is in the same folder as the resource
+        unless src.start_with?("/")
+            src = File.join(resource.relative_url, src)
+            source_path = site.in_source_dir(src.sub("/", "/_"))
+        end
+
+        if !File.exist?(source_path)
+            # fallback to jpeg. we want to allow for .jpeg files, but make .jpg in the markdown always work
+            source_path.sub!(/jpg$/, "jpeg")
+            if !File.exist?(source_path)
+                Bridgetown.logger.error "ImageProcessor:", "Source image not found: #{source_path}"
+                return ""
+            end
+        end
+
+        return source_path
+    end
+
+    def build_figure(attrs, resource)
+        src = attrs[:src]
+        alt = attrs[:alt] || ""
+        caption = attrs[:caption]
+        css_class = attrs[:class]
+
+        source_path = image_disk_source_path(src, resource)
+        # puts resource.methods
+        # puts "processing image: #{src}"
+        
+        small_src = convert_image(source_path, 1248)
+        large_src = convert_image(source_path, 3000)
+        
+        # Render using ERB template
+        template = ERB.new(<<~ERB.strip, trim_mode: "-")
+        <figure<%= css_class ? %( class="\#{css_class}") : "" %>>
+            <a href="<%= large_src %>">
+            <img src="<%= small_src %>" alt="<%= alt %>">
+            </a>
+            <%- if caption -%>
+            <figcaption><%= caption %></figcaption>
+            <%- end -%>
+        </figure>
+        ERB
+        
+        template.result(binding)
+    end
+
+    def convert_image(source, width)
+        src_dir = Pathname.new(site.root_dir).join("src")
+        destination = source.sub("src/_", "src/").sub(/jpeg$/, "jpg").sub(/(\.\w+)$/, "-#{width}\\1")
+        relative_distination = Pathname.new(destination).relative_path_from(src_dir).to_s.prepend("/")
+        
+        # puts("converting image: #{source} to #{destination}, relative: #{relative_distination}")
+        # puts("destination dir: #{File.relative_path(destination)}")
+
+        if !File.exist?(destination)
+            Bridgetown.logger.info "Resizing image: #{source} to #{width}×#{width}"
+            FileUtils.mkdir_p(File.dirname(destination))
+            pipeline = ImageProcessing::Vips.source(source).resize_to_limit(width, width)
+            pipeline.call(destination: destination.to_s)
+        else
+            Bridgetown.logger.debug "Resized image exists: #{destination}"
+        end
+
+        # relative = path.sub(/^_/, "").sub(/^src\//, "")
+        # puts("Registering file: #{full_path}, was #{path}, relative: #{relative}")
+
+    #   unless site.static_files.any? { |sf| sf.relative_path == "/#{File.basename(path)}" }
+        # site.static_files << Bridgetown::StaticFile.new(
+        # site,
+        # source,           
+        # File.dirname(destination),
+        # File.basename(destination)
+        # )
+    #   end
+        return relative_distination
+    end
+end

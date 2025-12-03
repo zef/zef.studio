@@ -1,8 +1,8 @@
 class InferTitle < SiteBuilder
-    VERBOSE = true
+    VERBOSE = false
 
     def build
-        puts " InferTitle Plugin: Inferring titles from first markdown header"
+        Bridgetown.logger.info " InferTitle:", "Generating titles from first markdown header"
 
         hook :resources, :pre_render do |resource|
             first_line = resource.content.lines.first
@@ -13,7 +13,7 @@ class InferTitle < SiteBuilder
             end
 
             if VERBOSE && old_title != resource.data["title"]
-                puts "#{old_title} -> #{resource.data["title"]}"
+                Bridgetown.logger.info "#{old_title} -> #{resource.data["title"]}"
             end
         end
     end

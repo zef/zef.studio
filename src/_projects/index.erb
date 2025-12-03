@@ -4,4 +4,4 @@ layout: collection
 ---
 
 <% collection = site.collections[title.downcase] %>
-<%= render "collection_index", resources: collection.resources %>
+<%= render "collection_index", resources: collection.resources.reverse %>
