@@ -20,6 +20,8 @@
     "sass": "^1.94.2"
   },
   "dependencies": {
-    "from": "^0.1.7"
+    "from": "^0.1.7",
+    "photoswipe": "^5.4.4",
+    "photoswipe-dynamic-caption-plugin": "^1.2.7"
   }
 }
