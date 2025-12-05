@@ -51,35 +51,28 @@ the leather ring is being pulled.
 
 ## Materials
 
-- [Neatsfoot Oil](https://amzn.to/3sZp4ff)
-
-WUTA is a reputable seller of leather tools and accessories that I have had a
+[Neatsfoot Oil](https://amzn.to/3sZp4ff)
+: WUTA is a reputable seller of leather tools and accessories that I have had a
 pretty good experience with. You can find cheaper prices on some commoditized
 items, but I find WUTA to be a pretty good choice in general.
 
-- [WUTA Button Studs](https://s.click.aliexpress.com/e/_A8T4nD)
-<div class="detail">
-A selection of colors and sizes from a reputable shop. Good price, but not the cheapest on AliExpress.
-</div>
+[WUTA Button Studs](https://s.click.aliexpress.com/e/_A8T4nD)
+: A selection of colors and sizes from a reputable shop. Good price, but not the cheapest on AliExpress.
 
-- [WUTA brass keyrings (50pc AliExpress)](https://s.click.aliexpress.com/e/_97Gu9l)
-<div class="detail">
-Nice keyrings for about $0.25 per item at the time of writing. Five sizes
+[WUTA brass keyrings (50pc AliExpress)](https://s.click.aliexpress.com/e/_97Gu9l)
+: Nice keyrings for about $0.25 per item at the time of writing. Five sizes
 available; I used 21mm rings.
-</div>
 
-- [Generic Brass Button Studs](https://s.click.aliexpress.com/e/_AFmbcn)
-<div class="detail">
-A cheaper source, but fewer options. 10 for $2.59, 8mm size.
-</div>
+[Generic Brass Button Studs](https://s.click.aliexpress.com/e/_AFmbcn)
+: A cheaper source, but fewer options. 10 for $2.59, 8mm size.
 
-- [Amazon search for Brass Keyring](https://amzn.to/3txFsUM)
-<div class="detail">
-No good options of the style I wanted at this time on Amazon, but there are some
+[Amazon search for Brass Keyring](https://amzn.to/3txFsUM)
+: No good options of the style I wanted at this time on Amazon, but there are some
 flat styles and other options.
-</div>
 
 
-1) Custom tools to do this in one step [do exist](https://amzn.to/3NcdfKD),
-but I punched a hole and used a knife to cut the slit. This works well, but I
-found it harder than expected to do perfectly. It takes some skill and practice to get it perfectly centered, stright, sized nicely, and not cut too far or nick the opposite side of the hole.
+1) Custom tools to do this in one step [do exist](https://amzn.to/3NcdfKD), but
+I punched a hole and used a knife to cut the slit. This works well, but I found
+it harder than expected to do perfectly. It takes some skill and practice to get
+it perfectly centered, stright, sized nicely, and not cut too far or nick the
+opposite side of the hole.

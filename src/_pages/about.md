@@ -2,7 +2,8 @@
 title: About
 ---
 
-<!-- ![Zef Houssney](images/zef-houssney.jpg){:.rounded .trailing} -->
+# About
+![Zef Houssney](/images/zef-houssney.jpg){:.rounded .trailing}
 
 My name is Zef Houssney. I live in Boulder, Colorado with my wife and four
 children.
