@@ -655,6 +655,7 @@ article
 
     dd
       +italic
+      font-size: 0.9em
       margin: 0.6em 1em 1em
   
 
@@ -739,10 +740,7 @@ article
   ul.tags
     // +col-offset(3)
 
-  a[href="#footnotes"]
-    @extend sup
-
-  ol#footnotes
+  .footnotes ol
     +mixins.clearbefore
     margin-top: 3em
     border-top: 1px solid $lightTextColor

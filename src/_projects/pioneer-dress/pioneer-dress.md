@@ -11,7 +11,7 @@ image: prairie-dress.jpg
 My eldest daughter has always loved dressing up — all my kids do. She's always
 loved the pioneer era and has read
 [the *Little House* series](https://en.wikipedia.org/wiki/Little_House_on_the_Prairie)
-multiple times[1](#footnotes). We even got her a
+multiple times[^1] We even got her a
 [Little House Cookbook](https://amzn.to/3R8mduu).
 She loves making recipes such as johnnycake, gingerbread, and pound cake,
 and is always finding new ones to try.
@@ -96,6 +96,6 @@ still frays and looks bad.
 It was a lot of work, but I'm really happy with the results. My daughter has
 enjoyed the dress so thoroughly that it was absolutely worth the effort.
 
-1) Rest assured, we try to give our children a diverse education with a holistic
-understanding of the history of that time.
-
+[^1]:
+    Rest assured, we try to give our children a diverse education with a holistic
+    understanding of the history of that time.

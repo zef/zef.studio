@@ -24,7 +24,7 @@ The process of the investigation is documented in this video:
 
 ## MaxxFan Ethernet Port Wiring
 
-The wires on the ethernet port[1](#footnotes) are connected directly to the
+The wires on the ethernet port[^1] are connected directly to the
 wires on the button panel of the fan, and can be used to duplicate the commands
 of the buttons by connecting two of the wires.
 
@@ -175,8 +175,9 @@ negative output, as the ground side of the circuit is switched.
 - [MaxxFan Deluxe with automatic lid and remote](https://amzn.to/3iicGRD)
 
 
-1) I am using the term "ethernet" because it is known colloquially, but of
-course the fan does not use the ethernet protocol, but rather simply utilizes
-the cable and RJ45 connector because it's a cheap and easy way to get an
-eight-wire connection.
+[^1]:
+    I am using the term "ethernet" because it is known colloquially, but of
+    course the fan does not use the ethernet protocol, but rather simply utilizes
+    the cable and RJ45 connector because it's a cheap and easy way to get an
+    eight-wire connection.
 

@@ -26,7 +26,7 @@ didn't want to try to explain how to get the tailgate open if it happened again.
 At this point, I discovered that this part is called a "tailgate latch rod
 clip". These are not expensive, but it seems that it can be difficult
 to find just the right part and shipping costs and times are an issue
-too[1](#footnotes).
+too[^1]
 
 Given that I have a 3d printer, I wasn't about to spend money on that and wait
 for it to arrive when I can pretty quickly make my own design and work on my
@@ -90,7 +90,7 @@ modeling software for simple parts, and only reach for Fusion 360 for designs
 that require something more advanced or specific. I may expand on these reasons
 in a future post.
 
-
-1) I also hate the idea of buying a 6-pack and having five left over. You can't
-really buy just one. I wouldn't want to throw them out, but I'm not likely to
-need more either, so they'll just... sit somewhere and probably never get used?
+[^1]:
+    I also hate the idea of buying a 6-pack and having five left over. You can't
+    really buy just one. I wouldn't want to throw them out, but I'm not likely to
+    need more either, so they'll just... sit somewhere and probably never get used?

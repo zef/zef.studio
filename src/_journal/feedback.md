@@ -32,7 +32,7 @@ can be uncomfortable. And the more care and thought you put into it, the easier
 it is to feel defensive or hurt when criticized.
 
 Most people simply can't receive "negative" feedback in a constructive
-manner[1](#footnotes).
+manner[^1].
 
 But if you truly care about your work and you want to get better, you must learn
 to invite feedback and receive it constructively.
@@ -71,7 +71,7 @@ product — but I believe that great products require the people who develop the
 to fight for what they think is right.
 
 With that in mind, some of what I'm discussing here is about effective
-persuasion. Being persuasive[2](#footnotes) is a bit of an art; it requires
+persuasion. Being persuasive[^2] is a bit of an art; it requires
 delicacy, nuance, and intuition. I hesitated to include thoughts about
 persuasion in this essay, but in terms of being effective in my work
 environments, I consider it to be an incredibly important skill that has
@@ -268,11 +268,14 @@ So please, criticize <s>me</s> my work. But do it thoughtfully. Do it with an
 open mind. And do it with good intentions.
 
 
-1) [This study](https://papers.ssrn.com/sol3/papers.cfm?abstract_id=3040066)
-explores how people respond to "disconfirming feedback" and finds that most
-people avoid it and often terminate relationships in which it exists. [This
-interview](https://hbr.org/2018/01/negative-feedback-rarely-leads-to-improvement)
-with one of the authors provides more insight.
-2) There's a subtle distinction between persuasion and manipulation, and I think
-that comes down to motives. I don't condone manipulation.
+[^1]: 
+    [This study](https://papers.ssrn.com/sol3/papers.cfm?abstract_id=3040066)
+    explores how people respond to "disconfirming feedback" and finds that most
+    people avoid it and often terminate relationships in which it exists. [This
+    interview](https://hbr.org/2018/01/negative-feedback-rarely-leads-to-improvement)
+    with one of the authors provides more insight.
+
+[^2]:
+    There's a subtle distinction between persuasion and manipulation, and I think
+    that comes down to motives. I don't condone manipulation.
 
