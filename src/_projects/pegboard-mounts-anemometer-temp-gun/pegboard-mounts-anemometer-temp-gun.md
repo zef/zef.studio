@@ -1,5 +1,6 @@
 ---
 date: 2020-09-21 12:00
+short_title: Pegboard Mounts
 postscript: Published on June 24, 2022
 description: Modeling some pegboard mounts for a digital anemometer and infrared temperature gun.
 tags: 3d Printing, 3d Modeling
