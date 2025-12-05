@@ -127,11 +127,12 @@ class ImageProcessor < SiteBuilder
 
     def convert_image(source, width)
         src_dir = Pathname.new(site.root_dir).join("src")
-        destination = source.sub("src/_", "src/").sub(/jpeg$/, "jpg").sub(/(\.\w+)$/, "-#{width}\\1")
+        destination = source.sub("src/_", "src/images/")
+                            .sub(/jpeg$/, "jpg")
+                            .sub(/(\.\w+)$/, "-#{width}\\1")
         relative_distination = Pathname.new(destination).relative_path_from(src_dir).to_s.prepend("/")
         
-        # puts("converting image: #{source} to #{destination}, relative: #{relative_distination}")
-        # puts("destination dir: #{File.relative_path(destination)}")
+        # TODO skip pngs, as they are already optimized and converting is increasing size
 
         if !File.exist?(destination)
             Bridgetown.logger.info "Resizing image: #{source} to #{width}×#{width}"
@@ -144,14 +145,14 @@ class ImageProcessor < SiteBuilder
 
         image = Vips::Image.new_from_file(destination)
 
-        #   unless site.static_files.any? { |sf| sf.relative_path == relative_distination }
-        #     site.static_files << Bridgetown::StaticFile.new(
-        #       site,
-        #       site.in_source_dir,
-        #       File.dirname(relative_distination),
-        #       File.basename(destination)
-        #     )
-        #   end
+        # unless site.static_files.any? { |sf| sf.relative_path == relative_distination }
+        # site.static_files << Bridgetown::StaticFile.new(
+        #     site,
+        #     site.in_source_dir,
+        #     File.dirname(relative_distination),
+        #     File.basename(destination)
+        # )
+        # end
         return relative_distination, image.width, image.height
     end
 end
