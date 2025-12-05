@@ -1,8 +1,8 @@
-class InferTitle < SiteBuilder
+class TitleFromHeading < SiteBuilder
     VERBOSE = false
 
     def build
-        Bridgetown.logger.info " InferTitle:", "Generating titles from first markdown header"
+        Bridgetown.logger.info " TitleFromHeading:", "Generating titles from first markdown header"
 
         hook :resources, :pre_render do |resource|
             first_line = resource.content.lines.first
