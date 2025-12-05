@@ -15,12 +15,12 @@ say, but I have realized that that's not really the case. I think it's more that
 I don't want to share much on the platforms I have had available to me.
 
 Regarding the major social media platforms, they just aren't somewhere I want to
-invest my time and energy.[1](#footnotes)
+invest my time and energy.[^1]
 
 I love the open, distributed, personalized web. The web in its purest,
 uncontaminated form. Personal websites epitomize some of the best of what the
 web has to offer, and I have long desired and intended to have one for
-myself.[2](#footnotes)
+myself.[^2]
 
 I want this to be my little corner of the internet that embodies the web that I
 wish were more ubiquitous. No ads. Just sharing a small part of my life with
@@ -86,10 +86,13 @@ So welcome. I hope you like it here, and that you come often. Even if you don't,
 I hope that at least _I come often_.
 
 
-1) I do intend to post links to my website on social media platforms, but using
-social media platforms as distribution networks is a very different thing than
-using them as content platforms.
-2) I have had a website for my software business, but it's never been a very
-personal place and it hasn't been something I'm particularly proud of. I
-designed and built it in the infancy of my software development journey, and I
-have seldom updated it in the past 10 years.
+[^1]:
+    I do intend to post links to my website on social media platforms, but using
+    social media platforms as distribution networks is a very different thing than
+    using them as content platforms.
+
+[^2]:
+    I have had a website for my software business, but it's never been a very
+    personal place and it hasn't been something I'm particularly proud of. I
+    designed and built it in the infancy of my software development journey, and I
+    have seldom updated it in the past 10 years.

@@ -114,7 +114,7 @@ I'm not quite sure why I care about this — why it affects me. But it does.
 It's sort of like when you hear a cover of a song that doesn't do anything new.
 The same arrangement, tempo, feel. The same flourishes, just trying to
 faithfully emulate the original. But who wants to hear that? It will simply
-never be as good. What's the point?[1](#footnotes)
+never be as good. What's the point?[^1]
 
 I know at some level that when I share what I've learned, it's not just a
 meaningless cover. But I have trouble really trusting that.
@@ -160,7 +160,8 @@ With that said, _thank you_ for your attention. I deeply value and appreciate
 it.
 
 
-1) Okay I realize this sounds a little harsh. I've recorded covers like this
-before, and I will again. It could be a tribute. Or a test of recording skills.
-There are valid reasons. I'm just saying that it doesn't generally add much
-value.
+[^1]:
+    Okay I realize this sounds a little harsh. I've recorded covers like this
+    before, and I will again. It could be a tribute. Or a test of recording skills.
+    There are valid reasons. I'm just saying that it doesn't generally add much
+    value.
