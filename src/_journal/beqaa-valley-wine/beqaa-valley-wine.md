@@ -21,10 +21,10 @@ In 2015, I visited [Chateau Kefraya](https://chateaukefraya.com/) — about 19 
 - ![Rows of grapevienes in the Beqaa Valley, Lebanon](grapevine-rows.jpg)
 - ![Roses growing in front of a field of grape vines in Lebanon](roses-by-grape-field.jpg)
 - ![A spiky thistle or weed with wasps and a spider.](spiky-thistle.jpg)
-
+^
 - ![Large wine storage barrels at Chateau Kefraya](large-wine-storage-bins.jpg)
 - ![Large stainless steel wine fermenters](stainless-wine-fermenter.jpg)
-
+^
 - ![A cork on top of a wine barrel](wine-barrel-cork.jpg)
 - ![Close-up of a Chateau Kefraya wine barrel](wine-barrels.jpg)
 
@@ -46,7 +46,7 @@ I don't have as many pictures from there, and not of great quality, but here are
 
 - ![Large wine barrels at Chateau Ksara](ksara-barrels.jpg)
 - ![An old map of the tunnels at Chateau Ksara](ksara-map.jpg)
-
+^
 - ![A cave with wine barrels at Chateau Ksara](ksara-cave.jpg)
 - ![A large grape press at Chateau Ksara](ksara-press.jpg)
 - ![A small grape press tool at Chateau Ksara](ksara-tool.jpg)

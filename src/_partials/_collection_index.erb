@@ -8,7 +8,7 @@
   <%
     title = post.data.short_title || post.data.title
     image = post.data[:image]
-    img_url = image ? File.join(post.relative_url, image.sub(".jpg", "-1248.jpg")) : nil
+    img_url = image ? File.join("images", post.relative_url, image.sub(".jpg", "-1248.jpg")) : nil
     count = post.data[:image_count] || 0
   %>
 

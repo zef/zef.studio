@@ -67,7 +67,7 @@ the leather.
 
 - ![Spools of red and blue thread](red+blue.jpg "I used a simple squareknot to join the two thread colors.")
 - ![Setting up the first stitch](first-stitch.jpg "&")
-
+^
 - ![The beginning of my stitch](overlapping-colors.jpg "Laying out the overlapping colors on my first couple stitches.")
 - ![First overlapping stitches, pulled tight.](overlapping-stitches.jpg "&")
 - ![Stitching the back of my AirPods case](stitching-the-back.jpg "I love the grain in the back of the leather.")

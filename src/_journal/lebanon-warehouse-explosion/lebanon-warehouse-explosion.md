@@ -35,7 +35,6 @@ damage is incomprehensible.
 
 ![A building in Beirut during the day and night.](beirut-building-night-day.jpg "Just one of the many glass-covered building in the area.")
 
-
 This recovery is going to take a significant amount of time.
 
 My brother was trying to get windows installed in Beirut just last month. There
@@ -57,16 +56,14 @@ look next time I'm there.
 - ![A Lebanese guy with awesome hair](hair-dude.jpg "Sometimes you have one chance and you miss the focus, but the hair is too on-point not to share the photo anyway.")
 - ![AUNOHR monument to non-violence and human rights.](tied-gun-monument.jpg "The Lebanese people have seen so much violence, and long for lasting peace.")
 
-
 I have some great nieces and nephews! We had a nice time together hanging out
 and enjoying the day.
 
 - ![Zef Houssney standing near the coast in Beirut.](zef-with-passerby.jpg "Me by the coast. Photo by my 7-year-old niece.")
 - ![A girl taking a photo with an iPhone](photographing-the-photographer.jpg "Photographing my photographer.")
-
+^
 - ![Kids](kids3.jpg)
 - ![Kids](kids2.jpg)
-
 - ![Kids](kids1.jpg)
 - ![Kids](kids4.jpg)
 

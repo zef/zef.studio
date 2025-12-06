@@ -48,7 +48,6 @@ the leather ring is being pulled.
 - ![Hand-cut keychain blanks, laid out before oil treatment and assembly.](hand-cut-keychains.jpg "&")
 - ![Testing out neatsfoot oil and dark dye.](flat-keychain-blanks.jpg "&")
 
-
 ## Materials
 
 [Neatsfoot Oil](https://amzn.to/3sZp4ff)

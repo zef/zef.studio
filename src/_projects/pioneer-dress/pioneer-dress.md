@@ -1,7 +1,7 @@
 ---
 date: 2019-10-13 12:00
 postscript: Published on July 7, 2022
-description: Sewing a dress for my daughter.
+description: Sewing a pioneer dress for my daughter.
 tags: Fabric
 image: prairie-dress.jpg
 ---
@@ -48,10 +48,10 @@ stitches and got it fixed without too much trouble.
 - ![A sleeve ready to sew. I like using these clips where possible.](sleeve.jpg "&")
 - ![Sleeves and bodice ready to be lined up and attached.](parts-laid-out.jpg "&")
 - ![The bodice attached to the gathered skirt.](gather.jpg "&")
-
+^
 - ![Zipper pinned onto dress](pinning-zipper.jpg "Pinning the zipper.")
 - ![At the sewing machine](at-sewing-machine.jpg)
-
+^
 - ![Test fitting the bodice with sleeves attached.](bodice-with-sleeves.jpg)
 - ![Testing the fit before attaching the zipper.](try-on.jpg)
 - ![The dress with apron and bonnet.](finished-dress.jpg)
@@ -73,7 +73,8 @@ sign of weakness. Conversely, get too confident, and you will be humbled.
 
 ## The Pattern
 
-![.trailing Simplicity 3725 pattern](simplicity-3725.png)
+![Simplicity 3725 pattern](simplicity-3725.png){:.trailing}
+
 We used "View B" from the [Simplicity 3725](https://amzn.to/3bX2QV1) pattern.
 
 The pattern seemed to be decently instructive, but I found it to be imprecise
@@ -87,7 +88,8 @@ stiffness. I sewed the cuffs, but did not end up attaching them. She loves
 wearing the apron and bonnet. The collar is meant to sit on top of the dress,
 but my daughter doesn't wear that much.
 
-![.trailing A stay stitch around the neckline.](neck-stitch.jpg "&")
+![A stay stitch around the neckline.](neck-stitch.jpg "&"){:.trailing}
+
 One thing I wish I had done differently is to add a hem to the neck line. The
 pattern called for a stay stitch around the neck, and that's meant to be covered
 by the collar overlaid around the neck. But even if it were always covered, it
