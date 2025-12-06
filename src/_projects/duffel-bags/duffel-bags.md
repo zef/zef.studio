@@ -1,7 +1,7 @@
 ---
 date: 2024-7-10 12:00
 description: Making Simple Duffel Bags out of Cordura Fabric
-tags: Fabric
+tags: fabric
 image: duffel-bags-sunset.jpg
 ---
 

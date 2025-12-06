@@ -27,6 +27,16 @@ module CustomHelpers
 
     new_words.join(' ').html_safe
   end
+
+  def link_to_tag(tag)
+    path = File.join("/tags", tag)
+    text = tag.titleize
+    if tag == "zef.studio"
+      text = tag
+    end
+    link_to(text || tag, path)
+  end
+
 end
 
 Bridgetown::RubyTemplateView::Helpers.include CustomHelpers

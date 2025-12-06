@@ -2,7 +2,7 @@
 date: 2018-12-25 12:00
 postscript: Published on January 8, 2024
 description: Leather Keychains with brass hardware made by Zef Houssney.
-tags: Leather, Brass, Gifts
+tags: leather brass gifts
 image: leather-keychains.jpg
 ---
 

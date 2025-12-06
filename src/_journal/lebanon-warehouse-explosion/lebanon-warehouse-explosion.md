@@ -1,7 +1,7 @@
 ---
 date: 2020-08-07 12:00
 description: Photos and experiences from my time in Lebanon.
-tags: Lebanon
+tags: lebanon
 image: lebanese-flag-waving.jpg
 ---
 

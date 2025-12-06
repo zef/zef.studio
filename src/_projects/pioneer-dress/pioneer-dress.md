@@ -2,7 +2,7 @@
 date: 2019-10-13 12:00
 postscript: Published on July 7, 2022
 description: Sewing a pioneer dress for my daughter.
-tags: Fabric
+tags: fabric
 image: prairie-dress.jpg
 ---
 
