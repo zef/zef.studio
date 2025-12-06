@@ -43,3 +43,9 @@ yarn-debug.log*
 
 publish/
 src/images/
+
+*.jpg
+*.jpeg
+*.png
+
+
