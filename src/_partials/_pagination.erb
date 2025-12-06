@@ -1,0 +1,29 @@
+
+<% if paginator.total_pages > 1 %>
+  <ul class="pagination">
+    <% if paginator.previous_page %>
+    <li>
+      <a href="<%= paginator.previous_page_path %>">Previous Page</a>
+    </li>
+    <% end %>
+
+    <!-- TODO implement numbered pagination
+    <% (1..paginator.total_pages).each do |page_number| %>
+        <li>
+            <% if page_number == paginator.page %>
+                <span class="current"><%= page_number %></span>
+            <% else %>
+                <%= paginator.page_path %>
+                <a href="<%=  %>"><%= page_number %></a>
+            <% end %>
+        </li>
+    <% end %>
+    -->
+
+    <% if paginator.next_page %>
+    <li>
+      <a href="<%= paginator.next_page_path %>">Next Page</a>
+    </li>
+    <% end %>
+  </ul>
+<% end %>
