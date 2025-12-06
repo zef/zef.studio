@@ -40,12 +40,8 @@ on [Twitter](https://twitter.com/zefhous/) or
 
 <h3 class="centered">Technical Details</h3>
 
-This website is written in [Swift](https://swift.org) and generated as a static
-site using [Publish](https://github.com/JohnSundell/Publish), with a number of
-customizations I implemented to get the behavior I wanted.
-I designed and handcoded the template, and use the excellent
-[Sass language](https://sass-lang.com) to generate the CSS.
-The code for this website is [open-source](https://github.com/zef/zef.studio).
-
-[]: # I don't use any tracking scripts, but there is some basic server-side analytics.
-
+This website is generated as a static site with
+[Bridgetown](https://www.bridgetownrb.com), and a number of customizations I
+implemented to get the behavior I wanted. I designed and handcoded the template,
+and use the excellent [Sass language](https://sass-lang.com) to generate the
+CSS. The code is [open-source](https://github.com/zef/zef.studio).
