@@ -3,8 +3,11 @@ layout: default
 ---
 
 <%
-    heading = paginator ? paginator.documents.first.collection.label.titleize : title
-    heading = nil if heading == "Index"
+    if title == "Index"
+        heading = nil 
+    else
+        heading = paginator ? paginator.documents.first.data.category.titleize : title
+    end
 %>
 
 <% unless heading.nil? %>

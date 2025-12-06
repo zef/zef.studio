@@ -9,4 +9,3 @@ title: Tags
     </li>
   <% end %>
 </ul>
-

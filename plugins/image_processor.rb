@@ -76,24 +76,24 @@ class ImageProcessor < SiteBuilder
     end
 
     def image_disk_source_path(src, resource)
-        source_path = site.in_source_dir(src)
-
-        # look for image that is in the same folder as the resource
         unless src.start_with?("/")
-            src = File.join(resource.relative_url, src)
-            source_path = site.in_source_dir(src.sub("/", "/_"))
+            # look for image that is in the same folder as the resource
+            src = File.join("_posts", resource.relative_url, src)
         end
 
-        if !File.exist?(source_path)
+        disk_path = site.in_source_dir(src)
+        Bridgetown.logger.warn "Disk path: #{disk_path}"
+
+        if !File.exist?(disk_path)
             # fallback to jpeg. we want to allow for .jpeg files, but make .jpg in the markdown always work
-            source_path.sub!(/jpg$/, "jpeg")
-            if !File.exist?(source_path)
-                Bridgetown.logger.error "ImageProcessor:", "Source image not found: #{source_path}"
+            disk_path.sub!(/jpg$/, "jpeg")
+            if !File.exist?(disk_path)
+                Bridgetown.logger.error "ImageProcessor:", "Source image not found: #{disk_path}"
                 return ""
             end
         end
 
-        return source_path
+        return disk_path
     end
 
     def build_figure(attrs, resource)
@@ -103,8 +103,6 @@ class ImageProcessor < SiteBuilder
         css_class = attrs[:class]
 
         source_path = image_disk_source_path(src, resource)
-        # puts resource.methods
-        # puts "processing image: #{src}"
         
         small_src, _, _ = convert_image(source_path, 1248)
         large_src, width, height = convert_image(source_path, 3000)
@@ -125,11 +123,13 @@ class ImageProcessor < SiteBuilder
     end
 
     def convert_image(source, width)
-        src_dir = Pathname.new(site.root_dir).join("src")
         destination = source.sub("src/_", "src/images/")
                             .sub(/jpeg$/, "jpg")
                             .sub(/(\.\w+)$/, "-#{width}\\1")
-        relative_distination = Pathname.new(destination).relative_path_from(src_dir).to_s.prepend("/")
+
+        base_path = site.in_source_dir("images")
+        relative_distination = Pathname.new(destination).relative_path_from(base_path).to_s.prepend("/images/")
+        relative_distination.sub!("images/posts/", "images/")
         
         # TODO skip pngs, as they are already optimized and converting is increasing size
 
@@ -144,14 +144,14 @@ class ImageProcessor < SiteBuilder
 
         image = Vips::Image.new_from_file(destination)
 
-        unless site.static_files.any? { |sf| sf.relative_path == relative_distination }
-        site.static_files << Bridgetown::StaticFile.new(
-            site,
-            site.in_source_dir,
-            File.dirname(relative_distination),
-            File.basename(destination)
-        )
-        end
+        # unless site.static_files.any? { |sf| sf.relative_path == relative_distination }
+        #     site.static_files << Bridgetown::StaticFile.new(
+        #         site,
+        #         site.in_source_dir,
+        #         File.dirname(relative_distination),
+        #         File.basename(destination)
+        #     )
+        # end
 
         return relative_distination, image.width, image.height
     end

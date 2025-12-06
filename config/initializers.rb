@@ -39,7 +39,7 @@ Bridgetown.configure do |config|
   # configured separately under the `collections` key. Documentation here:
   # https://www.bridgetownrb.com/docs/content/permalinks
   #
-  # permalink "simple"
+  permalink "simple"
 
   # Optionally host your site off a path, e.g. /blog. If you set this option,
   # ensure you use the `relative_url` helper for all links and assets in your HTML.
@@ -102,16 +102,5 @@ Bridgetown.configure do |config|
 
   # For more documentation on how to configure your site using this initializers file,
   # visit: https://edge.bridgetownrb.com/docs/configuration/initializers/
-
-  collections do
-    projects do
-      output true
-      permalink "simple"
-    end
-    journal do
-      output true
-      permalink "simple"
-    end
-  end
 
 end

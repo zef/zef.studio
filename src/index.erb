@@ -1,13 +1,8 @@
 ---
 layout: collection
+paginate:
+    collection: posts
+    per_page: 30
 ---
 
-<% resources = site.collections
-  .reject { |label, collection| %w{pages data}.include?(label) }
-  .map { |name, collection| collection.resources }
-  .flatten
-  .sort_by { |doc| doc.data["date"] }
-  .reverse
-%>
-
-TODO
+<%= render "collection_index", paginator: paginator %>
