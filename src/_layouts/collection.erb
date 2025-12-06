@@ -3,6 +3,9 @@ layout: default
 ---
 
 <%
+    # is_tags = page.data.prototype? && page.data.prototype.term == "tag"
+    is_tags = paginator.page_path.start_with?("/tags")
+
     if title == "Index"
         heading = nil 
     else
@@ -10,7 +13,12 @@ layout: default
     end
 %>
 
-<% unless heading.nil? %>
+<% if is_tags %>
+    <div class="tag-title">
+        <h1><%= title %></h1>
+        <a class="browse-all" href="/tags">All Tags</a>
+    </div>
+<% elsif !heading.nil? %>
     <h1><%= heading %></h1>
 <% end %>
 

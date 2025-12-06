@@ -82,7 +82,6 @@ class ImageProcessor < SiteBuilder
         end
 
         disk_path = site.in_source_dir(src)
-        Bridgetown.logger.warn "Disk path: #{disk_path}"
 
         if !File.exist?(disk_path)
             # fallback to jpeg. we want to allow for .jpeg files, but make .jpg in the markdown always work
