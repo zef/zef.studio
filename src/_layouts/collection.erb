@@ -2,10 +2,19 @@
 layout: default
 ---
 
-<% unless title.nil? || title == "Index" %>
-<h1><%= title %></h1>    
+<%
+    heading = paginator ? paginator.documents.first.collection.label.titleize : title
+    heading = nil if heading == "Index"
+%>
+
+<% unless heading.nil? %>
+    <h1><%= heading %></h1>
 <% end %>
 
 <ul class="article-list">
     <%= yield %>
 </ul>
+
+<% if !paginator.nil? %>
+    <%= render "pagination", paginator: paginator %>
+<% end %>

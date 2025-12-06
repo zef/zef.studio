@@ -7,9 +7,11 @@
   -->
   <body>
     <div class="content">
-      <header class="<%= 'portfolio' if resource.collection.label == 'portfolio' %>">
+      <% is_portfolio = false # TODO %>
+      <% header_class = is_portfolio ? 'portfolio' : '' %>
+      <header class="<%= header_class %>">
         <div class="logo-container"><a class="logo" href="/"></a></div>
-        <% if resource.collection.label == 'portfolio' %>
+        <% if is_portfolio %>
           <a class="site-name" href="/"><%= site.metadata.title %></a>
           <p class="site-name-subtitle">Senior iOS App Developer &nbsp;•&nbsp; Boulder, Colorado</p>
         <% else %>

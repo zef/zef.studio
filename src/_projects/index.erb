@@ -1,7 +1,9 @@
 ---
 title: Projects
 layout: collection
+paginate:
+    collection: projects
+    per_page: 30
 ---
 
-<% collection = site.collections[title.downcase] %>
-<%= render "collection_index", resources: collection.resources.reverse %>
+<%= render "collection_index", paginator: paginator %>

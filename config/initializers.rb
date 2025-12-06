@@ -31,9 +31,9 @@ Bridgetown.configure do |config|
   # Add collection pagination features to your site. Documentation here:
   # https://www.bridgetownrb.com/docs/content/pagination
   #
-  # pagination do
-  #   enabled true
-  # end
+  pagination do
+    enabled true
+  end
 
   # Configure the permalink style for pages and posts. Custom collections can be
   # configured separately under the `collections` key. Documentation here:
@@ -113,6 +113,5 @@ Bridgetown.configure do |config|
       permalink "simple"
     end
   end
-
 
 end
