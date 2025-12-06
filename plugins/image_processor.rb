@@ -3,12 +3,11 @@ require "ruby-vips"
 
 class ImageProcessor < SiteBuilder
     def build
+        Bridgetown.logger.info " ImageProcessor:", "Resizing images and reformatting image tags."
         hook :resources, :post_render do |resource|
 
-        # puts "-"
         # puts resource.path
-        # puts resource.layout
-        next unless resource.data.layout == "page"
+        next unless resource.data.layout == "page" || resource.data.layout == "post"
         next unless resource.output_ext == ".html"
         next unless resource.content
 
@@ -145,14 +144,15 @@ class ImageProcessor < SiteBuilder
 
         image = Vips::Image.new_from_file(destination)
 
-        # unless site.static_files.any? { |sf| sf.relative_path == relative_distination }
-        # site.static_files << Bridgetown::StaticFile.new(
-        #     site,
-        #     site.in_source_dir,
-        #     File.dirname(relative_distination),
-        #     File.basename(destination)
-        # )
-        # end
+        unless site.static_files.any? { |sf| sf.relative_path == relative_distination }
+        site.static_files << Bridgetown::StaticFile.new(
+            site,
+            site.in_source_dir,
+            File.dirname(relative_distination),
+            File.basename(destination)
+        )
+        end
+
         return relative_distination, image.width, image.height
     end
 end

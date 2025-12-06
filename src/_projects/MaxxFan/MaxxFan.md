@@ -61,7 +61,6 @@ circuit board and control panel.
 
 - ![Controlling a MaxxFan with an ESP8266 microcontroller](MaxxFan.jpg "Controlling the fan with a microcontroller.")
 - ![MaxxFan Control Panel, lit from back](control-panel-backlit.jpg "The traces in the control panel are visible when backlit.")
-
 - ![MaxxFan Circuit Board Top.](circuit-board-top.jpg)
 - ![MaxxFan Circuit Board Bottom](circuit-board-bottom.jpg)
 
@@ -164,13 +163,13 @@ negative output, as the ground side of the circuit is switched.
 - [MOSFET Trigger Switch (10pc)](https://amzn.to/3CCW3sR)
 - [MOSFET Trigger Switch (4pc)](https://amzn.to/3KymYsI)
 - [MOSFET Trigger Switch (4pc AliExpress)](https://s.click.aliexpress.com/e/_ABq7FZ)
-
+^
 - [4 Channel MOSFET Trigger Switch](https://amzn.to/3MUt3Sv)
 - [4 Channel MOSFET Trigger Switch (AliExpress)](https://s.click.aliexpress.com/e/_ALZIun)
-
+^
 - [Assorted Transistor Kit](https://amzn.to/3I0vpvb)
 - [2N2222 NPN Transistors (AliExpress)](https://s.click.aliexpress.com/e/_A6M69h)
-
+^
 - [MaxxFan Deluxe with manual lid](https://amzn.to/3I68ajx)
 - [MaxxFan Deluxe with automatic lid and remote](https://amzn.to/3iicGRD)
 

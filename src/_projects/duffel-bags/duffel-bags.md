@@ -36,4 +36,3 @@ on a friend's industrial CO2 laser. I still have some blanks to make more.
 
 - ![Laser-cut duffel bag blanks.](duffel-bag-material.jpg "&")
 - ![A two-tone kit of all the required components that I gave to a friend.](duffel-bag-kit.jpg "&")
-

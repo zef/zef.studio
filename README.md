@@ -24,5 +24,16 @@ activated when an image is selected.
 
 ## Customizations
 
-- `title` is inferred and set by the first header in markdown files.
-- `short_title` can be added to the Front Matter to be used for the post preview on the index pages.
+### Image Handling
+
+Laying out images nicely is very important to me. I use lists to set images in
+groups how many I want. They can be displayed in 2-3 columns. I use a `^` as an
+End-Of-Block marker in kramdown to separate lists when I want control over the
+layout. Four-item lists are interpereted as 2x2 columns by default.
+
+### Front Matter Options
+
+- `title` is not needed in Front Matter if it's provided as an initial header, I infer and set it by the first header in markdown files.
+- `short_title` used for the post preview on the index pages.
+- `postscript` displays a small centered note at the bottom of the post.
+- `excerpt` overrides the automatically generated excerpt. Only used on index pages where there is no key image.
