@@ -2,7 +2,7 @@
 date: 2022-02-25 12:00
 postscript: Updated October 25, 2025
 description: "Controlling the MaxxFan Deluxe over the Ethernet port."
-tags: Electronics
+tags: electronics
 image: MaxxFan.jpg
 ---
 

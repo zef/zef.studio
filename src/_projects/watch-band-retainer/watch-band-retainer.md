@@ -1,7 +1,7 @@
 ---
 date: 2022-05-13 12:00
 description: Printing a watch band retainer with flexible filament.
-tags: 3d Printing, 3d Modeling, Repair
+tags: 3d-printing 3d-modeling repair
 image: watch-band-squish.jpg
 ---
 

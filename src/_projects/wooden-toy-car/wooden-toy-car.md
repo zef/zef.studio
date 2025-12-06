@@ -2,7 +2,7 @@
 date: 2020-03-15 12:00
 postscript: Published on March 9, 2022
 description: A wooden toy car I made for my son's birthday.
-tags: Wood, Gifts
+tags: wood gifts
 image: car-right.jpg
 ---
 

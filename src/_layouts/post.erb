@@ -12,7 +12,9 @@ layout: default
         <% if resource.data.tags && !resource.data.tags.empty? %>
             <ul class="tags">
             <% resource.data.tags.each do |tag| %>
-                <li><a href="/tags/<%= tag.downcase.gsub(/\s+/, '-') %>"><%= tag %></a></li>
+                <li>
+                    <%= link_to_tag tag %>
+                </li>
             <% end %>
             </ul>
         <% end %>

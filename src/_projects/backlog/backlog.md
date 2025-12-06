@@ -1,7 +1,7 @@
 ---
 date: 2024-9-01 12:00
 description: A bunch of projects that I'd like to post about separately.
-tags: Leather, Wood, Metal, Fabric, 3d Printing
+tags: leather wood metal fabric 3d-printing
 image: mosaic.jpg
 ---
 

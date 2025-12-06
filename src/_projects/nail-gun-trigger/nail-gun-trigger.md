@@ -1,7 +1,7 @@
 ---
 date: 2022-05-27 12:00
 description: Making a new trigger for a nail gun.
-tags: Repair, Wood
+tags: repair wood
 image: nail-gun-trigger.jpg
 ---
 

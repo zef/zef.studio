@@ -1,7 +1,7 @@
 ---
 date: 2020-08-13 12:00
 description: Visiting Wineries in the Beqaa Valley
-tags: Lebanon
+tags: lebanon
 image: wine-barrels.jpg
 ---
 

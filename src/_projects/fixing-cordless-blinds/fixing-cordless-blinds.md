@@ -1,7 +1,7 @@
 ---
 date: 2022-06-13 12:00
 description: Fixing my cordless blinds with a spring and a pen.
-tags: Repair
+tags: repair
 image: blinds-fix.jpg
 ---
 
