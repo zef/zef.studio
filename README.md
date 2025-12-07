@@ -28,8 +28,9 @@ activated when an image is selected.
 
 Laying out images nicely is very important to me. I use lists to set images in
 groups how many I want. They can be displayed in 2-3 columns. I use a `^` as an
-End-Of-Block marker in kramdown to separate lists when I want control over the
-layout. Four-item lists are interpereted as 2x2 columns by default.
+[End-Of-Block marker](https://kramdown.gettalong.org/syntax.html#eob-marker)
+in kramdown to separate lists when I want control over the
+
 
 ### Front Matter Options
 

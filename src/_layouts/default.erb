@@ -5,10 +5,13 @@
   </head>
   <!--
   -->
-  <body>
+  <%
+    is_portfolio = resource.data.slug == 'portfolio'
+    header_class = is_portfolio ? 'portfolio' : ''
+    body_class = is_portfolio ? 'section-portfolio' : ''
+  %>
+  <body class="<%= body_class %>">
     <div class="content">
-      <% is_portfolio = false # TODO %>
-      <% header_class = is_portfolio ? 'portfolio' : '' %>
       <header class="<%= header_class %>">
         <div class="logo-container"><a class="logo" href="/"></a></div>
         <% if is_portfolio %>
