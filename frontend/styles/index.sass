@@ -195,7 +195,6 @@ header
     a.logo
       +svgSquare(36px)
 
-
       &:hover
         transform: scale(1.2)
 
@@ -764,6 +763,18 @@ article
     margin-bottom: 1.2em
     display: inline-block
 
+=pill-button
+  padding: 7px 12px 5px
+  color: white
+  border-radius: $cornerRadius
+  background-color: $darkBgColor
+  // background-color: lighten($highlightColor, 6)
+  display: block
+  transition: all 200ms ease-in-out
+
+  &:hover
+    background-color: color.adjust($darkBgColor, $lightness: 10%)
+
 ul.tags
   display: flex
   flex-wrap: wrap
@@ -773,16 +784,53 @@ ul.tags
     margin: 0 0.6em 0.6em 0
 
   a
-    padding: 7px 12px 5px
-    color: white
-    border-radius: $cornerRadius
-    background-color: $darkBgColor
-    // background-color: lighten($highlightColor, 6)
-    display: block
-    transition: all 200ms ease-in-out
+    +pill-button
 
-    &:hover
-      background-color: color.adjust($darkBgColor, $lightness: 10%)
+ul.pagination
+  +grid-mixins.row
+  +grid-mixins.between
+  padding: 2em 0
+
+  li
+    margin: 0
+    height: 44px
+    line-height: 44px
+
+    // maintains centering of middle items
+    &:first-child, &:last-child
+      width: 44px
+
+  a.prev, a.next
+    +pill-button
+    display: inline-flex
+    align-items: center
+    justify-content: center
+    width: 44px
+    height: 44px
+    padding: 0
+
+  a.prev:after, a.next:after
+    content: ""
+    width: 60%
+    height: 60%
+
+    background-color: white
+    opacity: 0.9
+
+    -webkit-mask-repeat: no-repeat
+    mask-repeat: no-repeat
+    -webkit-mask-position: center
+    mask-position: center
+    -webkit-mask-size: contain
+    mask-size: contain
+
+  a.prev:after
+    -webkit-mask-image: url(/images/icons/backward.fill.svg)
+    mask-image: url(/images/icons/backward.fill.svg)
+
+  a.next:after
+    -webkit-mask-image: url(/images/icons/forward.fill.svg)
+    mask-image: url(/images/icons/forward.fill.svg)
 
 .section-portfolio
   .content
