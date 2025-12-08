@@ -4,6 +4,20 @@ require "ruby-vips"
 class ImageProcessor < SiteBuilder
     def build
         Bridgetown.logger.info " ImageProcessor:", "Resizing images and reformatting image tags."
+        hook :resources, :pre_render do |resource|
+            # convert post-based image defined in front matter, because they are not always included in the content
+            # also rewrite the "image" path to the resized version, so the RSS feed maker gets the correct path.
+            if image = resource.data["image"]
+                source_path = image_disk_source_path(image, resource)
+                small_src, _, _ = convert_image(source_path, 1248)
+                convert_image(source_path, 3000)
+
+                resource.data["image"] = small_src
+                puts "rewrote post image to #{small_src}"
+            end
+
+        end
+
         hook :resources, :post_render do |resource|
 
         # puts resource.path
@@ -25,14 +39,6 @@ class ImageProcessor < SiteBuilder
     private
 
     def process_images(content, resource)
-        # convert post-based image defined in front matter, because they are not always included in the content
-        if image = resource.data["image"]
-            # puts "res image: " + image
-            source_path = image_disk_source_path(image, resource)
-            convert_image(source_path, 1248)
-            convert_image(source_path, 3000)
-        end
-
         # Match img tags that aren't already wrapped in figures
         content.gsub(/<img\s+([^>]*?)>/) do |match|
             attributes = parse_img_attributes($1, resource)

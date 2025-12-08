@@ -3,15 +3,14 @@
   <%
     title = post.data.short_title || post.data.title
     image = post.data[:image]
-    img_url = image ? File.join("/images", post.relative_url, image.sub(".jpg", "-1248.jpg")) : nil
     count = post.data[:image_count] || 0
   %>
 
   <li>
     <a href="<%= post.relative_url %>">
       <article>
-        <% if img_url %>
-          <img src="<%= img_url %>" alt="<%= post.data.title %>">
+        <% if image %>
+          <img src="<%= image %>" alt="<%= post.data.title %>">
         <% else %>
           <div class="excerpt">
             <div>
