@@ -53,6 +53,8 @@ GEM
       thor (~> 1.1)
       tilt (~> 2.0)
       zeitwerk (~> 2.5)
+    bridgetown-feed (4.0.0)
+      bridgetown (>= 1.2.0)
     bridgetown-foundation (2.0.3)
       hash_with_dot_access (~> 2.0)
       inclusive (~> 1.0)
@@ -197,6 +199,7 @@ PLATFORMS
 
 DEPENDENCIES
   bridgetown (~> 2.0.3)
+  bridgetown-feed (~> 4.0)
   image_processing (~> 1.14.0)
   nokogiri (~> 1.13)
   puma (< 7)

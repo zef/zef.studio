@@ -29,8 +29,7 @@ activated when an image is selected.
 Laying out images nicely is very important to me. I use lists to set images in
 groups how many I want. They can be displayed in 2-3 columns. I use a `^` as an
 [End-Of-Block marker](https://kramdown.gettalong.org/syntax.html#eob-marker)
-in kramdown to separate lists when I want control over the
-
+in kramdown to separate lists when I want control over the layout.
 
 ### Front Matter Options
 
@@ -38,3 +37,4 @@ in kramdown to separate lists when I want control over the
 - `short_title` used for the post preview on the index pages.
 - `postscript` displays a small centered note at the bottom of the post.
 - `excerpt` overrides the automatically generated excerpt. Only used on index pages where there is no key image.
+- `image` can be defined as simply a filename that exists in the same directory as the post. The absolute URL is inferred from this.

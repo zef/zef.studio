@@ -36,3 +36,5 @@ gem "nokogiri", "~> 1.13"
 
 # Or for faster parsing of HTML-only resources via Inspectors, use Nokolexbor:
 # gem "nokolexbor", "~> 0.5"
+
+gem "bridgetown-feed", "~> 4.0"
