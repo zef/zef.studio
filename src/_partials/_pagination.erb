@@ -7,7 +7,15 @@
       <% end %>
     </li>
 
-    <li>page <%= paginator.page %> of <%= paginator.total_pages %></li>
+    <% (1..paginator.total_pages).each do |page| %>
+      <li class="<%= "current" if page == paginator.page %>">
+        <% if page == paginator.page %>
+          <%= page %>
+        <% else %>
+          <%= page_link(page, paginator) %>
+        <% end %>
+      </li>
+    <% end %>
 
     <li>
       <% if paginator.next_page %>

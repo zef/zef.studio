@@ -750,21 +750,21 @@ article
     li
       margin-bottom: 0.8em
 
-=pill-button($bgColor: $darkBgColor, $foregroundColor: white)
-  padding: 7px 12px 5px
+=pill-button($bgColor: $darkBgColor, $foregroundColor: white, $height: 31px, $verticalOffset: 2px)
+  padding: $verticalOffset 0.8em 0px
+  line-height: ($height - $verticalOffset)
   color: $foregroundColor
   border-radius: $cornerRadius
   background-color: $bgColor
-  // background-color: lighten($highlightColor, 6)
-  display: block
+  display: inline-flex
   transition: all 200ms ease-in-out
 
   &:hover
     background-color: color.adjust($bgColor, $lightness: 10%)
 
-=pill-button-secondary
-  +pill-button($bgColor: white, $foregroundColor: $highlightColor)
-  border: 1px solid $highlightColor
+=pill-button-secondary($height: 31px, $verticalOffset: 2px)
+  +pill-button($bgColor: white, $foregroundColor: $highlightColor, $height: $height, $verticalOffset: $verticalOffset)
+  border: 2px solid $highlightColor
 
   &:hover
     background-color: color.change($highlightColor, $alpha: 6%)
@@ -782,10 +782,11 @@ article
 ul.tags
   display: flex
   flex-wrap: wrap
+  // justify-content: space-evenly
   list-style-type: none
 
   li
-    margin: 0 0.6em 0.6em 0
+    padding: 0.3em
 
   a
     +pill-button
@@ -796,29 +797,29 @@ ul.pagination
   padding: 2em 0
 
   li
-    margin: 0
-    height: 44px
-    line-height: 44px
+    &.current
+      +pill-button($height: 44px, $verticalOffset: 4px)
+
+    a
+      +pill-button-secondary($height: 44px, $verticalOffset: 2px)
 
     // maintains centering of middle items
     &:first-child, &:last-child
       width: 44px
-
-  a.prev, a.next
-    +pill-button
-    display: inline-flex
-    align-items: center
-    justify-content: center
-    width: 44px
-    height: 44px
-    padding: 0
+      a
+        display: inline-flex
+        align-items: center
+        justify-content: center
+        width: 44px
+        height: 44px
+        padding: 0
 
   a.prev:after, a.next:after
     content: ""
     width: 60%
     height: 60%
 
-    background-color: white
+    background-color: $highlightColor
     opacity: 0.9
 
     -webkit-mask-repeat: no-repeat
