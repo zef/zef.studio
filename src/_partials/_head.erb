@@ -16,18 +16,12 @@
 <meta name="description" content="<%= description %>" />
 <link rel="canonical" href="<%= url %>"/>
 
-<meta name="twitter:title" content="<%= title %>">
-<meta name="twitter:description" content="<%= description %>">
-<meta name="twitter:image" content="<%= image %>">
-<meta name="twitter:site" content="@zefhous" />
-<meta name="twitter:card" content="summary_large_image">
-
 <meta property="og:title" content="<%= title %>">
 <meta property="og:description" content="<%= description %>">
 <meta property="og:url" content="<%= url %>" />
 <meta property="og:image" content="<%= image %>">
 <meta property="og:site_name" content="<%= site.metadata.title %>">
-
+<!-- Could add og:video for posts with YouTube embeds -->
 
 <% if page.respond_to?(:date) %>
   <meta property="og:type" content="article" />
@@ -36,11 +30,11 @@
   <meta property="og:type" content="website" />
 <% end %>
 
-<!-- Could add og:video for posts with YouTube embeds -->
-
-<link rel="stylesheet" href="<%= asset_path :css %>" type="text/css"/>
-<script type="module" src="<%= asset_path :js %>"></script>
-<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover"/>
+<meta name="twitter:title" content="<%= title %>">
+<meta name="twitter:description" content="<%= description %>">
+<meta name="twitter:image" content="<%= image %>">
+<meta name="twitter:site" content="@zefhous" />
+<meta name="twitter:card" content="summary_large_image">
 
 <%
   apple_touch_icon_sizes = [57, 60, 72, 76, 114, 120, 144, 152, 180]
@@ -67,6 +61,10 @@
 <meta name="theme-color" content="#ffffff">
 <meta name="application-name" content="zef.studio">
 <meta name="apple-mobile-web-app-title" content="zef.studio">
+
+<link rel="stylesheet" href="<%= asset_path :css %>" type="text/css"/>
+<script type="module" src="<%= asset_path :js %>"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover"/>
 <%= feed_meta %>
 
 <%= live_reload_dev_js %>
