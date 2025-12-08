@@ -37,6 +37,17 @@ module CustomHelpers
     link_to(text || tag, path)
   end
 
+  def page_link(page, paginator)
+    page = page.to_s
+    if page == "1"
+      path = paginator.first_page_path
+    else
+      path = paginator.last_page_path.gsub(/\d+[\/]?$/, page)
+    end
+    puts "Generating link for page #{page} with path #{path}"
+    link_to(page, path)
+  end
+
 end
 
 Bridgetown::RubyTemplateView::Helpers.include CustomHelpers
