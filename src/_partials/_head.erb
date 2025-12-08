@@ -1,30 +1,66 @@
 <meta charset="UTF-8"/>
-<title><%= data.title %> | <%= site.metadata.title %></title>
+<% 
+    description = data.description
+    # interpolating the tag into the front matter description is not supported by bridgetown
+    # solved with extra logic here for now
+    if data.prototype && data.prototype.term == "tag"
+      description = "Posts tagged with #{title}"
+    end
+
+    title = "#{data.title} | #{site.metadata.title}"
+    url = absolute_url(resource)
+
+    image = resource.respond_to?(:image) ? resource.image : "https://zef.studio/about/zef-houssney-1248.jpg"
+
+    og_type = resource.layout == "post" ? "article" : "website"
+%>
+<title><%= title %></title>
+<meta name="description" content="<%= description %>" />
+<link rel="canonical" href="<%= url %>"/>
+
+<meta name="twitter:title" content="<%= title %>">
+<meta name="twitter:description" content="<%= description %>">
+<meta name="twitter:image" content="<%= image %>">
+<meta name="twitter:site" content="@zefhous" />
+<meta name="twitter:card" content="summary_large_image">
+
+<meta property="og:title" content="<%= title %>">
+<meta property="og:description" content="<%= description %>">
+<meta property="og:url" content="<%= url %>" />
+<meta property="og:image" content="<%= image %>">
+<meta property="og:type" content="<%= og_type %>">
+<meta property="og:site_name" content="<%= site.metadata.title %>">
+
+<!-- Could add og:video for posts with YouTube embeds -->
+
 <link rel="stylesheet" href="<%= asset_path :css %>" type="text/css"/>
 <script type="module" src="<%= asset_path :js %>"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover"/>
-<link rel="apple-touch-icon" sizes="57x57" href="/images/favicons/apple-icon-57x57.png">
-<link rel="apple-touch-icon" sizes="60x60" href="/images/favicons/apple-icon-60x60.png">
-<link rel="apple-touch-icon" sizes="72x72" href="/images/favicons/apple-icon-72x72.png">
-<link rel="apple-touch-icon" sizes="76x76" href="/images/favicons/apple-icon-76x76.png">
-<link rel="apple-touch-icon" sizes="114x114" href="/images/favicons/apple-icon-114x114.png">
-<link rel="apple-touch-icon" sizes="120x120" href="/images/favicons/apple-icon-120x120.png">
-<link rel="apple-touch-icon" sizes="144x144" href="/images/favicons/apple-icon-144x144.png">
-<link rel="apple-touch-icon" sizes="152x152" href="/images/favicons/apple-icon-152x152.png">
-<link rel="apple-touch-icon" sizes="180x180" href="/images/favicons/apple-icon-180x180.png">
-<link rel="mask-icon" href="/images/favicons/safari-pinned-tab.svg" color="#375686">
-<link rel="icon" type="image/png" sizes="192x192"  href="/images/favicons/android-icon-192x192.png">
-<link rel="icon" type="image/png" sizes="96x96" href="/images/favicons/favicon-96x96.png">
-<link rel="icon" type="image/png" sizes="32x32" href="/images/favicons/favicon-32x32.png">
-<link rel="icon" type="image/png" sizes="16x16" href="/images/favicons/favicon-16x16.png">
+
+<%
+  apple_touch_icon_sizes = [57, 60, 72, 76, 114, 120, 144, 152, 180]
+  icon_manifest = [
+    { type: "image/png", sizes: "192x192", rel: "icon", filename: "android-icon-192x192.png" },
+    { type: "image/png", sizes: "96x96", rel: "icon", filename: "favicon-96x96.png" },
+    { type: "image/png", sizes: "32x32", rel: "icon", filename: "favicon-32x32.png" },
+    { type: "image/png", sizes: "16x16", rel: "icon", filename: "favicon-16x16.png" }
+  ]
+%>
+
+<% apple_touch_icon_sizes.each do |size| %>
+  <link rel="apple-touch-icon" sizes="<%= size %>x<%= size %>" href="/images/favicons/apple-icon-<%= size %>x<%= size %>.png">
+<% end %>
+
+<% icon_manifest.each do |icon| %>
+  <link rel="<%= icon[:rel] %>" type="<%= icon[:type] %>" sizes="<%= icon[:sizes] %>" href="/images/favicons/<%= icon[:filename] %>">
+<% end %>
+
 <link rel="manifest" href="/images/favicons/site.webmanifest">
+<link rel="mask-icon" href="/images/favicons/safari-pinned-tab.svg" color="#375686">
 <meta name="msapplication-TileColor" content="#375686">
 <meta name="msapplication-config" content="/images/favicons/browserconfig.xml">
 <meta name="theme-color" content="#ffffff">
 <meta name="application-name" content="zef.studio">
 <meta name="apple-mobile-web-app-title" content="zef.studio">
-<meta name="twitter:site" content="@zefhous" />
 
-<!-- TODO: Check description content, add for socials. -->
-<meta name="description" content="<%= data.description %>" />
 <%= live_reload_dev_js %>

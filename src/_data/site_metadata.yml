@@ -5,7 +5,4 @@
 # in the templates via {{ site.metadata.myvariable }}.
 
 title: Zef Houssney
-tagline: This site is totally awesome
 email: zef@zef.studio
-description: >-
-  Write an awesome description for your new site here. It will appear in your document head meta (for Google search results) and in your feed.xml site description.

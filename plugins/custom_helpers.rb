@@ -48,6 +48,16 @@ module CustomHelpers
     link_to(page, path)
   end
 
+  def absolute_url(resource)
+    url = site.config.url
+    if resource.respond_to?(:absolute_url)
+      url = resource.absolute_url
+    else # PaginationPage object
+      url = File.join(url, resource.relative_url)
+    end
+    return url
+  end
+
 end
 
 Bridgetown::RubyTemplateView::Helpers.include CustomHelpers

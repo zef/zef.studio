@@ -1,5 +1,6 @@
 ---
 title: Tags
+description: Explore posts based on tags.
 ---
 
 <ul class="tags">
