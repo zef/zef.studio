@@ -16,6 +16,9 @@ mostly for my own reference, so I can easily find and modify them._
 - [MaxxFan Deluxe with manual lid](https://amzn.to/3I68ajx)
 - [MaxxFan Deluxe with automatic lid and remote](https://amzn.to/3iicGRD)
 
+- [Victorinox 6" Boning Knife](https://amzn.to/4iINfqy)
+- [Feed-N-Wax Wood Polish & Conditioner](https://amzn.to/44VZj1S)
+
 ## Leatherworking
 
 - [0.8mm Ritza Tiger Thread](https://amzn.to/3t2vtWW)
