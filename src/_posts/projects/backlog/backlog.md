@@ -29,12 +29,6 @@ to post about individually.
 - ![Opinel Sheath](opinel-knife-sheath/opinel-sheath.jpg)
 - ![Opinel Sheath](opinel-knife-sheath/wet-forming-sheath.jpg)
 ^
-- leather keychains
-^
-- ![Keychains](keychains/flat-keychain-blanks.jpg)
-- ![Keychains](keychains/hand-cut-keychains.jpg)
-- ![Keychains](keychains/leather-keychains.jpg)
-^
 - dying leather keychains
 ^
 - ![Keychains](keychains/dyed-straps.jpg)
