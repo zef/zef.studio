@@ -13,7 +13,6 @@ class ImageProcessor < SiteBuilder
                 convert_image(source_path, 3000)
 
                 resource.data["image"] = small_src
-                puts "rewrote post image to #{small_src}"
             end
 
         end
@@ -128,18 +127,18 @@ class ImageProcessor < SiteBuilder
     end
 
     def convert_image(source, width)
-        destination = source.sub("src/_", "src/images/")
+        destination = source.sub("src/_posts/", "src/images/")
                             .sub(/jpeg$/, "jpg")
                             .sub(/(\.\w+)$/, "-#{width}\\1")
 
         base_path = site.in_source_dir("images")
         relative_distination = Pathname.new(destination).relative_path_from(base_path).to_s.prepend("/images/")
-        relative_distination.sub!("images/posts/", "images/")
         
         # TODO skip pngs, as they are already optimized and converting is increasing size
 
         if !File.exist?(destination)
-            Bridgetown.logger.info "Resizing image: #{source} to #{width}×#{width}"
+            Bridgetown.logger.info "Resizing image: #{source} to #{destination}"
+            Bridgetown.logger.warn "Path: #{relative_distination}"
             FileUtils.mkdir_p(File.dirname(destination))
             pipeline = ImageProcessing::Vips.source(source).resize_to_limit(width, width)
             pipeline.call(destination: destination.to_s)
