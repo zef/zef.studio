@@ -106,8 +106,6 @@ Bridgetown.configure do |config|
   exclude [
     "_posts/**/*.jpg",
     "_posts/**/*.jpeg",
-    "_posts/**/*.png",
-    "_posts/**/*.gif",
     "images/cache/",
   ]
 

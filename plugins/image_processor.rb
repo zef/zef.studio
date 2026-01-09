@@ -80,22 +80,27 @@ class SourceImage
 
   def resized(width)
     destination = @source_path.sub("src/_posts/", "src/")
-                                .sub(/jpeg$/, "jpg")
-                                .sub(/(\.\w+)$/, "-#{width}\\1")
+                              .sub(/jpeg$/, "jpg")
+
+    needs_resize = [".jpg"].include?(File.extname(destination).downcase)
+    destination.sub!(/(\.\w+)$/, "-#{width}\\1") if needs_resize
 
     base_path = @site.in_source_dir("images")
     disk_destination = Pathname.new(destination).relative_path_from(base_path).to_s.prepend("/images/")
 
+    site_path = disk_destination
     if @source_path.include?("/_posts/")
       site_path = disk_destination.sub("/images/", "/")
-    else
-       #  
     end
 
     source_disk = @source_path
     unless source_disk && File.exist?(source_disk)
       Bridgetown.logger.error "SourceImage:", "Original source not found for #{@source_path}; skipping resize"
       return nil
+    end
+
+    unless needs_resize
+      return SiteImage.new(source_disk, site_path)
     end
 
     unless File.exist?(destination)
