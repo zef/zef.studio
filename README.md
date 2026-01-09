@@ -3,12 +3,12 @@
 This is the code and content that generates my personal website at
 [zef.studio](https://zef.studio).
 
-The website is written in [Swift](https://swift.org) and generated as a static
-site using [Publish by John Sundell](https://github.com/JohnSundell/Publish),
-with a whole lot of customization that I did to get things how I want them.
+The website is generated with [Bridgetown](https://www.bridgetownrb.com)
+with some customization that I did to get things how I want them.
 
-I haven't put any time into documenting these, but let me know if you have any
-questions!
+It [used to be](https://github.com/zef/zef.studio/tree/8eca7a72b8c0b60fae1f8f83841c2422ef63f03b)
+written in [Swift](https://swift.org) and generated as a static site using
+[Publish by John Sundell](https://github.com/JohnSundell/Publish).
 
 The template and design is handcoded by me, and I use the excellent
 [Sass](https://sass-lang.com) to generate the CSS.
@@ -16,11 +16,7 @@ The template and design is handcoded by me, and I use the excellent
 I also used [PhotoSwipe](https://photoswipe.com) for the image gallery that is
 activated when an image is selected.
 
-
-# Bridgetown Migration
-
-[ ] Metadata like Twitter cards
-
+Let me know if you have any questions!
 
 ## Customizations
 
