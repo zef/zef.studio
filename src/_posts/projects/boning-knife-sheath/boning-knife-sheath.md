@@ -36,8 +36,12 @@ then sanding it to shape with a belt sander.
 After finish sanding, I used [Feed-N-Wax Wood Polish &
 Conditioner](https://amzn.to/44VZj1S) on the wood.
 
-I'm very happy with the fit. It's nice and tight, but comes off with a little
-thumb push on the little protrusion I left on the back.
+I'm very happy with the fit. It's nice and tight when fully closed, but comes
+off with a little thumb push on the little protrusion I left on the back. I
+don't really know how lucky I got in the fit being as perfect as it is. Could I
+do it again on my next attempt if I tried? I'll probably find out at some point.
+
+TODO: Make a short video of the fit.
 
 [^1]:
     I got my knife in for $17 in January of 2022, though the price as of this
