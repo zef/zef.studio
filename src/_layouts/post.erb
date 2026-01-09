@@ -1,0 +1,27 @@
+---
+layout: default
+---
+
+<div class="post">
+    <article>
+        <h1><%= titleize_with_spans(resource.data.title) %></h1>
+        <time datetime="<%= resource.data.date.strftime('%Y-%m-%d') %>"><%= resource.data.date.strftime('%B %-d, %Y') %></time>
+        <div class="article-content">
+            <%= yield %>
+        </div>
+        <% if resource.data.tags && !resource.data.tags.empty? %>
+            <ul class="tags">
+            <% resource.data.tags.each do |tag| %>
+                <li>
+                    <%= link_to_tag tag %>
+                </li>
+            <% end %>
+            </ul>
+        <% end %>
+        <% if resource.data.postscript %>
+          <div class="postscript">
+            <%= resource.data.postscript %>
+          </div>
+        <% end %>
+    </article>
+</div>

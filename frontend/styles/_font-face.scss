@@ -1,0 +1,53 @@
+@use "sass:list";
+@use "sass:map";
+@use "sass:string";
+// from https://gist.github.com/jonathantneal/d0460e5c2d5d7f9bc5e6
+
+// =============================================================================
+// String Replace
+// =============================================================================
+
+@function str-replace($string, $search, $replace: "") {
+	$index: string.index($string, $search);
+
+	@if $index {
+		@return string.slice($string, 1, $index - 1) + $replace + str-replace(string.slice($string, $index + string.length($search)), $search, $replace);
+	}
+
+	@return $string;
+}
+
+// =============================================================================
+// Font Face
+// =============================================================================
+
+@mixin font-face($name, $path, $weight: null, $style: null, $exts: eot woff ttf svg) {
+	$src: null;
+
+	$extmods: (
+		eot: "?",
+		svg: "#" + str-replace($name, " ", "_")
+	);
+
+	$formats: (
+		otf: "opentype",
+		ttf: "truetype"
+	);
+
+	@each $ext in $exts {
+		$extmod: if(map.has-key($extmods, $ext), $ext + map.get($extmods, $ext), $ext);
+		$format: if(map.has-key($formats, $ext), map.get($formats, $ext), $ext);
+		$src: list.append($src, url(string.quote($path + "." + $extmod)) format(string.quote($format)), comma);
+    @if $ext == "eot" {
+      $src: list.append($src, url(string.quote($path + ".eot?#iefix")) format("embedded-opentype"), comma);
+    };
+	}
+
+	@font-face {
+		font-family: string.quote($name);
+		font-style: $style;
+		font-weight: $weight;
+		src: $src;
+    text-rendering: optimizeLegibility;
+	}
+}

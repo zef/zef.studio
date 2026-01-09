@@ -1,0 +1,70 @@
+<meta charset="UTF-8"/>
+<% 
+    description = data.description
+    # interpolating the tag into the front matter description is not supported by bridgetown
+    # solved with extra logic here for now
+    if data.prototype && data.prototype.term == "tag"
+      description = "Posts tagged with #{title}"
+    end
+
+    title = "#{data.title} | #{site.metadata.title}"
+    url = absolute_url(resource)
+
+    image = resource.respond_to?(:image) ? resource.image : "https://zef.studio/about/zef-houssney-1248.jpg"
+%>
+<title><%= title %></title>
+<meta name="description" content="<%= description %>" />
+<link rel="canonical" href="<%= url %>"/>
+
+<meta property="og:title" content="<%= title %>">
+<meta property="og:description" content="<%= description %>">
+<meta property="og:url" content="<%= url %>" />
+<meta property="og:image" content="<%= image %>">
+<meta property="og:site_name" content="<%= site.metadata.title %>">
+<!-- Could add og:video for posts with YouTube embeds -->
+
+<% if page.respond_to?(:date) %>
+  <meta property="og:type" content="article" />
+  <meta property="article:published_time" content="<%= date_to_xmlschema page.date %>" />
+<% else %>
+  <meta property="og:type" content="website" />
+<% end %>
+
+<meta name="twitter:title" content="<%= title %>">
+<meta name="twitter:description" content="<%= description %>">
+<meta name="twitter:image" content="<%= image %>">
+<meta name="twitter:site" content="@zefhous" />
+<meta name="twitter:card" content="summary_large_image">
+
+<%
+  apple_touch_icon_sizes = [57, 60, 72, 76, 114, 120, 144, 152, 180]
+  icon_manifest = [
+    { type: "image/png", sizes: "192x192", rel: "icon", filename: "android-icon-192x192.png" },
+    { type: "image/png", sizes: "96x96", rel: "icon", filename: "favicon-96x96.png" },
+    { type: "image/png", sizes: "32x32", rel: "icon", filename: "favicon-32x32.png" },
+    { type: "image/png", sizes: "16x16", rel: "icon", filename: "favicon-16x16.png" }
+  ]
+%>
+
+<% apple_touch_icon_sizes.each do |size| %>
+  <link rel="apple-touch-icon" sizes="<%= size %>x<%= size %>" href="/images/favicons/apple-icon-<%= size %>x<%= size %>.png">
+<% end %>
+
+<% icon_manifest.each do |icon| %>
+  <link rel="<%= icon[:rel] %>" type="<%= icon[:type] %>" sizes="<%= icon[:sizes] %>" href="/images/favicons/<%= icon[:filename] %>">
+<% end %>
+
+<link rel="manifest" href="/images/favicons/site.webmanifest">
+<link rel="mask-icon" href="/images/favicons/safari-pinned-tab.svg" color="#375686">
+<meta name="msapplication-TileColor" content="#375686">
+<meta name="msapplication-config" content="/images/favicons/browserconfig.xml">
+<meta name="theme-color" content="#ffffff">
+<meta name="application-name" content="zef.studio">
+<meta name="apple-mobile-web-app-title" content="zef.studio">
+
+<link rel="stylesheet" href="<%= asset_path :css %>" type="text/css"/>
+<script type="module" src="<%= asset_path :js %>"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover"/>
+<%= feed_meta %>
+
+<%= live_reload_dev_js %>

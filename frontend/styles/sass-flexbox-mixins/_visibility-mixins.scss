@@ -1,0 +1,117 @@
+@use "grid-variables";
+
+@mixin show($breakpoint, $row) {
+  @if $breakpoint == "xs" {
+    @if $row == "true" or $row == "row" {
+      display: flex;
+    } @else {
+      display: block;
+    }
+  } @else if $breakpoint == "xs-only" {
+    @media #{grid-variables.$breakpoint-xs-only} {
+      @if $row == "true" or $row == "row" {
+        display: flex;
+      } @else {
+        display: block;
+      }
+    }
+  } @else if $breakpoint == "sm" {
+    @media #{grid-variables.$breakpoint-sm-up} {
+      @if $row == "true" or $row == "row" {
+        display: flex;
+      } @else {
+        display: block;
+      }
+    }
+  } @else if $breakpoint == "sm-only" {
+    @media #{grid-variables.$breakpoint-sm-only} {
+      @if $row == "true" or $row == "row" {
+        display: flex;
+      } @else {
+        display: block;
+      }
+    }
+  } @else if $breakpoint == "md" {
+    @media #{grid-variables.$breakpoint-md-up} {
+      @if $row == "true" or $row == "row" {
+        display: flex;
+      } @else {
+        display: block;
+      }
+    }
+  } @else if $breakpoint == "md-only" {
+    @media #{grid-variables.$breakpoint-md-only} {
+      @if $row == "true" or $row == "row" {
+        display: flex;
+      } @else {
+        display: block;
+      }
+    }
+  } @else if $breakpoint == "lg" {
+    @media #{grid-variables.$breakpoint-lg-up} {
+      @if $row == "true" or $row == "row" {
+        display: flex;
+      } @else {
+        display: block;
+      }
+    }
+  } @else if $breakpoint == "lg-only" {
+    @media #{grid-variables.$breakpoint-lg-only} {
+      @if $row == "true" or $row == "row" {
+        display: flex;
+      } @else {
+        display: block;
+      }
+    }
+  } @else if $breakpoint == "xl" {
+    @media #{grid-variables.$breakpoint-xl-up} {
+      @if $row == "true" or $row == "row" {
+        display: flex;
+      } @else {
+        display: block;
+      }
+    }
+  } @else {
+    @warn "show mixin arg must be one of the existing breakpoints or ranges (#{grid-variables.$breakpoint-all-prefixes})";
+  }
+}
+
+@mixin hide($breakpoint) {
+  @if $breakpoint == "xs" {
+    display: none;
+  } @else if $breakpoint == "xs-only" {
+    @media #{grid-variables.$breakpoint-xs-only} {
+      display: none;
+    }
+  } @else if $breakpoint == "sm" {
+    @media #{grid-variables.$breakpoint-sm-up} {
+      display: none;
+    }
+  } @else if $breakpoint == "sm-only" {
+    @media #{grid-variables.$breakpoint-sm-only} {
+      display: none;
+    }
+  } @else if $breakpoint == "md" {
+    @media #{grid-variables.$breakpoint-md-up} {
+      display: none;
+    }
+  } @else if $breakpoint == "md-only" {
+    @media #{grid-variables.$breakpoint-md-only} {
+      display: none;
+    }
+  } @else if $breakpoint == "lg" {
+    @media #{grid-variables.$breakpoint-lg-up} {
+      display: none;
+    }
+  } @else if $breakpoint == "lg-only" {
+    @media #{grid-variables.$breakpoint-lg-only} {
+      display: none;
+    }
+  } @else if $breakpoint == "xl" {
+    @media #{grid-variables.$breakpoint-xl-up} {
+      display: none;
+    }
+  } @else {
+    @warn "hide mixin arg must be one of the existing breakpoints or ranges (#{grid-variables.$breakpoint-all-prefixes})";
+  }
+}
