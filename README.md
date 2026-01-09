@@ -27,6 +27,15 @@ groups how many I want. They can be displayed in 2-3 columns. I use a `^` as an
 [End-Of-Block marker](https://kramdown.gettalong.org/syntax.html#eob-marker)
 in kramdown to separate lists when I want control over the layout.
 
+### Image Processing
+
+I have a pipeline for resizing images in
+[plugins/image_processor.rb](image_processor.rb).  It allows me to refer to
+images in posts with just the file name or the absolute path. It creates two
+scaled versions of source images, and also wraps image tags in `<figure>` tags
+that include a link to a larger sized image that is used for the PhotoSwipe
+gallery.
+
 ### Front Matter Options
 
 - `title` is not needed in Front Matter if it's provided as an initial header, I infer and set it by the first header in markdown files.
