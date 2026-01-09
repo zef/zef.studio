@@ -1,0 +1,26 @@
+
+<% if paginator.total_pages > 1 %>
+  <ul class="pagination">
+    <li>
+      <% if paginator.previous_page %>
+        <a class="prev" href="<%= paginator.previous_page_path %>" aria-label="Previous page" rel="prev"></a>
+      <% end %>
+    </li>
+
+    <% (1..paginator.total_pages).each do |page| %>
+      <li class="<%= "current" if page == paginator.page %>">
+        <% if page == paginator.page %>
+          <%= page %>
+        <% else %>
+          <%= page_link(page, paginator) %>
+        <% end %>
+      </li>
+    <% end %>
+
+    <li>
+      <% if paginator.next_page %>
+        <a class="next" href="<%= paginator.next_page_path %>" aria-label="Next page" rel="next"></a>
+      <% end %>
+    </li>
+  </ul>
+<% end %>

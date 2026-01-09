@@ -1,0 +1,37 @@
+---
+title: iOS Development Portfolio
+layout: default
+---
+<% require 'kramdown' unless defined?(Kramdown) %>
+
+<ul class="portfolio">
+  <% site.data.clients.each do |client| %>
+    <% description_html = Kramdown::Document.new(client[:description].to_s).to_html %>
+    <li>
+      <div class="headline-container">
+        <h1><%= client[:name] %></h1>
+      </div>
+
+      <div class="item-description">
+        <ul>
+          <% client[:icons].each do |icon| %>
+            <li>
+              <a class="app-icon" href="<%= icon[:link] %>">
+                <figure>
+                  <img src="/images/portfolio/<%= icon[:image] %>">
+                  <figcaption><%= icon[:name] %></figcaption>
+                </figure>
+              </a>
+            </li>
+          <% end %>
+        </ul>
+
+        <div>
+          <%= raw description_html %>
+        </div>
+      </div>
+    </li>
+
+  <% end %>
+</ul>
+

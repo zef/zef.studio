@@ -1,0 +1,939 @@
+@use "sass:color"
+@use "sass:meta"
+@use 'normalize'
+@use 'font-face'
+@use 'mixins'
+
+@use 'sass-flexbox-mixins/grid-variables'
+@use 'sass-flexbox-mixins/visibility-mixins'
+@use 'sass-flexbox-mixins/grid-mixins'
+@use 'sass-flexbox-mixins/grid-breakpoints'
+
+
++font-face.font-face('Calluna', '/fonts/Calluna-Regular', normal, normal)
++font-face.font-face('CallunaLight', '/fonts/Calluna-Light', normal, normal)
++font-face.font-face('CallunaSemibold', '/fonts/Calluna-Semibold', normal, normal)
++font-face.font-face('CallunaIt', '/fonts/Calluna-It', normal, italic)
+
+$textColor: #333
+$lightTextColor: #666
+$textOnDark: white
+$textInvertedColor: #333
+
+$darkBgColor: #375686
+$highlightColor: #2f69e3
+
+$secondaryColor: #ff3f45
+
+$background: white
+
+$cornerRadius: 16px
+
+
+=regularFont
+  font-family: "Calluna", "Times New Roman", Times, serif
+
+=lightFont
+  font-family: "CallunaLight", "Calluna", "Times New Roman", Times, serif
+
+=semibold
+  font-family: "CallunaSemibold", "Calluna", "Times New Roman", Times, serif
+  font-weight: normal
+
+=italic
+  font-family: "CallunaIt", "Times New Roman", Times, serif
+  font-style: italic
+
+=smallCaps
+  font-variant: small-caps
+
+=codeFont
+  font-family: "Menlo", monospace, monospace
+  font-size: .9em
+
+
+=headerText($caps: false)
+  +semibold
+  text-shadow: white 1px 1px 1px
+
+  @if $caps
+    +smallCaps
+
+=sans
+  font-family: -apple-system, verdana, "Lucida Grande", "Lucida Sans Unicode", helvetica, arial, sans-serif
+
+=paperBg
+  background-color: $background
+  background: url(/images/bg-texture.svg)
+  background-position: center
+
+=paperBgDark
+  background-color: $darkBgColor
+  background: url(/images/bg-texture-dark.svg)
+  background-position: center
+
+=svgSquare($size)
+  height: $size
+  width: $size
+  background-size: $size
+
+=contentContainer($maxWidth: 624px)
+  max-width: $maxWidth
+  margin: 0 auto
+
+=deboss
+  text-shadow: 0px 1px 0px rgba(white,.1), 0px -1px 0px rgba(black,.3)
+
+=twoColumnContent($padding: 0.5rem)
+  +grid-mixins.col(6)
+
+  &:nth-child(odd)
+    padding-left: 0
+    padding-right: $padding
+
+  &:nth-child(even)
+    padding-left: $padding
+    padding-right: 0
+
+=threeColumnContent($padding: 0.5rem)
+  +grid-mixins.col(4)
+  padding: 0 calc($padding/2)
+
+  &:nth-child(3n - 2)
+    padding-left: 0
+    padding-right: $padding
+
+  &:nth-child(3n)
+    padding-left: $padding
+    padding-right: 0
+
+
+=targetSiblingCount($number: 2, $element: li)
+  &:first-child:nth-last-child(n + #{$number}),
+  &:first-child:nth-last-child(n + #{$number}) ~ #{$element}
+    @content
+
+// used inside a ul. Extracted so we can target different screen sizes with different padding values
+=styleImageColumns($padding: 0.5rem)
+  li
+    margin-bottom: $padding * 2
+    +twoColumnContent($padding)
+
+    +targetSiblingCount(3)
+      +threeColumnContent($padding)
+
+    +targetSiblingCount(4)
+      +twoColumnContent($padding)
+
+
+////////////////////
+// sticky footer
+
+html, body
+  height: 100%
+  font-size: 17px
+
+body
+  display: flex
+  flex-direction: column
+
+  .content
+    flex: 1 0 auto
+
+  footer
+    flex-shrink: 0
+
+// end sticky footer
+////////////////////
+
+
+body
+  +paperBg
+  color: $textColor
+  +regularFont
+  text-align: center
+
+  .content
+    margin: 0 1em 2em
+
+    .body
+      +contentContainer
+
+body.section-portfolio
+  .content
+    .body
+      +contentContainer(710px)
+
+header
+  +contentContainer
+
+  a.logo
+    background: url(/images/z.svg)
+    display: block
+    transition: all 200ms ease-in-out
+
+  .site-name
+    +headerText($caps: true)
+    color: $textColor
+
+    &:hover
+      color: $textColor
+
+  &:not(.portfolio)
+    +grid-mixins.row
+    +grid-mixins.between
+    align-items: flex-start
+    flex-wrap: nowrap
+
+    .site-name
+      font-size: 2.2em
+      margin-top: 24px
+
+    .logo-container
+      margin: 20px 20px 20px 0
+
+    a.logo
+      +svgSquare(36px)
+
+      &:hover
+        transform: scale(1.2)
+
+    .site-name-subtitle
+      display: none
+
+  &.portfolio
+    text-align: center
+
+    .site-name
+      font-size: 3em
+
+    a.logo
+      +svgSquare(88px)
+      margin: 50px auto 30px
+
+      &:hover
+        transform: scale(1.06)
+
+    .site-name-subtitle
+      +italic
+      margin-top: 0
+      margin-bottom: 3em
+
+  nav
+    text-align: left
+    font-size: 1.12em
+
+    ul
+      margin: 0
+      padding: 1em 0 0.6em
+      display: flex
+      flex-wrap: wrap
+
+    li
+      padding: 0.8em 0.6em
+
+    +grid-breakpoints.tiny
+      li
+        font-size: 0.92em
+
+    a
+      color: $textColor
+      +semibold
+
+footer
+  // background: darken($background, 10)
+  +paperBgDark
+  +lightFont
+  font-size: 0.9em
+  border-top: 1px solid color.adjust($darkBgColor, $lightness: -20%)
+
+  .footer-content
+    +contentContainer
+    +grid-mixins.row
+    +grid-mixins.between
+    padding: 1em
+
+  ul
+    +grid-mixins.row
+    +grid-mixins.between
+    align-items: center
+    margin-top: 1em
+
+    li
+      margin-bottom: 12px
+
+  a.icon
+    display: block
+    color: rgba($textOnDark, 0.7)
+    text-indent: -10000px
+
+    $size: 40px
+    width: $size
+    height: $size
+    background-size: $size
+    background-repeat: no-repeat
+    background-position: center
+    opacity: 0.4
+    transition: all 200ms ease-in-out
+
+    &:hover
+      opacity: 0.5
+      transform: scale(1.1)
+
+    $icons: github twitter zef instagram email
+    @each $icon in $icons
+      &.#{$icon}
+        background-image: url(/images/icons/#{$icon}.svg)
+
+    &.zef
+      $size: 70px
+      width: $size
+      height: $size
+      background-size: $size
+      opacity: 0.25
+      &:hover
+        opacity: 0.45
+
+    // &:hover
+    //   color: $textOnDark
+
+
+// general styles
+
+a
+  color: $highlightColor
+  text-decoration: none
+  +semibold
+
+  &:hover
+    color: color.adjust($highlightColor, $lightness: -14%)
+
+
+.italic
+  +italic
+
+ul
+  list-style-type: none
+  padding: 0
+
+h1
+  +headerText($caps: true)
+  font-size: 2em
+  margin: 0.4em 0
+
+  +grid-breakpoints.tiny
+    font-size: 1.7em
+
+  span
+    font-variant: none
+    +italic
+
+h2, h3, h4
+  +headerText
+  margin: 1em 0 0.2em
+
+h2
+  font-size: 1.5em
+h3
+  font-size: 1.3em
+h4
+  font-size: 1.15em
+
+p
+  line-height: 1.4em
+  margin: 0.6em 0 1.2em
+
+hr
+  border: none
+  border-top: 1px solid $lightTextColor
+  margin: 0.5rem auto 1.5rem
+
+  &.partial
+    width: 20%
+
+.clear
+  +mixins.clearfix
+
+code
+  +codeFont
+  color: $lightTextColor
+  background-color: white
+
+// a few various styles for inline usage inside markdown
+.note
+  font-size: 0.9em
+  color: $lightTextColor
+
+.centered
+  text-align: center
+
+.italic
+  +italic
+
+// double column, but not on +tiny
+ul.double
+  +grid-mixins.row
+
+  li
+    list-style-type: none
+    +grid-mixins.col(12)
+
+    +grid-breakpoints.small
+      +twoColumnContent
+////////////////////
+
+table
+  border-collapse: collapse
+  line-height: 1em
+  +codeFont
+  margin: 0 auto 2em
+
+  thead tr
+    border-bottom: 2px solid $lightTextColor
+
+    th
+      padding: 0.2em 0
+
+
+  tbody
+    text-align: left
+    color: $lightTextColor
+
+    tr
+      &:first-child td
+        padding-top: 0.4em
+
+      td
+        padding: 0.4em 1.8em
+        border-left: 1px solid $lightTextColor
+        border-right: 1px solid $lightTextColor
+
+        &:first-child
+          padding-left: 0
+          border-left: none
+        &:last-child
+          padding-right: 0
+          border-right: none
+
+
+::selection
+  background: color.adjust($highlightColor, $lightness: 20%)
+
+.article-list
+  +grid-mixins.row
+  margin-top: 0.5em
+
+  a
+    color: $textColor
+    // background-color: darken($background, 10)
+
+    +grid-breakpoints.tiny
+      margin: 0 0 1rem
+    +grid-breakpoints.small
+      margin: 0 0 2rem
+    // padding: 0.4em 0.8em
+    background-color: white
+
+    box-shadow: rgba($textColor, 0.3) 0px 3px 4px
+
+    border-radius: 8px
+    overflow: hidden
+    transition: all 200ms ease-in-out
+
+    &:hover
+      transform: scale(1.03)
+
+  li
+    +grid-mixins.col(12)
+    padding: 0
+    display: flex
+
+    +grid-breakpoints.small
+      +twoColumnContent(1rem)
+
+    // +small-only
+    //   +twoColumnContent(1rem)
+
+    // +medium
+    //   +threeColumnContent
+
+    article
+      text-align: left
+      $hPad: 0.6em
+      width: 100%
+
+      img
+        width: 100%
+        border: none
+        box-shadow: none
+        display: block
+
+      .excerpt
+        position: relative
+        color: #555
+
+        // don't want to show this in the 1-up configuration, but only when multiple columns are displayed
+        height: 0
+        overflow: hidden
+
+        background-image: url(/images/no-image.png)
+        background-repeat: no-repeat
+        background-position: center
+        background-size: 100%
+
+        +grid-breakpoints.small
+          display: block
+
+          // these 2 styles get us the correct aspect ratio that we want for the container,
+          // along with the inherited height: 0
+          width: 100%
+          padding-bottom: 75%
+
+          &:after
+            content: ""
+            position: absolute
+            bottom: 0
+            left: 0
+            right: 0
+            height: 6em
+            background: linear-gradient(to bottom, rgba(255, 255, 255, 0), rgba(255, 255, 255, 1) 92%)
+
+        > div
+          padding: 0 0.6em
+
+        // gives us a little more top padding when the excerpt is hidden, as on portrait iPhone
+
+        & + h2
+          +grid-breakpoints.tiny
+            padding-top: 0.9em
+
+      h2
+        font-size: 1em
+        margin: 0
+        padding: 0.5em $hPad 0.2em
+
+      time
+        padding: 0.2em $hPad 0.6em
+        display: inline-block
+        border: none
+        text-align: left
+        font-size: 0.9em
+        color: $lightTextColor
+        +regularFont
+
+      .youtube-icon,
+      .image-count
+        position: relative
+        float: right
+        font-variant-numeric: lining-nums
+        font-size: 0.9em
+        color: $lightTextColor
+        padding-top: 0.2em
+        margin-right: 34px
+        +regularFont
+        +smallCaps
+
+        &:after
+          content: ""
+          position: absolute
+          right: -25px
+          background-repeat: no-repeat
+          background-position: center
+          display: inline-block
+
+      .image-count:after
+        background-image: url(/images/icons/photos.svg)
+        +svgSquare(20px)
+
+      .youtube-icon
+        margin-top: -1px
+        &:after
+          background-image: url(/images/icons/youtube.svg)
+          +svgSquare(23px)
+
+.page article h1
+  margin: 0.4em 0
+  display: block
+  border-top: none
+  padding: 0
+
+  &:before, &:after
+    display: none
+
+article
+  text-align: center
+
+  .article-content
+    &:after
+      content: ""
+      display: block
+      color: rgba($textColor, 0.5)
+      font-size: 3em
+      margin-top: .3em
+
+
+  h1
+    position: relative
+    display: table
+    margin: .25em auto
+
+    +grid-breakpoints.tiny
+      display: block
+      padding-top: 8px
+      border-top: 1px solid $textColor
+      margin-bottom: .1em
+
+    +grid-breakpoints.small
+      &:before, &:after
+        content: ""
+        background-color: $textColor
+        height: 2px
+        position: absolute
+        top: 50%
+        width: 0.8em
+        // display: inline-block
+        // transform: translateY(-50%) translateX(-.3em)
+
+      &:before
+        left: -1em
+
+      &:after
+        right: -1em
+
+  h1 a
+    color: $textColor
+
+  time
+    text-align: center
+    // margin: 0 auto
+    padding: 3px
+    display: inline-block
+    margin-bottom: 0.4em
+    border-bottom: 1px solid $textColor
+    +smallCaps
+    +lightFont
+
+    +grid-breakpoints.tiny
+      display: block
+      padding-bottom: 8px
+
+  h1, h2, h3, h4
+    +mixins.clearbefore
+
+  h3, h4, p, ul, ol
+    text-align: left
+
+  blockquote
+    +italic
+    margin: 0.4em 1.4em
+
+  .postscript
+    +italic
+    font-size: 0.8em
+
+  ul
+    list-style-type: disc
+
+  ul, ol
+    list-style-position: inside
+
+    li
+      margin-bottom: 0.25em
+
+      ul, ol
+        margin: 0.6em 0 0.6em 1.6em
+
+
+  dl
+    text-align: left
+
+    dt
+      font-weight: bold
+      margin-top: 0.8em
+
+    dd
+      +italic
+      font-size: 0.9em
+      margin: 0.6em 1em 1em
+  
+
+  ul:has(li > figure)
+    +grid-mixins.row
+    margin: 0
+    list-style-type: none
+
+    // in this context we'll remove the default `figure` margin and provide our own vertical space in the column styles
+    figure
+      margin: 0
+
+    +styleImageColumns(0.2rem)
+
+    +grid-breakpoints.small
+      +styleImageColumns(0.5rem)
+
+  figure
+    margin: 0 0 1rem
+    padding: 0
+    box-shadow: rgba(#000, 0.5) 0px 2px 3px
+
+    img
+      width: 100%
+      display: table
+
+    figcaption
+      // +italic
+      // +smallCaps
+      // +lightFont
+      color: $lightTextColor
+      padding: 0.3em 0.5em 0.2em
+      font-size: 0.9em
+      border-top: 1px solid rgba(#000, 0.2)
+
+    &.leading, &.trailing
+      width: 36%
+
+      +grid-breakpoints.small
+        width: 28%
+
+    &.leading
+      float: left
+      margin: 0 0.6em 0.6em 0
+    &.trailing
+      float: right
+      margin: 0 0 0.6em 0.6em
+
+    &.rounded
+      border-radius: 50%
+      overflow: hidden
+
+  .video-container
+    position: relative
+    width: 100%
+    height: 0
+    padding-bottom: 56.25%
+
+    iframe
+      position: absolute
+      top: 0
+      left: 0
+      width: 100%
+      height: 100%
+
+  ul.affiliate-earnings
+    +grid-mixins.row
+    text-align: center
+    list-style-type: none
+
+    li
+      +grid-mixins.col(6)
+      +semibold
+      font-size: 1.6em
+      +grid-breakpoints.small
+        font-size: 2em
+
+    .cash
+      font-size: 2em
+      +headerText
+
+  ul.tags
+    // +col-offset(3)
+
+  .footnotes ol
+    +mixins.clearbefore
+    margin-top: 3em
+    border-top: 1px solid $lightTextColor
+    padding: 1.2em 0 0 1.3em
+    font-size: 0.8em
+    list-style-position: outside
+    line-height: 1.4
+
+    li
+      margin-bottom: 0.8em
+
+=pill-button($bgColor: $darkBgColor, $foregroundColor: white, $height: 31px, $verticalOffset: 2px)
+  padding: $verticalOffset 0.8em 0px
+  line-height: ($height - $verticalOffset)
+  color: $foregroundColor
+  border-radius: $cornerRadius
+  background-color: $bgColor
+  display: inline-flex
+  transition: all 200ms ease-in-out
+
+  &:hover
+    background-color: color.adjust($bgColor, $lightness: 10%)
+
+=pill-button-secondary($height: 31px, $verticalOffset: 2px)
+  +pill-button($bgColor: white, $foregroundColor: $highlightColor, $height: $height, $verticalOffset: $verticalOffset)
+  border: 2px solid $highlightColor
+
+  &:hover
+    background-color: color.change($highlightColor, $alpha: 6%)
+
+
+.tag-title
+  +grid-mixins.row
+  +grid-mixins.between
+  +grid-mixins.bottom
+
+  .browse-all
+    +pill-button-secondary
+    margin-bottom: 1.1em
+
+ul.tags
+  display: flex
+  flex-wrap: wrap
+  // justify-content: space-evenly
+  list-style-type: none
+
+  li
+    padding: 0.3em
+
+  a
+    +pill-button
+
+ul.pagination
+  +grid-mixins.row
+  +grid-mixins.between
+  padding: 2em 0
+
+  li
+    &.current
+      +pill-button($height: 44px, $verticalOffset: 4px)
+
+    a
+      +pill-button-secondary($height: 44px, $verticalOffset: 2px)
+
+    // maintains centering of middle items
+    &:first-child, &:last-child
+      width: 44px
+      a
+        display: inline-flex
+        align-items: center
+        justify-content: center
+        width: 44px
+        height: 44px
+        padding: 0
+
+  a.prev:after, a.next:after
+    content: ""
+    width: 60%
+    height: 60%
+
+    background-color: $highlightColor
+    opacity: 0.9
+
+    -webkit-mask-repeat: no-repeat
+    mask-repeat: no-repeat
+    -webkit-mask-position: center
+    mask-position: center
+    -webkit-mask-size: contain
+    mask-size: contain
+
+  a.prev:after
+    -webkit-mask-image: url(/images/icons/backward.fill.svg)
+    mask-image: url(/images/icons/backward.fill.svg)
+
+  a.next:after
+    -webkit-mask-image: url(/images/icons/forward.fill.svg)
+    mask-image: url(/images/icons/forward.fill.svg)
+
+.section-portfolio
+  .content
+    text-align: left
+
+  .headline-container
+    +grid-mixins.row
+    +grid-mixins.col(12)
+    +grid-mixins.col-offset("sm", 3)
+    +grid-mixins.col("sm", 9)
+
+    +grid-breakpoints.tiny
+      text-align: center
+    +grid-breakpoints.small
+      text-align: left
+
+    padding-top: 0px
+    padding-bottom: 0px
+
+    h1
+      +paperBg
+      margin-top: 10px
+      margin-bottom: 0px
+      box-shadow: 8px 0 0 $background, -8px 0 0 $background
+
+      +grid-breakpoints.tiny
+        text-align: center
+        margin: 10px auto 0
+      +grid-breakpoints.small
+        text-align: left
+
+    // Line that goes across headline
+    &:after
+      content: ""
+      position: absolute
+      background: $textColor
+      left: 0
+      right: 0
+      margin-top: 25px
+      height: 3px
+      z-index: -1
+
+  .item-description
+    +grid-mixins.row
+    +grid-mixins.end
+
+    >ul
+      +grid-mixins.col(4)
+      +grid-mixins.col("sm", 3)
+
+      +grid-breakpoints.tiny
+        text-align: center
+      +grid-breakpoints.small
+        text-align: right
+
+    >div
+      +grid-mixins.col(8)
+      +grid-mixins.col("sm", 9)
+
+  p
+    padding-right: 6px
+
+  a.app-icon
+    display: inline-block
+    text-align: center
+    padding: 6px 0px
+    margin: 6px 0 0
+    +sans
+    text-decoration: none
+    color: $textColor
+    font-weight: normal
+
+    &:hover
+      background-color: rgba(0, 0, 0, 0.1)
+      border-radius: 12px
+
+  figure
+    margin: 6px 2px
+
+  $icon-width: 68px
+
+  img
+    padding-bottom: 2px
+    width: $icon-width
+
+  figcaption
+    +grid-breakpoints.tiny
+      width: $icon-width + 36
+      font-size: 0.8em
+    +grid-breakpoints.small
+      width: $icon-width + 50
+
+@import "photoswipe/style.css"
+@import "photoswipe-dynamic-caption-plugin/photoswipe-dynamic-caption-plugin.css"
+
+.pswp__counter
+  font-size: 18px
+
+.pswp__dynamic-caption.pswp__dynamic-caption--below
+  max-width: 10000px
+  padding: 10px
