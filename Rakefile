@@ -11,6 +11,7 @@ task default: :deploy
 desc "Build the Bridgetown site for deployment"
 task :deploy => [:clean, "frontend:build"] do
   Bridgetown::Commands::Build.start
+  `rsync -a output/ ~/code/zef-studio-output`
 end
 
 desc "Build the site in a test environment"
