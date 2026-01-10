@@ -40,9 +40,3 @@ yarn-debug.log*
 /tmp/pids/*
 !/tmp/pids/
 !/tmp/pids/.keep
-
-src/images/
-
-*.jpg
-*.jpeg
-*.png
