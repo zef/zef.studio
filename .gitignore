@@ -41,11 +41,8 @@ yarn-debug.log*
 !/tmp/pids/
 !/tmp/pids/.keep
 
-publish/
 src/images/
 
 *.jpg
 *.jpeg
 *.png
-
-
