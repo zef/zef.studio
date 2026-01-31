@@ -65,12 +65,6 @@ to post about individually.
 - ![Wood Sword](wood-sword/wood-sword.jpg)
 - ![Wood Sword](wood-sword/hammer-sword.jpg "Every Tool's a Hammer")
 ^
-- wooden rifles
-^
-- ![Wood Rifles](wood-rifle/wood-rifles.jpg)
-- ![Wood Rifles](wood-rifle/oiling-wood.jpg)
-- ![Wood Rifles](wood-rifle/shootout.jpg)
-^
 - wooden box gift
 ^
 - ![Sliding Box](slider-box/box-open.jpg)
