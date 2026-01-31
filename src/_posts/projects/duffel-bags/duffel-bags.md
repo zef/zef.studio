@@ -1,5 +1,5 @@
 ---
-date: 2024-7-10 12:00
+date: 2024-07-10 12:00
 description: Making Simple Duffel Bags out of Cordura Fabric
 tags: fabric
 image: duffel-bags-sunset.jpg
@@ -9,7 +9,7 @@ image: duffel-bags-sunset.jpg
 
 Here are some simple duffel bags I made for my family.
 
-I documented the process of sewing one of these on [this Instagram story](https://www.instagram.com/stories/highlights/17922903128925067/),
+I documented the process of sewing one of these on [this Instagram Story](https://www.instagram.com/stories/highlights/17922903128925067/),
 so check that out if you're interested.
 
 I don't have too many details in this post, but I'd like to write up more about
@@ -26,7 +26,7 @@ most of these, but the two-tone bag has 3/4" instead because I didn't have any
 1" in that color.
 
 - ![Grey Duffel Bags made by Zef Houssney](duffel-bags-grey.jpg "Two sizes of duffels in grey and charcoal that I made for my kids.")
-- ![Duffel Bags made by Zef Houssney](duffel-bags-4.jpg "All four duffels I've made so far together, ready for a trip!")
+- ![Duffel Bags made by Zef Houssney](duffel-bags-4.jpg "All four duffels I had made at this point, ready for a trip!")
 
 After making the grey/charcoal bags, I added some end-straps across the cylinder end,
 which I like a lot.
@@ -36,3 +36,10 @@ on a friend's industrial CO2 laser. I still have some blanks to make more.
 
 - ![Laser-cut duffel bag blanks.](duffel-bag-material.jpg "&")
 - ![A two-tone kit of all the required components that I gave to a friend.](duffel-bag-kit.jpg "&")
+
+Later on, I made some more so each of us had one. The two in the back here are larger.
+
+![A lot of duffel bags, made by Zef Houssney](all-bags.jpg "A bunch of bags I've made, including some small pouches. The backpack on the back left was made by my 13-year-old daughter.")
+
+- ![A light grey duffel bag with black straps, made by Zef Houssney](duffel-grey.jpg "A light grey duffel with contrasting black straps.")
+- ![A light grey duffel bag with black straps, made by Zef Houssney](duffel-grey-help.jpg "My 7-year-old daughter sewed the zipper on this one.")
