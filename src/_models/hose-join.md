@@ -1,4 +1,7 @@
 ---
+# This page's prose is a GENERATED PLACEHOLDER, not Zef's writing. It exists to
+# show the shape of the page. Replace it and delete this flag before publishing.
+placeholder_prose: true
 date: 2025-06-14 12:00
 material: PETG
 ---

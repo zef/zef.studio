@@ -43,6 +43,11 @@ module Builders
         seen << slug
         resource.data[:scad] = schema_for(slug, path)
         apply_defaults(resource, slug)
+
+        if resource.data.placeholder_prose
+          Bridgetown.logger.warn "ScadModels:",
+                                 "#{resource.relative_path} still has generated placeholder prose"
+        end
       end
 
       report_orphans(seen)

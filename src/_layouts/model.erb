@@ -94,6 +94,15 @@ layout: default
   </scad-customizer>
 
   <div class="model-notes">
+    <% if resource.data.placeholder_prose %>
+      <p class="model-placeholder-notice">
+        <strong>Placeholder text.</strong> The writing below was generated as a
+        sample to show the shape of this page. It isn’t Zef’s, and the first-person
+        bits didn’t happen. Replace it and remove <code>placeholder_prose</code>
+        from the front matter.
+      </p>
+    <% end %>
+
     <%= yield %>
 
     <dl class="model-meta">
