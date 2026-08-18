@@ -15,14 +15,19 @@ const FINEST = 64
 
 /**
  * Formats a millimetre value as inches.
- * @returns {{text: string, exact: boolean, decimal: string}}
+ *
+ * `fraction` says whether the reading is in fraction notation — 3/16″, 1 3/8″,
+ * 2″ — or fell back to a decimal. It matters because only a fraction can be
+ * *rounded to*: a decimal reading is already as precise as it looks.
+ *
+ * @returns {{text: string, exact: boolean, fraction: boolean, decimal: string}}
  */
 export function toInches(mm) {
   const inches = mm / MM_PER_INCH
   const decimal = `${trimZeros(inches.toFixed(3))}″`
 
-  if (!Number.isFinite(inches)) return { text: "", exact: false, decimal: "" }
-  if (inches === 0) return { text: "0″", exact: true, decimal }
+  if (!Number.isFinite(inches)) return { text: "", exact: false, fraction: false, decimal: "" }
+  if (inches === 0) return { text: "0″", exact: true, fraction: true, decimal }
 
   const sign = inches < 0 ? "-" : ""
   const magnitude = Math.abs(inches)
@@ -39,7 +44,7 @@ export function toInches(mm) {
 
   // Too fine to read off a rule — a decimal says more.
   if (numerator > 0 && denominator > READABLE_DENOMINATOR) {
-    return { text: decimal, exact, decimal }
+    return { text: decimal, exact, fraction: false, decimal }
   }
 
   const whole = Math.floor(ticks / FINEST)
@@ -48,14 +53,20 @@ export function toInches(mm) {
   else if (whole === 0) text = `${numerator}/${denominator}″`
   else text = `${whole} ${numerator}/${denominator}″`
 
-  return { text: `${sign}${text}`, exact, decimal }
+  return { text: `${sign}${text}`, exact, fraction: true, decimal }
 }
 
-/** The readout shown next to a control: "≈ 3/16″" when it isn't exact. */
+/**
+ * The readout shown beside a control.
+ *
+ * The ≈ marks a fraction the value has been rounded to — it's saying "call it
+ * 3/16", not 3/16 exactly". A decimal reading carries no such rounding claim,
+ * so it goes bare.
+ */
 export function inchLabel(mm) {
-  const { text, exact } = toInches(mm)
+  const { text, exact, fraction } = toInches(mm)
   if (!text) return ""
-  return exact ? text : `≈ ${text}`
+  return exact || !fraction ? text : `≈ ${text}`
 }
 
 function trimZeros(text) {
@@ -77,9 +88,8 @@ const WORTH_SNAPPING_MM = 0.01
  * @returns {{mm: number, label: string}|null}
  */
 export function snapTarget(mm) {
-  const { text, exact } = toInches(mm)
-  if (exact || !text || !Number.isFinite(mm)) return null
-  if (!text.includes("/") && !/^-?\d+″$/.test(text)) return null
+  const { text, exact, fraction } = toInches(mm)
+  if (exact || !fraction || !text || !Number.isFinite(mm)) return null
 
   const ticks = Math.round((mm / MM_PER_INCH) * FINEST)
   const target = (ticks / FINEST) * MM_PER_INCH

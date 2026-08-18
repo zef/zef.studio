@@ -644,6 +644,13 @@ $controlBg: #f5f4f1
     margin: 0
     text-align: right
 
+    // Stacked values — millimetres over inches — stay in the same column.
+    span
+      display: block
+
+      & + span
+        color: $lightTextColor
+
 .scad-problems
   +uiFont
   background-color: rgba($secondaryColor, 0.08)

@@ -131,7 +131,7 @@ export class Controls {
       snap = snapTarget(value)
       readout.disabled = !snap
       readout.title = snap
-        ? `Snap to exactly ${snap.label} — ${snap.mm} mm`
+        ? `Snap to ${snap.label} — ${snap.mm} mm`
         : text === decimal
           ? ""
           : decimal

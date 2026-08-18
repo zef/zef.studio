@@ -307,10 +307,12 @@ export class ScadCustomizer extends HTMLElement {
 
     const size = `${round(x)} × ${round(y)} × ${round(z)} mm`
     // Decimal inches for the size triple: three fractions side by side is a
-    // wall of slashes, and lining decimals compare at a glance.
-    const inches = geometry.bounds.size.map((mm) => (mm / 25.4).toFixed(2)).join(" × ")
+    // wall of slashes, and lining decimals compare at a glance. Stacked under
+    // the millimetres rather than trailing them, so the two read as the same
+    // measurement twice instead of one long line.
+    const inches = `${geometry.bounds.size.map((mm) => (mm / 25.4).toFixed(2)).join(" × ")}″`
     const rows = [
-      ["Size", this.inchesOn ? `${size} · ≈ ${inches}″` : size],
+      ["Size", this.inchesOn ? [size, inches] : size],
       ["Volume", `${solid.solidVolume.toFixed(1)} cm³ solid`],
       ["Weight", `${formatGrams(solid.grams)} in PLA`],
       [`Weight (${percent(TYPICAL_INFILL)} infill)`, formatGrams(sparse.grams)],
@@ -633,9 +635,19 @@ function save(blob, filename) {
   setTimeout(() => URL.revokeObjectURL(url), 1000)
 }
 
+// Pass an array to stack lines within the cell — the stats table shows the
+// same measurement in two unit systems that way.
 function labelled(tag, text) {
   const node = document.createElement(tag)
-  node.textContent = text
+  if (!Array.isArray(text)) {
+    node.textContent = text
+    return node
+  }
+  for (const line of text) {
+    const span = document.createElement("span")
+    span.textContent = line
+    node.append(span)
+  }
   return node
 }
 
