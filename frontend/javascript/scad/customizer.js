@@ -28,6 +28,16 @@ const AS_DESIGNED = "As designed"
 // putting in a shared link, since it says nothing the recipient didn't know.
 const DEFAULT_SET_NAME = "customized"
 
+// What most people leave their slicer set to. Shown alongside the solid weight
+// rather than as a control: the useful thing is the pair of numbers, and one
+// more stepper to fiddle with wasn't earning its place.
+const TYPICAL_INFILL = 0.2
+
+// A fair middle for PLA — generic runs nearer $15, Prusament nearer $30. The
+// rate is printed next to the price so the assumption is visible rather than
+// baked into a number nobody can check.
+const PRICE_PER_KG = 20
+
 export class ScadCustomizer extends HTMLElement {
   connectedCallback() {
     if (this.initialized) return
@@ -83,7 +93,6 @@ export class ScadCustomizer extends HTMLElement {
       share: find("share"),
       recenter: find("recenter"),
       inches: find("inches"),
-      infill: find("infill"),
       sourceToggle: find("source-toggle"),
       source: find("source"),
     }
@@ -151,7 +160,6 @@ export class ScadCustomizer extends HTMLElement {
     })
     this.el.recenter?.addEventListener("click", () => this.viewer?.frame())
     this.el.inches?.addEventListener("change", () => this.setInches(this.el.inches.checked))
-    this.el.infill?.addEventListener("change", () => this.refreshStats())
     this.el.sourceToggle?.addEventListener("click", () => this.toggleSource())
     this.el.uploadPreset?.addEventListener("change", (event) => this.loadParameterFile(event))
     // Slugify as you type: this becomes a filename, so show what it will be.
@@ -289,18 +297,13 @@ export class ScadCustomizer extends HTMLElement {
 
   // ------------------------------------------------------------- output
 
-  infillFraction() {
-    const percent = Number(this.el.infill?.value)
-    return Number.isFinite(percent) ? Math.min(Math.max(percent, 0), 100) / 100 : 0.2
-  }
-
   refreshStats() {
     const geometry = this.lastGeometry
     if (!geometry) return
 
     const [x, y, z] = geometry.bounds.size
-    const infill = this.infillFraction()
-    const { solidVolume, grams, mostlyShell } = estimateWeight(geometry, infill)
+    const solid = estimateWeight(geometry, 1)
+    const sparse = estimateWeight(geometry, TYPICAL_INFILL)
 
     const size = `${round(x)} × ${round(y)} × ${round(z)} mm`
     // Decimal inches for the size triple: three fractions side by side is a
@@ -308,13 +311,11 @@ export class ScadCustomizer extends HTMLElement {
     const inches = geometry.bounds.size.map((mm) => (mm / 25.4).toFixed(2)).join(" × ")
     const rows = [
       ["Size", this.inchesOn ? `${size} · ≈ ${inches}″` : size],
-      ["Volume", `${solidVolume.toFixed(1)} cm³ solid`],
-      [
-        "Weight",
-        mostlyShell
-          ? `about ${grams.toFixed(grams < 10 ? 1 : 0)} g — too thin for infill to matter`
-          : `about ${grams.toFixed(grams < 10 ? 1 : 0)} g in PLA`,
-      ],
+      ["Volume", `${solid.solidVolume.toFixed(1)} cm³ solid`],
+      ["Weight", `${formatGrams(solid.grams)} in PLA`],
+      [`Weight (${percent(TYPICAL_INFILL)} infill)`, formatGrams(sparse.grams)],
+      // Priced off the sparse weight, since that's what you'd actually print.
+      ["Price", `${formatPrice(sparse.grams)} @ $${PRICE_PER_KG}/kg`],
       ["STL file", `${geometry.triangles.toLocaleString()} triangles · ${formatBytes(this.lastBytes)}`],
     ]
 
@@ -325,8 +326,6 @@ export class ScadCustomizer extends HTMLElement {
       row.append(labelled("dt", label), labelled("dd", value))
       this.el.stats.append(row)
     }
-    // The infill control only means something once there's an inside to fill.
-    this.querySelector("[data-role='infill-row']")?.toggleAttribute("hidden", mostlyShell)
   }
 
   showComputed(echoes) {
@@ -369,7 +368,7 @@ export class ScadCustomizer extends HTMLElement {
     const open = this.el.source.hasAttribute("hidden")
     this.el.source.toggleAttribute("hidden", !open)
     this.el.sourceToggle.setAttribute("aria-expanded", String(open))
-    this.el.sourceToggle.textContent = open ? "Hide the OpenSCAD source" : "Show the OpenSCAD source"
+    this.el.sourceToggle.textContent = open ? "Hide Source" : "View Source"
     if (open) this.refreshSource()
   }
 
@@ -655,6 +654,21 @@ function formatBytes(bytes) {
   if (bytes < 1024) return `${bytes} B`
   if (bytes < 1024 * 1024) return `${(bytes / 1024).toFixed(0)} KB`
   return `${(bytes / (1024 * 1024)).toFixed(1)} MB`
+}
+
+const percent = (fraction) => `${Math.round(fraction * 100)}%`
+
+// Small parts want a decimal, larger ones don't; nobody needs "127.4 g".
+function formatGrams(grams) {
+  if (grams < 1) return `${grams.toFixed(2)} g`
+  if (grams < 10) return `${grams.toFixed(1)} g`
+  return `${Math.round(grams)} g`
+}
+
+function formatPrice(grams) {
+  const dollars = (grams / 1000) * PRICE_PER_KG
+  // Plenty of these parts cost less than a cent, and "$0.00" reads as free.
+  return dollars < 0.01 ? "under a cent" : `$${dollars.toFixed(2)}`
 }
 
 // Same shape as slugify, but keeps a trailing hyphen so typing "two words"

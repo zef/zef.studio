@@ -294,6 +294,30 @@ code
   color: $lightTextColor
   background-color: white
 
+// A language label in the top corner of a code block. Driven by a data
+// attribute that frontend/javascript/syntax sets, so one rule covers blocks
+// Rouge highlighted at build time, blocks the runtime highlighter did, and the
+// customizer's live source view — none of which need to know about each other.
+.highlight[data-language]
+  position: relative
+
+  &:before
+    content: attr(data-language)
+    +sans
+    background-color: rgba($background, 0.85)
+    border-bottom-left-radius: 5px
+    color: $lightTextColor
+    font-size: 0.66rem
+    letter-spacing: 0.04em
+    line-height: 1
+    padding: 0.35em 0.55em
+    pointer-events: none
+    position: absolute
+    right: 0
+    text-transform: uppercase
+    top: 0
+    z-index: 1
+
 // a few various styles for inline usage inside markdown
 .note
   font-size: 0.9em

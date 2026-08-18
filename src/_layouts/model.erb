@@ -33,7 +33,7 @@ layout: default
             <img src="<%= preview %>" alt="Rendering of the <%= resource.data.title %>" loading="lazy">
           <% end %>
           <div class="scad-poster-prompt">
-            <button type="button" class="scad-start" data-role="start">Customize this model</button>
+            <button type="button" class="scad-start" data-role="start">Customize This Model</button>
             <p>
               Runs OpenSCAD in your browser. Nothing is uploaded — the geometry is
               built on your own machine, which means a one-time download of about
@@ -49,10 +49,14 @@ layout: default
       </div>
 
       <div class="scad-source-panel" data-role="source-panel">
-        <button type="button" class="scad-source-toggle" data-role="source-toggle" aria-expanded="false">
-          Show the OpenSCAD source
-        </button>
-        <div class="scad-source highlight" data-role="source" hidden><pre><code></code></pre></div>
+        <div class="scad-source-bar">
+          <button type="button" class="scad-source-toggle" data-role="source-toggle" aria-expanded="false">
+            View Source
+          </button>
+          <%# The .scad download belongs next to the source it downloads. %>
+          <button type="button" class="scad-action" data-role="download-scad" disabled>Download .scad</button>
+        </div>
+        <div class="scad-source highlight" data-language="OpenSCAD" data-role="source" hidden><pre><code></code></pre></div>
       </div>
     </div>
 
@@ -77,16 +81,13 @@ layout: default
 
       <section class="scad-section">
         <h2>Download</h2>
-        <ul class="scad-downloads">
-          <li>
-            <button type="button" class="scad-action is-primary" data-role="download-stl" disabled>Download .stl</button>
-            <p>The printable file. Open it in your slicer — PrusaSlicer, Bambu Studio, Cura — and send it to the printer.</p>
-          </li>
-          <li>
-            <button type="button" class="scad-action" data-role="download-scad" disabled>Download .scad</button>
-            <p>The <%= openscad_link.html_safe %> source with your values written into it, if you want to take the design further.</p>
-          </li>
-        </ul>
+        <div class="scad-downloads">
+          <button type="button" class="scad-action is-primary" data-role="download-stl" disabled>Download .stl</button>
+          <p class="scad-note">
+            The printable file. Open it in your slicer — PrusaSlicer, Bambu Studio,
+            Cura — and send it to the printer.
+          </p>
+        </div>
 
         <div class="scad-parameter-file">
           <h3 class="scad-subhead">Parameter sets</h3>
@@ -95,12 +96,12 @@ layout: default
             <input type="text" id="scad-preset-name" class="scad-text" data-role="preset-name" value="customized">
           </div>
           <div class="scad-parameter-row">
-            <button type="button" class="scad-action" data-role="download-preset" disabled>Save</button>
+            <button type="button" class="scad-action" data-role="download-preset" disabled>Download .json</button>
             <label class="scad-action scad-upload">
               Load
               <input type="file" accept="application/json,.json" data-role="upload-preset">
             </label>
-            <button type="button" class="scad-action" data-role="share">Copy link</button>
+            <button type="button" class="scad-action" data-role="share">Copy Link</button>
           </div>
           <p class="scad-note">
             These use <%= openscad_link.html_safe %>'s own <code>.json</code> customizer
@@ -114,13 +115,6 @@ layout: default
       <section class="scad-section">
         <h2>Stats</h2>
         <dl class="scad-stats" data-role="stats"></dl>
-
-        <div class="scad-substat" data-role="infill-row">
-          <label class="scad-field-label" for="scad-infill">Infill</label>
-          <input type="number" id="scad-infill" class="scad-number-box" data-role="infill"
-                 value="20" min="0" max="100" step="5">
-          <span class="scad-unit">%</span>
-        </div>
 
         <div data-role="computed-panel" hidden>
           <h3 class="scad-subhead">Calculated by the model</h3>
@@ -153,5 +147,5 @@ layout: default
     <%= yield %>
   </div>
 
-  <p class="model-back"><a class="scad-action" href="/3d-printing/">All models</a></p>
+  <p class="model-back"><a class="scad-action" href="/3d-printing/">All Models</a></p>
 </article>

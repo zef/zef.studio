@@ -155,6 +155,5 @@ export function estimateWeight(geometry, infillFraction) {
     solidVolume: volume / 1000, // cm³
     printedVolume: printed / 1000, // cm³
     grams: (printed / 1000) * DENSITY_G_PER_CM3,
-    mostlyShell: interior < volume * 0.15,
   }
 }

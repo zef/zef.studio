@@ -99,28 +99,82 @@ export function highlightElement(element, name) {
   return true
 }
 
+// How a language's name should be written when shown to a reader. Anything not
+// listed gets capitalised, which is right for Python, Rust, Go and most others.
+// A null means "don't label it".
+const DISPLAY_NAMES = {
+  bash: "Shell",
+  css: "CSS",
+  erb: "ERB",
+  html: "HTML",
+  javascript: "JavaScript",
+  js: "JavaScript",
+  json: "JSON",
+  openscad: "OpenSCAD",
+  plaintext: null,
+  rb: "Ruby",
+  sass: "Sass",
+  scss: "SCSS",
+  sh: "Shell",
+  shell: "Shell",
+  sql: "SQL",
+  text: null,
+  ts: "TypeScript",
+  typescript: "TypeScript",
+  yaml: "YAML",
+  yml: "YAML",
+}
+
+export function displayName(name) {
+  if (name in DISPLAY_NAMES) return DISPLAY_NAMES[name]
+  return name.charAt(0).toUpperCase() + name.slice(1)
+}
+
 /**
- * Highlights code blocks Rouge left alone.
+ * Labels every fenced code block with its language, and highlights the ones
+ * Rouge left alone.
  *
  * Kramdown tags fenced blocks with `language-<name>`, and falls back to plain
- * text for languages it has no lexer for. Those arrive here with no spans in
- * them, which is the signal to have a go.
+ * text for languages it has no lexer for. Those arrive with no spans in them,
+ * which is the signal to have a go. Either way the block ends up labelled and
+ * wrapped the same, so a reader can't tell which path it took.
  */
 export function enhanceCodeBlocks(root = document) {
-  for (const block of root.querySelectorAll("code[class*='language-']")) {
-    if (block.querySelector("span")) continue // Rouge already did this one
-    const name = block.className.match(/language-([\w-]+)/)?.[1]
-    if (!name || !highlightElement(block, name)) continue
+  // Kramdown names the language in one of two places depending on whether Rouge
+  // could highlight it. Highlighted: on a wrapper div, as
+  // `language-ruby highlighter-rouge`. Not highlighted: on the <code> itself.
+  // Match either, then work out to the <pre> from wherever we landed.
+  const seen = new WeakSet()
+
+  for (const holder of root.querySelectorAll("[class*='language-']")) {
+    const name = holder.className.match(/language-([\w-]+)/)?.[1]
+    if (!name) continue
+
+    const pre = holder.closest("pre") || holder.querySelector("pre")
+    if (!pre || seen.has(pre)) continue
+    seen.add(pre)
+
+    const block = pre.querySelector("code")
+    if (!block) continue
+
+    // A block with spans in it has already been highlighted, by Rouge.
+    if (!block.querySelector("span")) highlightElement(block, name)
 
     // Match the markup Rouge emits — <div class="highlight"><pre class=
-    // "highlight"><code> — so a block we highlighted is indistinguishable
-    // from one it did, and the theme styles both the same way.
-    const pre = block.closest("pre")
-    if (!pre || pre.closest(".highlight")) continue
-    const wrapper = document.createElement("div")
-    wrapper.className = "highlight"
-    pre.replaceWith(wrapper)
-    wrapper.append(pre)
-    pre.classList.add("highlight")
+    // "highlight"><code> — so both kinds theme identically. Look for the
+    // wrapper from the pre's parent up: `closest` would otherwise return the
+    // pre itself, which already carries the class in Rouge's output.
+    let wrapper = pre.parentElement?.closest(".highlight")
+    if (!wrapper) {
+      wrapper = document.createElement("div")
+      wrapper.className = "highlight"
+      pre.replaceWith(wrapper)
+      wrapper.append(pre)
+      pre.classList.add("highlight")
+    }
+
+    // The label rides on the wrapper, not the <pre>, which scrolls sideways.
+    const label = displayName(name)
+    if (label) wrapper.dataset.language = label
   }
 }
