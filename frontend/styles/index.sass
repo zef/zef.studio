@@ -99,25 +99,20 @@ body.section-portfolio
     .body
       +contentContainer(710px)
 
-// A page whose content is a grid rather than prose takes the same measure the
-// header does, so the two share an edge. Prose keeps to the reading width and
-// centres inside it — narrower than the masthead is ordinary; wider is what
-// looked wrong.
+// A page whose content is a grid rather than prose takes the wider measure,
+// and the header takes it too, so the two share an edge. On a post both stay
+// at the reading width, which keeps the nav close to the text it belongs to.
+// The trade is that the masthead moves as you go from an index to a post;
+// holding it at one width instead put it a long way from the words on a post
+// page, and that read worse.
 body.width-wide
   +grid-breakpoints.medium
+    header,
     .content .body
       max-width: $wideContentWidth
 
 header
   +contentContainer
-
-  // One masthead width, everywhere. It widens at the same breakpoint the card
-  // grids gain their third column and snaps back with them, so the header and
-  // the content below it always change together. On a post the nav then sits
-  // wider than the text — which is the ordinary, centred arrangement, and
-  // reads as deliberate in a way the reverse never did.
-  +grid-breakpoints.medium
-    max-width: $wideContentWidth
 
   a.logo
     background: url(/images/z.svg)
