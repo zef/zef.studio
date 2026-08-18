@@ -14,6 +14,13 @@ module Builders
     PREVIEW_DIR = File.join("src", "3d-printing", "previews").freeze
     WORKER_DIR = File.join("src", "3d-printing", "worker").freeze
 
+    # Where to send someone who wants to know what a library a model depends on
+    # actually is. Kept apart from the plain `libraries` list, which is the
+    # contract with the render worker.
+    LIBRARY_URLS = {
+      "BOSL2" => "https://github.com/BelfrySCAD/BOSL2/wiki",
+    }.freeze
+
     def build
       hook :site, :post_read do |site|
         # The worker and kernel are served as plain static ES modules rather
@@ -60,6 +67,7 @@ module Builders
       model.to_h.merge(
         # The worker renders from this, so it travels with the page.
         "source" => source,
+        "library_urls" => LIBRARY_URLS,
         "source_url" => "/3d-printing/models/#{slug}.scad",
         "source_bytes" => source.bytesize
       )

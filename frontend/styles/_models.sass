@@ -13,6 +13,31 @@ $panelBorder: rgba($textColor, 0.14)
 $stageBg: $darkBgColor
 $controlBg: #f5f4f1
 
+// Buttons here centre their label with flex against an explicit height,
+// rather than the padding-top-and-line-height trick the site's pill mixin
+// uses. That mixin is tuned for anchors; a <button> also brings its own UA
+// padding and centring, and the two together push the label off-centre —
+// which is what made "Download STL" sit low.
+=uiButton($height: 34px)
+  +uiFont
+  align-items: center
+  appearance: none
+  background: none
+  border: 2px solid transparent
+  border-radius: $cornerRadius
+  box-sizing: border-box
+  color: inherit
+  cursor: pointer
+  display: inline-flex
+  height: $height
+  justify-content: center
+  line-height: 1
+  margin: 0
+  padding: 0 0.95em
+  text-align: center
+  transition: all 150ms ease-in-out
+  white-space: nowrap
+
 =card
   background-color: $panelBg
   border-radius: 8px
@@ -225,12 +250,12 @@ $controlBg: #f5f4f1
   display: none
 
 .scad-start
-  +pill-button($bgColor: white, $foregroundColor: $highlightColor, $height: 44px, $verticalOffset: 4px)
+  +uiButton($height: 46px)
   +semibold
-  border: none
-  cursor: pointer
+  background-color: white
+  color: $highlightColor
   font-size: 1.05rem
-  padding: 4px 1.4em 0
+  padding: 0 1.5em
 
   &:hover
     background-color: color.adjust(white, $lightness: -6%)
@@ -273,14 +298,11 @@ $controlBg: #f5f4f1
     opacity: 1
 
 .scad-ghost
-  +uiFont
+  +uiButton($height: 28px)
   background-color: rgba(white, 0.12)
-  border: 1px solid rgba(white, 0.25)
-  border-radius: $cornerRadius
+  border-color: rgba(white, 0.25)
+  border-width: 1px
   color: rgba($textOnDark, 0.9)
-  cursor: pointer
-  padding: 0.35em 0.9em
-  transition: all 150ms ease-in-out
 
   &:hover
     background-color: rgba(white, 0.22)
@@ -339,14 +361,11 @@ $controlBg: #f5f4f1
   gap: 0.4em
 
 .scad-preset
-  +uiFont
+  +uiButton($height: 30px)
   background-color: $controlBg
-  border: 1px solid $panelBorder
-  border-radius: $cornerRadius
+  border-color: $panelBorder
+  border-width: 1px
   color: $textColor
-  cursor: pointer
-  padding: 0.4em 0.85em
-  transition: all 150ms ease-in-out
 
   &:hover
     background-color: white
@@ -558,16 +577,24 @@ $controlBg: #f5f4f1
   gap: 0.45em
 
 .scad-action
-  +uiFont
-  +pill-button-secondary($height: 34px, $verticalOffset: 2px)
-  cursor: pointer
-  white-space: nowrap
+  +uiButton
+  background-color: white
+  border-color: $highlightColor
+  color: $highlightColor
 
+  &:hover
+    background-color: color.change($highlightColor, $alpha: 6%)
+
+  // Solid fill stands on its own. The border stays, in the fill colour, so a
+  // primary button measures the same as the outlined ones beside it.
   &.is-primary
-    +pill-button($height: 34px, $verticalOffset: 2px)
-    // Solid fill stands on its own; the outline belongs to the secondary style.
-    border: none
-    padding-top: 4px
+    background-color: $darkBgColor
+    border-color: $darkBgColor
+    color: white
+
+    &:hover
+      background-color: color.adjust($darkBgColor, $lightness: 10%)
+      border-color: color.adjust($darkBgColor, $lightness: 10%)
 
   &.is-failed
     border-color: rgba($secondaryColor, 0.6)
@@ -582,6 +609,7 @@ $controlBg: #f5f4f1
 
     &.is-primary:hover
       background-color: $darkBgColor
+      border-color: $darkBgColor
 
 .scad-stats
   +uiFont
@@ -746,8 +774,19 @@ $controlBg: #f5f4f1
 .scad-parameter-row
   align-items: center
   display: flex
+  flex-wrap: wrap
   gap: 0.5em
   margin-top: 0.5em
+
+  // Buttons keep their own width and wrap to the next line rather than being
+  // squeezed until their labels clip.
+  .scad-action
+    flex: none
+
+  .scad-text
+    flex: 1
+    min-width: 6em
+    width: auto
 
 .scad-field-label
   +uiFont
@@ -810,13 +849,10 @@ $controlBg: #f5f4f1
   margin-top: 0.6rem
 
 .scad-source-toggle
-  +uiFont
-  background-color: transparent
-  border: 1px solid $panelBorder
-  border-radius: $cornerRadius
+  +uiButton($height: 30px)
+  border-color: $panelBorder
+  border-width: 1px
   color: $lightTextColor
-  cursor: pointer
-  padding: 0.35em 0.9em
 
   &:hover
     border-color: rgba($highlightColor, 0.5)

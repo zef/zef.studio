@@ -80,23 +80,15 @@ layout: default
         <ul class="scad-downloads">
           <li>
             <button type="button" class="scad-action is-primary" data-role="download-stl" disabled>Download STL</button>
-            <p>The mesh itself. This is what you open in your slicer to print.</p>
+            <p>The printable file. Open it in your slicer — PrusaSlicer, Bambu Studio, Cura — and send it to the printer.</p>
           </li>
           <li>
             <button type="button" class="scad-action" data-role="download-scad" disabled>Download .scad</button>
-            <p>The <%= openscad_link.html_safe %> source with your values written into it, ready to edit further.</p>
-          </li>
-          <li>
-            <button type="button" class="scad-action" data-role="share">Copy share link</button>
-            <p>A link that reopens this page with exactly these settings. No account, no database — the settings are the link.</p>
+            <p>The <%= openscad_link.html_safe %> source with your values written into it, if you want to take the design further.</p>
           </li>
         </ul>
 
         <div class="scad-parameter-file">
-          <p class="scad-note">
-            Parameter sets are the format <%= openscad_link.html_safe %>'s own customizer
-            reads and writes, so they carry between here and the desktop app.
-          </p>
           <div class="scad-parameter-row">
             <label class="scad-field-label" for="scad-preset-name">Name</label>
             <input type="text" id="scad-preset-name" class="scad-text" data-role="preset-name" value="customized">
@@ -107,7 +99,13 @@ layout: default
               Load parameters
               <input type="file" accept="application/json,.json" data-role="upload-preset">
             </label>
+            <button type="button" class="scad-action" data-role="share">Copy link</button>
           </div>
+          <p class="scad-note">
+            Parameter sets use <%= openscad_link.html_safe %>'s own customizer format, so
+            they work here and in the desktop app. A copied link carries your
+            settings and their name too, with no file to pass around.
+          </p>
           <p class="scad-upload-status" data-role="upload-status" hidden></p>
         </div>
       </section>
@@ -130,7 +128,10 @@ layout: default
 
         <p class="scad-note">
           Source: <a href="<%= scad["source_url"] %>"><%= scad["slug"] %>.scad</a><% if scad["libraries"].any? %>,
-          built with <%= scad["libraries"].join(", ") %><% end %>.
+          built with <%= scad["libraries"].map { |name|
+            url = scad["library_urls"]&.dig(name)
+            url ? %(<a href="#{url}">#{name}</a>) : name
+          }.join(", ").html_safe %><% end %>.
         </p>
       </section>
 

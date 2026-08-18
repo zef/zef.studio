@@ -24,6 +24,10 @@ const RENDER_DEBOUNCE_MS = 220
 // stray "reset" button with no story about where those numbers came from.
 const AS_DESIGNED = "As designed"
 
+// The name field's starting value. Treated as "unnamed": it isn't worth
+// putting in a shared link, since it says nothing the recipient didn't know.
+const DEFAULT_SET_NAME = "customized"
+
 export class ScadCustomizer extends HTMLElement {
   connectedCallback() {
     if (this.initialized) return
@@ -125,7 +129,9 @@ export class ScadCustomizer extends HTMLElement {
   }
 
   applyHashState({ render }) {
-    const { values, preset } = decodeState(window.location.hash, this.controls.parameters)
+    const { values, preset, name } = decodeState(window.location.hash, this.controls.parameters)
+    if (name && this.el.presetName) this.el.presetName.value = name
+
     if (preset && this.presetValues(preset)) {
       this.applyPreset(preset, { render })
       return
@@ -157,6 +163,7 @@ export class ScadCustomizer extends HTMLElement {
         field.value = cleaned
         if (caretAtEnd) field.setSelectionRange(cleaned.length, cleaned.length)
       }
+      this.syncURL()
     })
     this.el.downloadSTL?.addEventListener("click", () => this.downloadSTL())
     this.el.downloadSCAD?.addEventListener("click", () => this.downloadSCAD())
@@ -308,7 +315,7 @@ export class ScadCustomizer extends HTMLElement {
           ? `about ${grams.toFixed(grams < 10 ? 1 : 0)} g — too thin for infill to matter`
           : `about ${grams.toFixed(grams < 10 ? 1 : 0)} g in PLA`,
       ],
-      ["Mesh", `${geometry.triangles.toLocaleString()} triangles · ${formatBytes(this.lastBytes)}`],
+      ["STL file", `${geometry.triangles.toLocaleString()} triangles · ${formatBytes(this.lastBytes)}`],
     ]
 
     this.el.stats.textContent = ""
@@ -391,6 +398,9 @@ export class ScadCustomizer extends HTMLElement {
     if (!preset) return
     this.values = { ...this.schema.defaults, ...preset }
     this.controls.setValues(this.values)
+    if (this.el.presetName) {
+      this.el.presetName.value = name === AS_DESIGNED ? DEFAULT_SET_NAME : slugify(name)
+    }
     this.setActivePreset(name)
     this.syncURL()
     if (render) this.scheduleRender()
@@ -411,10 +421,13 @@ export class ScadCustomizer extends HTMLElement {
   // -------------------------------------------------------------- share
 
   currentHash() {
+    const name = this.parameterSetName()
+    const worthSharing = name !== DEFAULT_SET_NAME && name !== slugify(this.activePreset || "")
     return encodeState({
       values: this.values,
       defaults: this.schema.defaults,
       preset: this.activePreset,
+      name: worthSharing ? name : null,
     })
   }
 
@@ -456,16 +469,20 @@ export class ScadCustomizer extends HTMLElement {
   // ----------------------------------------------------------- download
 
   // Downloads end up in a folder alongside other variants of the same part, so
-  // the name has to say which one this is: the preset, or what was changed and
-  // what to.
+  // the name has to say which one this is. Whatever you called the set wins;
+  // failing that, the preset it came from, or what was changed and what to.
   fileStem() {
-    const suffix = this.activePreset
-      ? slugify(this.activePreset)
-      : this.changed()
-          .slice(0, 2)
-          .map(([name, value]) => `${slugify(name)}-${slugify(value)}`)
-          .join("-")
-    return [this.schema.slug, suffix].filter(Boolean).join("-")
+    return [this.schema.slug, this.variantName()].filter(Boolean).join("-")
+  }
+
+  variantName() {
+    const named = this.parameterSetName()
+    if (named !== DEFAULT_SET_NAME) return slugify(named)
+    if (this.activePreset && this.activePreset !== AS_DESIGNED) return slugify(this.activePreset)
+    return this.changed()
+      .slice(0, 2)
+      .map(([name, value]) => `${slugify(name)}-${slugify(value)}`)
+      .join("-")
   }
 
   changed() {
@@ -498,7 +515,7 @@ export class ScadCustomizer extends HTMLElement {
   }
 
   parameterSetName() {
-    return this.el.presetName?.value.trim() || this.activePreset || "customized"
+    return this.el.presetName?.value.trim() || this.activePreset || DEFAULT_SET_NAME
   }
 
   /**
