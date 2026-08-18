@@ -5,6 +5,51 @@ pick dimensions, the geometry is built on their machine by a WebAssembly build
 of OpenSCAD, and they download the STL. Nothing is uploaded and there's no
 server involved beyond serving static files.
 
+## Why build this rather than use something that exists
+
+Thingiverse's Customizer and MakerWorld's parametric models both do a version of
+this, and so does the official OpenSCAD playground. What none of them do is the
+combination below, which is the reason this exists.
+
+**The geometry is built by real OpenSCAD, on the visitor's machine.** Not an
+approximation, not a server-side render queue, not a reimplementation of a
+subset of the language in JavaScript. It is the same 2025.03.25 build with the
+same Manifold kernel, running the same `.scad` file, so what a visitor
+downloads is byte-identical to what comes out of the desktop app. That is also
+what makes BOSL2 models work at all — an in-house geometry engine would have to
+reimplement the library, and BOSL2 is not small.
+
+**No server, no accounts, no database, nothing uploaded.** The whole section is
+static files. There is nothing to run, nothing to pay for, nothing that can
+leak, and nothing that stops working when a company loses interest. Shared
+configurations live in the URL, so a link is the whole record. Ten years from
+now it is still a directory of files on a web server.
+
+**The `.scad` file is the only source of truth.** Parameters, ranges,
+descriptions, section groupings and units are read out of the model at build
+time using OpenSCAD's own Customizer annotations. There is no parallel schema to
+keep in sync, no admin UI, no database row that drifts from the code. Adding a
+parameter to a model adds a control to the website. The same annotated file
+opens in the desktop Customizer and behaves the same way, and parameter sets
+carry in both directions.
+
+**It stays yours.** Uploading a model to a hosting site means accepting their
+terms, their layout, their ads, their idea of what a customizer should look
+like, and their decision about whether the thing still exists next year. This
+version sits inside the site it belongs to, in its typography, under its own
+domain.
+
+**Things it can do that a general host can't.** Because the models and the site
+are built together, the section knows things a generic customizer can't: the
+index grid is rendered from the actual geometry at build time, `echo()` output
+surfaces as explained results rather than log spam, the weight estimate accounts
+for infill, and imperial equivalents appear next to values because that's what
+the workshop this comes out of actually measures in.
+
+The honest cost is an 11 MB download the first time someone opens a model, and
+a render that takes between a tenth of a second and a second and a half. That
+is the price of running a real CAD kernel in a browser instead of pretending to.
+
 ## Adding a model
 
 Two files, and the second one is short.
@@ -27,6 +72,7 @@ and it's the `.scad` file:
 include <BOSL2/std.scad>
 
 /* [A Section] */
+// scad-web: note = What this group of parameters is for. Optional.
 
 // This description appears under the control.
 width = 10;         // [1:0.5:50]     slider, min:step:max
@@ -37,6 +83,11 @@ corner = "r";       // [r:Rounded, s:Square]       dropdown with labels
 label = "HELLO";    // [16]           text, max length
 enabled = true;                       checkbox
 
+// Numbers are millimetres unless told otherwise, which is what earns them an
+// inch readout. Say so when they aren't: `count`, `ratio`, or `none`.
+// scad-web: unit = count
+sides = 6;          // [3:1:12]
+
 /* [Hidden] */
 
 // Anything below this heading is internal. So is anything computed from
@@ -45,8 +96,12 @@ enabled = true;                       checkbox
 derived = width * 2;
 ```
 
-Two things worth knowing:
+Things worth knowing:
 
+- **Slider ranges are suggestions, not limits.** The website lets people type a
+  value past either end; the range just sets where the slider is useful. So pick
+  a range that makes the slider pleasant to drag rather than one wide enough to
+  cover every conceivable case.
 - **Dropdown values can't contain commas or colons**, because those separate
   the entries. If a value needs one — a BOSL2 screw spec like `"#8-32,1"` —
   offer the plain part in the dropdown and assemble the rest in the model.
@@ -157,3 +212,14 @@ A few implementation notes that aren't obvious from the code:
   CGAL path on these models. It's why dragging a slider feels interactive.
 - BOSL2 is filtered to what the models' `include` graph actually reaches and
   stripped of comments: 3.9 MB becomes 1.55 MB, with byte-identical STL output.
+- The **weight estimate** is a stand-in for slicing, not a substitute. It takes
+  the mesh's enclosed volume and its surface area, treats `surface area × 0.9 mm`
+  as the solid shell a slicer would lay down, and fills whatever is left at the
+  chosen infill. Parts too thin to have an interior — a 2 mm funnel wall — come
+  out all shell, which is correct, and the UI says so rather than showing an
+  infill control that would do nothing. Density assumes PLA at 1.24 g/cm³.
+- **Inch conversion is display-only.** The models are millimetres throughout,
+  because OpenSCAD is and because mixing units inside a model is how you end up
+  with a part that is wrong by a factor of 25.4. Parameters can declare
+  `// scad-web: unit = count` (or `ratio`) to opt out of a conversion that would
+  be meaningless.
