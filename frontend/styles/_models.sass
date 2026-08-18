@@ -398,12 +398,20 @@ $controlBg: #f5f4f1
   &:last-child
     margin-bottom: 0.2em
 
+// The parameter name and its inch equivalent share a line, sitting on the
+// same baseline. Space-between puts the readout hard right, directly over
+// the number box below it.
+.scad-label-row
+  align-items: baseline
+  display: flex
+  gap: 0.6em
+  justify-content: space-between
+  margin-bottom: 0.3em
+
 .scad-label
   +uiFont
   color: $textColor
-  display: block
   font-size: 0.8rem
-  margin-bottom: 0.3em
 
 .scad-help
   +uiFont
@@ -634,8 +642,10 @@ $controlBg: #f5f4f1
   color: $lightTextColor
   font-size: 0.72rem
   font-variant-numeric: lining-nums
-  min-width: 4.4em
-  // Hidden until the inches switch is on, so the row keeps its rhythm either way.
+  text-align: right
+  white-space: nowrap
+  // Nothing reserves space for this: it lives on the label's line, so showing
+  // or hiding it can't move the slider or the number box.
   display: none
 
 .shows-inches .scad-inches

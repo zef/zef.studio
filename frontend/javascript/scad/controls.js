@@ -21,7 +21,6 @@ export class Controls {
     this.schema = schema
     this.onChange = onChange
     this.inputs = new Map() // name -> {set(value)}
-    this.readouts = [] // inch equivalents, refreshed together
     this.render()
   }
 
@@ -61,10 +60,18 @@ export class Controls {
     const id = `scad-${parameter.name.replace(/\W/g, "_")}`
     const label = element("label", "scad-label", parameter.label)
     label.htmlFor = id
-    field.append(label)
 
-    const control = this.buildControl(parameter, id)
-    field.append(control)
+    // The inch equivalent shares the label's line, sitting above the number
+    // box rather than beside it. Turning the switch on then changes nothing
+    // about the width of the control row — the sliders stay where they were.
+    const readout = convertible(parameter) ? element("span", "scad-inches") : null
+
+    const heading = element("div", "scad-label-row")
+    heading.append(label)
+    if (readout) heading.append(readout)
+    field.append(heading)
+
+    field.append(this.buildControl(parameter, id, readout))
 
     if (parameter.description) {
       field.append(element("p", "scad-help", parameter.description))
@@ -72,17 +79,17 @@ export class Controls {
     return field
   }
 
-  buildControl(parameter, id) {
+  buildControl(parameter, id, readout) {
     switch (parameter.type) {
       case "boolean": return this.buildBoolean(parameter, id)
       case "enum": return this.buildEnum(parameter, id)
       case "vector": return this.buildVector(parameter, id)
-      case "number": return this.buildNumber(parameter, id)
+      case "number": return this.buildNumber(parameter, id, readout)
       default: return this.buildText(parameter, id)
     }
   }
 
-  buildNumber(parameter, id) {
+  buildNumber(parameter, id, readout = null) {
     const wrapper = element("div", "scad-number")
     const hasRange = parameter.min !== undefined && parameter.max !== undefined
     const step = parameter.step ?? inferStep(parameter)
@@ -97,7 +104,6 @@ export class Controls {
     box.value = String(parameter.default)
 
     const slider = hasRange ? element("input", "scad-slider") : null
-    const readout = convertible(parameter) ? element("span", "scad-inches") : null
 
     // Keeps the row's appearance in step with the value: the inch equivalent,
     // and a mark when the value sits outside the slider's range, so it's clear
@@ -140,11 +146,6 @@ export class Controls {
       this.emit(parameter, value)
     })
     wrapper.append(box)
-
-    if (readout) {
-      wrapper.append(readout)
-      this.readouts.push(readout)
-    }
 
     reflect(parameter.default)
 
