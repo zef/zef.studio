@@ -378,19 +378,27 @@ table
 ::selection
   background: color.adjust($highlightColor, $lightness: 20%)
 
+// Cards in a grid that gains a column at each breakpoint rather than stretching
+// between them. The card is the fixed thing — at every width it stays about
+// 300px, so the design reads the same whether there are one, two or three
+// across. On wide screens the grid steps out of the reading column, which the
+// prose keeps to itself.
 .article-list
-  +grid-mixins.row
+  display: grid
+  gap: 1rem $gridGutter
+  grid-template-columns: 1fr
   margin-top: 0.5em
+
+  +grid-breakpoints.small
+    gap: 2rem $gridGutter
+    grid-template-columns: repeat(2, 1fr)
+
+  +grid-breakpoints.medium
+    +breakOut
+    grid-template-columns: repeat(3, 1fr)
 
   a
     color: $textColor
-    // background-color: darken($background, 10)
-
-    +grid-breakpoints.tiny
-      margin: 0 0 1rem
-    +grid-breakpoints.small
-      margin: 0 0 2rem
-    // padding: 0.4em 0.8em
     background-color: white
 
     box-shadow: rgba($textColor, 0.3) 0px 3px 4px
@@ -398,23 +406,14 @@ table
     border-radius: 8px
     overflow: hidden
     transition: all 200ms ease-in-out
+    width: 100%
 
     &:hover
       transform: scale(1.03)
 
   li
-    +grid-mixins.col(12)
-    padding: 0
     display: flex
-
-    +grid-breakpoints.small
-      +twoColumnContent(1rem)
-
-    // +small-only
-    //   +twoColumnContent(1rem)
-
-    // +medium
-    //   +threeColumnContent
+    padding: 0
 
     article
       text-align: left
@@ -754,6 +753,11 @@ ul.pagination
   +grid-mixins.row
   +grid-mixins.between
   padding: 2em 0
+
+  // Follows the grid out on wide screens so the first and last controls line
+  // up with the outer edge of the cards above them.
+  +grid-breakpoints.medium
+    +breakOut
 
   li
     &.current

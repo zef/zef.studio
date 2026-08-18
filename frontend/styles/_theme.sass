@@ -17,6 +17,20 @@ $background: white
 
 $cornerRadius: 16px
 
+// Prose sits at $contentWidth and stays there. Measured, that's about 90
+// characters a line at 17px Calluna — already at the top of the range where
+// reading stays comfortable, so this column has no room to give. Any extra
+// width a wide screen offers has to go to something other than text.
+//
+// Grids have no such limit, so they step out to $wideContentWidth on screens
+// with the room. That width is chosen so a card stays the size it is in the
+// two-column layout: three cards and two gutters, rather than two stretched.
+$contentWidth: 624px
+$wideContentWidth: 960px
+// 2rem is what the old two-column layout gutter worked out to, so that
+// arrangement comes through this change pixel for pixel.
+$gridGutter: 2rem
+
 =regularFont
   font-family: "Calluna", "Times New Roman", Times, serif
 
@@ -64,9 +78,20 @@ $cornerRadius: 16px
   width: $size
   background-size: $size
 
-=contentContainer($maxWidth: 624px)
+=contentContainer($maxWidth: $contentWidth)
   max-width: $maxWidth
   margin: 0 auto
+
+// Steps an element out of the reading column to a wider one, centred on the
+// page. Used by things that aren't prose — card grids, the model customizer —
+// so the column around them can stay narrow for the text that needs it.
+// The viewport clamp leaves room for a scrollbar, so this can't cause the page
+// to scroll sideways.
+=breakOut($width: $wideContentWidth)
+  left: 50%
+  position: relative
+  transform: translateX(-50%)
+  width: min(#{$width}, calc(100vw - 3rem))
 
 =deboss
   text-shadow: 0px 1px 0px rgba(white,.1), 0px -1px 0px rgba(black,.3)

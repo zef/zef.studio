@@ -73,15 +73,21 @@ $controlBg: #f5f4f1
   border-top: 1px solid rgba($textColor, 0.2)
   font-size: 0.94em
 
+// Same steps as the site's article grid, so the two read as one design.
 .model-grid
   display: grid
-  gap: 1.4rem
+  gap: 1rem $gridGutter
   grid-template-columns: 1fr
   margin: 2rem 0
   padding: 0
 
   +grid-breakpoints.small
+    gap: 2rem $gridGutter
     grid-template-columns: repeat(2, 1fr)
+
+  +grid-breakpoints.medium
+    +breakOut
+    grid-template-columns: repeat(3, 1fr)
 
   li
     display: flex
@@ -185,12 +191,10 @@ $controlBg: #f5f4f1
   margin: 1.5rem 0 0
   text-align: left
 
-  // Break out of the site's narrow reading column: this thing needs room.
+  // Break out of the site's narrow reading column: this thing needs room. Wider
+  // than the card grids, since it has a viewport and a control panel side by side.
   +grid-breakpoints.small
-    left: 50%
-    position: relative
-    transform: translateX(-50%)
-    width: min(1120px, calc(100vw - 3rem))
+    +breakOut(1120px)
 
   +grid-breakpoints.medium
     align-items: start
