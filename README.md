@@ -20,6 +20,16 @@ Let me know if you have any questions!
 
 ## Customizations
 
+### 3D Printing
+
+`/3d-printing` holds parametric OpenSCAD models with a customizer that runs in
+the browser: OpenSCAD itself is compiled to WebAssembly, so visitors set the
+dimensions they need and download an STL built on their own machine. Parameter
+definitions are read out of the `.scad` files at build time using OpenSCAD's own
+Customizer annotations, so each model is its own single source of truth.
+
+See [docs/3d-printing.md](docs/3d-printing.md) for how to add one.
+
 ### Image Handling
 
 Laying out images nicely is very important to me. I use lists to set images in
