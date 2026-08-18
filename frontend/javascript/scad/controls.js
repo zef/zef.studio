@@ -1,0 +1,226 @@
+// Builds the parameter form from the schema the Ruby side parsed out of the
+// .scad file. Nothing here knows about any particular model — add a parameter
+// to a .scad file and the matching control appears.
+//
+// A number with a declared range gets a slider paired with a number box: the
+// slider for exploring, the box for typing an exact measurement, since these
+// are real millimetres that have to match real hardware.
+
+const GROUP_OPEN_BY_DEFAULT = 2 // later sections start collapsed
+
+export class Controls {
+  /**
+   * @param {HTMLElement} container
+   * @param {object} schema parsed model schema
+   * @param {(name: string, value: any) => void} onChange fires per edit
+   */
+  constructor(container, schema, onChange) {
+    this.container = container
+    this.schema = schema
+    this.onChange = onChange
+    this.inputs = new Map() // name -> {set(value)}
+    this.render()
+  }
+
+  get parameters() {
+    return this.schema.groups.flatMap((group) => group.parameters)
+  }
+
+  render() {
+    this.container.textContent = ""
+    this.schema.groups.forEach((group, index) => {
+      this.container.append(this.renderGroup(group, index < GROUP_OPEN_BY_DEFAULT))
+    })
+  }
+
+  renderGroup(group, open) {
+    const details = element("details", "scad-group")
+    details.open = open
+
+    const summary = element("summary")
+    summary.append(element("span", "scad-group-name", group.name))
+    details.append(summary)
+
+    const body = element("div", "scad-group-body")
+    for (const parameter of group.parameters) {
+      body.append(this.renderParameter(parameter))
+    }
+    details.append(body)
+    return details
+  }
+
+  renderParameter(parameter) {
+    const field = element("div", "scad-field")
+    field.dataset.type = parameter.type
+
+    const id = `scad-${parameter.name.replace(/\W/g, "_")}`
+    const label = element("label", "scad-label", parameter.label)
+    label.htmlFor = id
+    field.append(label)
+
+    const control = this.buildControl(parameter, id)
+    field.append(control)
+
+    if (parameter.description) {
+      field.append(element("p", "scad-help", parameter.description))
+    }
+    return field
+  }
+
+  buildControl(parameter, id) {
+    switch (parameter.type) {
+      case "boolean": return this.buildBoolean(parameter, id)
+      case "enum": return this.buildEnum(parameter, id)
+      case "vector": return this.buildVector(parameter, id)
+      case "number": return this.buildNumber(parameter, id)
+      default: return this.buildText(parameter, id)
+    }
+  }
+
+  buildNumber(parameter, id) {
+    const wrapper = element("div", "scad-number")
+    const hasRange = parameter.min !== undefined && parameter.max !== undefined
+    const step = parameter.step ?? inferStep(parameter)
+
+    const box = element("input", "scad-number-box")
+    box.type = "number"
+    box.id = id
+    box.step = String(step)
+    if (hasRange) {
+      box.min = String(parameter.min)
+      box.max = String(parameter.max)
+    }
+    box.value = String(parameter.default)
+
+    let slider = null
+    if (hasRange) {
+      slider = element("input", "scad-slider")
+      slider.type = "range"
+      slider.min = String(parameter.min)
+      slider.max = String(parameter.max)
+      slider.step = String(step)
+      slider.value = String(parameter.default)
+      slider.setAttribute("aria-label", parameter.label)
+      slider.addEventListener("input", () => {
+        box.value = slider.value
+        this.emit(parameter, Number(slider.value))
+      })
+      wrapper.append(slider)
+    }
+
+    const commit = () => {
+      let value = Number(box.value)
+      if (!Number.isFinite(value)) return
+      // A typed value outside the slider's range is a legitimate request —
+      // clamp only to what OpenSCAD needs, not to what the slider shows.
+      if (hasRange) {
+        value = Math.min(Math.max(value, parameter.min), parameter.max)
+        box.value = String(value)
+        slider.value = String(value)
+      }
+      this.emit(parameter, value)
+    }
+    box.addEventListener("change", commit)
+
+    wrapper.append(box)
+    this.inputs.set(parameter.name, {
+      set(value) {
+        box.value = String(value)
+        if (slider) slider.value = String(value)
+      },
+    })
+    return wrapper
+  }
+
+  buildBoolean(parameter, id) {
+    const wrapper = element("div", "scad-toggle")
+    const input = element("input")
+    input.type = "checkbox"
+    input.id = id
+    input.checked = Boolean(parameter.default)
+    input.addEventListener("change", () => this.emit(parameter, input.checked))
+    wrapper.append(input, element("span", "scad-toggle-track"))
+    this.inputs.set(parameter.name, { set: (value) => { input.checked = Boolean(value) } })
+    return wrapper
+  }
+
+  buildEnum(parameter, id) {
+    const select = element("select", "scad-select")
+    select.id = id
+    for (const option of parameter.options) {
+      const node = element("option", null, option.label)
+      node.value = String(option.value)
+      select.append(node)
+    }
+    select.value = String(parameter.default)
+    select.addEventListener("change", () => {
+      const chosen = parameter.options.find((option) => String(option.value) === select.value)
+      this.emit(parameter, chosen ? chosen.value : select.value)
+    })
+    this.inputs.set(parameter.name, { set: (value) => { select.value = String(value) } })
+    return select
+  }
+
+  buildText(parameter, id) {
+    const input = element("input", "scad-text")
+    input.type = "text"
+    input.id = id
+    input.value = String(parameter.default ?? "")
+    if (parameter.max_length) input.maxLength = parameter.max_length
+    // Typed text is cheap to re-render and people expect to see it appear, so
+    // fire on input rather than waiting for blur.
+    input.addEventListener("input", () => this.emit(parameter, input.value))
+    this.inputs.set(parameter.name, { set: (value) => { input.value = String(value ?? "") } })
+    return input
+  }
+
+  buildVector(parameter, id) {
+    const wrapper = element("div", "scad-vector")
+    const boxes = parameter.default.map((component, index) => {
+      const box = element("input", "scad-number-box")
+      box.type = "number"
+      if (index === 0) box.id = id
+      box.step = "0.1"
+      box.value = String(component)
+      box.setAttribute("aria-label", `${parameter.label} ${"XYZW"[index] || index + 1}`)
+      box.addEventListener("change", () => {
+        const values = boxes.map((b) => Number(b.value))
+        if (values.every(Number.isFinite)) this.emit(parameter, values)
+      })
+      wrapper.append(box)
+      return box
+    })
+    this.inputs.set(parameter.name, {
+      set(value) {
+        value.forEach((component, i) => { if (boxes[i]) boxes[i].value = String(component) })
+      },
+    })
+    return wrapper
+  }
+
+  emit(parameter, value) {
+    this.onChange(parameter.name, value)
+  }
+
+  /** Pushes a whole set of values into the form without firing change events. */
+  setValues(values) {
+    for (const [name, value] of Object.entries(values)) {
+      if (value === undefined) continue
+      this.inputs.get(name)?.set(value)
+    }
+  }
+}
+
+function element(tag, className, text) {
+  const node = document.createElement(tag)
+  if (className) node.className = className
+  if (text !== undefined) node.textContent = text
+  return node
+}
+
+// Without a declared step, pick one from the default's precision so a value
+// like 4.76 doesn't get rounded to 5 by the number box.
+function inferStep(parameter) {
+  const decimals = String(parameter.default).split(".")[1]?.length ?? 0
+  return decimals ? 10 ** -decimals : 1
+}

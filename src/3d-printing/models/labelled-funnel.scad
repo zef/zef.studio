@@ -47,6 +47,11 @@ label = "FLOUR";
 // Lettering style. Bold holds up better at small sizes once printed.
 label_style = "Bold"; // [Regular, Bold, Mono, Mono Bold]
 
+// Which face of the rim carries the text. The top is the one you read when the
+// funnel is sitting on a shelf; the underside prints against the build plate,
+// which gives the crispest letters but hides them in use.
+label_face = "Top"; // [Top, Underside]
+
 // Label height as a fraction of the rim width.
 label_scale = 0.7; // [0.3:0.05:1]
 
@@ -103,6 +108,7 @@ module label_cut() {
   size = rim_width * label_scale;
   radius = mouth_radius + rim_width * 0.1;
   path = path3d(arc(96, r = radius, angle = [0, 360]));
+  face = label_face == "Underside" ? DOWN : UP;
 
   path_text(path, label,
             size = size,
@@ -111,7 +117,7 @@ module label_cut() {
             center = true,
             textmetrics = true,
             font = label_font,
-            normal = DOWN);
+            normal = face);
 }
 
 module funnel() {

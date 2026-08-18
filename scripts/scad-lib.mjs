@@ -4,7 +4,7 @@ import fs from "node:fs"
 import path from "node:path"
 import { fileURLToPath, pathToFileURL } from "node:url"
 
-import { OpenSCADKernel } from "../frontend/javascript/scad/kernel.js"
+import { OpenSCADKernel } from "../src/3d-printing/worker/kernel.js"
 
 export const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..")
 export const assetDir = path.join(root, "src", "3d-printing")

@@ -1,0 +1,74 @@
+---
+title: 3D Printing
+description: Parametric models I designed in OpenSCAD, with a customizer that builds an STL to your dimensions in your browser.
+permalink: /3d-printing/
+layout: default
+---
+
+<%
+  models = collections.models.resources.sort_by { |resource| resource.data.date || Time.at(0) }.reverse
+%>
+
+<h1>3D Printing</h1>
+
+<div class="model-intro">
+  <p>
+    Everything here is a part I needed, designed in
+    <a href="https://openscad.org">OpenSCAD</a> and printed on my own machine.
+    They are written as parametric models rather than fixed shapes, because the
+    useful version of a part is almost always the one sized to the thing in
+    front of you — your cable, your hose, your wall.
+  </p>
+  <p>
+    So the models are here as models, not just as downloads. Open one, set the
+    dimensions, and OpenSCAD will build the STL right in your browser. Nothing
+    is uploaded and nothing is stored: your settings live in the page's address,
+    which means a link is all it takes to hand someone the exact part you made.
+  </p>
+</div>
+
+<ul class="model-grid">
+  <% models.each do |model| %>
+    <%
+      scad = model.data.scad
+      next if scad.nil?
+      count = scad["groups"].sum { |group| group["parameters"].length }
+    %>
+    <li>
+      <a href="<%= model.relative_url %>">
+        <article>
+          <% if model.data.image %>
+            <div class="model-thumb">
+              <img src="<%= model.data.image %>" alt="Rendering of the <%= model.data.title %>" loading="lazy">
+            </div>
+          <% end %>
+          <h2><%= model.data.title %></h2>
+          <p class="model-blurb"><%= scad["summary"].to_s.tr("\n", " ").split(". ").first %>.</p>
+          <p class="model-tags">
+            <span class="model-tag"><%= count %> parameters</span>
+            <% if scad["presets"] && scad["presets"].any? %>
+              <span class="model-tag"><%= scad["presets"].length %> presets</span>
+            <% end %>
+          </p>
+        </article>
+      </a>
+    </li>
+  <% end %>
+</ul>
+
+<div class="model-colophon">
+  <h2>How this works</h2>
+  <p>
+    OpenSCAD itself is compiled to WebAssembly and runs on your machine, so
+    what you download is built by the same geometry kernel I use on the desktop
+    — not an approximation of it. The parameters, their ranges and the
+    descriptions under each control are read straight out of the
+    <code>.scad</code> files at build time, using OpenSCAD's own Customizer
+    annotations. There is one source of truth per model, and it is the model.
+  </p>
+  <p>
+    The first model you open downloads about 11&nbsp;MB of OpenSCAD and library
+    code. After that it is cached, and renders take somewhere between a tenth of
+    a second and a second and a half.
+  </p>
+</div>

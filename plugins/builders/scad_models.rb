@@ -1,3 +1,5 @@
+require "digest/md5"
+
 # Attaches parsed OpenSCAD parameter schemas to the models collection.
 #
 # Each resource in `src/_models` pairs with a `.scad` file of the same name in
@@ -10,9 +12,14 @@ module Builders
     COLLECTION = "models".freeze
     MODEL_DIR = File.join("src", "3d-printing", "models").freeze
     PREVIEW_DIR = File.join("src", "3d-printing", "previews").freeze
+    WORKER_DIR = File.join("src", "3d-printing", "worker").freeze
 
     def build
       hook :site, :post_read do |site|
+        # The worker and kernel are served as plain static ES modules rather
+        # than going through the bundler, so they get no content hash of their
+        # own. Give them a cache key derived from their contents.
+        site.data[:scad_worker_version] = worker_version
         attach_schemas(site)
       end
     end
@@ -46,6 +53,8 @@ module Builders
       source = File.read(path, encoding: "UTF-8")
       model = ScadCustomizer.parse(source, slug: slug, presets: presets_for(slug))
       model.to_h.merge(
+        # The worker renders from this, so it travels with the page.
+        "source" => source,
         "source_url" => "/3d-printing/models/#{slug}.scad",
         "source_bytes" => source.bytesize
       )
@@ -64,7 +73,13 @@ module Builders
     # Front matter wins; the .scad file fills in whatever it doesn't say.
     def apply_defaults(resource, slug)
       schema = resource.data[:scad]
-      resource.data[:title] ||= schema["title"]
+      # Bridgetown always derives *some* title from the filename, so `||=` would
+      # never let the model's own title through. Treat a title that is exactly
+      # the titleized slug as the automatic one and prefer the .scad heading —
+      # a real title in front matter still wins.
+      if schema["title"] && (resource.data[:title].nil? || resource.data[:title] == slug.titleize)
+        resource.data[:title] = schema["title"]
+      end
       resource.data[:description] ||= first_sentence(schema["summary"])
 
       preview = File.join(PREVIEW_DIR, "#{slug}.png")
@@ -90,6 +105,13 @@ module Builders
 
     def model_path(slug)
       File.join(MODEL_DIR, "#{slug}.scad")
+    end
+
+    def worker_version
+      files = Dir.glob(File.join(WORKER_DIR, "*.js")).sort
+      return "0" if files.empty?
+
+      Digest::MD5.hexdigest(files.map { |f| File.read(f, encoding: "UTF-8") }.join)[0, 10]
     end
   end
 end

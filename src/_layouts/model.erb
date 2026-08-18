@@ -1,0 +1,114 @@
+---
+layout: default
+---
+
+<%
+  scad = resource.data.scad
+  worker_version = site.data[:scad_worker_version]
+  worker_url = "/3d-printing/worker/worker.js?v=#{worker_version}"
+  preview = resource.data.image
+  parameter_count = scad["groups"].sum { |group| group["parameters"].length }
+  preset_count = scad["presets"]&.length || 0
+%>
+
+<article class="model">
+  <h1><%= resource.data.title %></h1>
+
+  <p class="model-summary"><%= scad["summary"].to_s.tr("\n", " ") %></p>
+
+  <scad-customizer
+    class="scad-customizer"
+    data-asset-base="/3d-printing"
+    data-worker="<%= worker_url %>">
+    <%# Raw, not escaped: this is JSON, not markup. The one sequence that could
+        break out of a script element is neutralised. %>
+    <script type="application/json"><%= scad.to_json.gsub("</", "<\\/").html_safe %></script>
+
+    <div class="scad-stage" data-role="stage">
+      <canvas data-role="canvas" aria-label="3D preview of the <%= resource.data.title %>"></canvas>
+
+      <div class="scad-poster" data-role="poster">
+        <% if preview %>
+          <img src="<%= preview %>" alt="Rendering of the <%= resource.data.title %>" loading="lazy">
+        <% end %>
+        <div class="scad-poster-prompt">
+          <button type="button" class="scad-start" data-role="start">Customize this model</button>
+          <p>
+            Runs OpenSCAD in your browser. Nothing is uploaded — the geometry is
+            built on your own machine, which means a one-time download of about
+            11&nbsp;MB.
+          </p>
+        </div>
+      </div>
+
+      <div class="scad-stage-bar">
+        <p class="scad-status" data-role="status"></p>
+        <button type="button" class="scad-ghost" data-role="recenter">Recenter</button>
+      </div>
+    </div>
+
+    <div class="scad-panel">
+      <% if preset_count > 0 %>
+        <section class="scad-section" data-role="presets-panel">
+          <h2>Starting points</h2>
+          <div class="scad-presets" data-role="presets"></div>
+        </section>
+      <% end %>
+
+      <section class="scad-section">
+        <h2>
+          Parameters
+          <span class="scad-count"><%= parameter_count %></span>
+        </h2>
+        <div class="scad-controls" data-role="controls"></div>
+        <button type="button" class="scad-ghost scad-reset" data-role="reset">Back to defaults</button>
+      </section>
+
+      <section class="scad-section">
+        <h2>Take it away</h2>
+        <div class="scad-actions">
+          <button type="button" class="scad-action is-primary" data-role="download-stl" disabled>Download STL</button>
+          <button type="button" class="scad-action" data-role="download-scad" disabled>Download .scad</button>
+          <button type="button" class="scad-action" data-role="download-preset" disabled>Download parameters</button>
+          <button type="button" class="scad-action" data-role="share">Copy share link</button>
+        </div>
+        <p class="scad-note">
+          Your settings live in this page's address, so the link above reproduces
+          exactly what you see. The <code>.scad</code> download opens in OpenSCAD
+          with your values already filled in.
+        </p>
+      </section>
+
+      <section class="scad-section">
+        <h2>What you get</h2>
+        <dl class="scad-stats" data-role="stats"></dl>
+      </section>
+
+      <section class="scad-section" data-role="computed-panel" hidden>
+        <h2>Worked out for you</h2>
+        <dl class="scad-stats" data-role="computed"></dl>
+      </section>
+
+      <ul class="scad-problems" data-role="problems" hidden></ul>
+    </div>
+  </scad-customizer>
+
+  <div class="model-notes">
+    <%= yield %>
+
+    <dl class="model-meta">
+      <% if resource.data.material %>
+        <dt>Printed in</dt>
+        <dd><%= resource.data.material %></dd>
+      <% end %>
+      <dt>Built with</dt>
+      <dd>
+        OpenSCAD<% if scad["libraries"].any? %> and <%= scad["libraries"].join(", ") %><% end %>
+      </dd>
+      <dt>Source</dt>
+      <dd><a href="<%= scad["source_url"] %>"><%= scad["slug"] %>.scad</a></dd>
+    </dl>
+  </div>
+
+  <p class="model-back"><a href="/3d-printing/">All models</a></p>
+</article>

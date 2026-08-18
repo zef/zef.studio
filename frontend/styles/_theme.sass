@@ -1,0 +1,91 @@
+// Colours, type and the handful of mixins shared across the site.
+// Extracted so stylesheets other than index.sass can reach them; index.sass
+// pulls them back in unprefixed, so every existing rule reads unchanged.
+@use "sass:color"
+
+$textColor: #333
+$lightTextColor: #666
+$textOnDark: white
+$textInvertedColor: #333
+
+$darkBgColor: #375686
+$highlightColor: #2f69e3
+
+$secondaryColor: #ff3f45
+
+$background: white
+
+$cornerRadius: 16px
+
+=regularFont
+  font-family: "Calluna", "Times New Roman", Times, serif
+
+=lightFont
+  font-family: "CallunaLight", "Calluna", "Times New Roman", Times, serif
+
+=semibold
+  font-family: "CallunaSemibold", "Calluna", "Times New Roman", Times, serif
+  font-weight: normal
+
+=italic
+  font-family: "CallunaIt", "Times New Roman", Times, serif
+  font-style: italic
+
+=smallCaps
+  font-variant: small-caps
+
+=codeFont
+  font-family: "Menlo", monospace, monospace
+  font-size: .9em
+
+
+=headerText($caps: false)
+  +semibold
+  text-shadow: white 1px 1px 1px
+
+  @if $caps
+    +smallCaps
+
+=sans
+  font-family: -apple-system, verdana, "Lucida Grande", "Lucida Sans Unicode", helvetica, arial, sans-serif
+
+=paperBg
+  background-color: $background
+  background: url(/images/bg-texture.svg)
+  background-position: center
+
+=paperBgDark
+  background-color: $darkBgColor
+  background: url(/images/bg-texture-dark.svg)
+  background-position: center
+
+=svgSquare($size)
+  height: $size
+  width: $size
+  background-size: $size
+
+=contentContainer($maxWidth: 624px)
+  max-width: $maxWidth
+  margin: 0 auto
+
+=deboss
+  text-shadow: 0px 1px 0px rgba(white,.1), 0px -1px 0px rgba(black,.3)
+
+=pill-button($bgColor: $darkBgColor, $foregroundColor: white, $height: 31px, $verticalOffset: 2px)
+  padding: $verticalOffset 0.8em 0px
+  line-height: ($height - $verticalOffset)
+  color: $foregroundColor
+  border-radius: $cornerRadius
+  background-color: $bgColor
+  display: inline-flex
+  transition: all 200ms ease-in-out
+
+  &:hover
+    background-color: color.adjust($bgColor, $lightness: 10%)
+
+=pill-button-secondary($height: 31px, $verticalOffset: 2px)
+  +pill-button($bgColor: white, $foregroundColor: $highlightColor, $height: $height, $verticalOffset: $verticalOffset)
+  border: 2px solid $highlightColor
+
+  &:hover
+    background-color: color.change($highlightColor, $alpha: 6%)
