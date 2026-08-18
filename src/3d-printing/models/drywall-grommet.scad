@@ -34,8 +34,11 @@ flange_thickness = 3; // [1:0.1:10]
 // Number of mounting screws around the flange.
 screw_count = 3; // [0:1:8]
 
-// Screw spec, in the form used by BOSL2 — for example "#8-32,1" or "M4,10".
-screw_type = "#8-32,1"; // [#6-32,1:#6 wood screw, #8-32,1:#8 wood screw, M3,10:M3 machine screw, M4,10:M4 machine screw, M5,12:M5 machine screw]
+// Screw size. The clearance hole and countersink are sized to match.
+screw_size = "#8-32"; // [#6-32, #8-32, #10-24, M3, M4, M5]
+
+// Screw length, used to size the shaft of the clearance hole.
+screw_length = 20; // [8:1:60]
 
 /* [Grip Ribs] */
 
@@ -91,7 +94,7 @@ module grommet() {
         tag("remove")
           zrot_copies(n = screw_count, d = flange_od - flange_overhang)
             attach(BOT, TOP, overlap = flange_thickness)
-              screw_hole(screw_type, head = "flat", anchor = TOP);
+              screw_hole(screw_size, length = screw_length, head = "flat", anchor = TOP);
     }
   }
 

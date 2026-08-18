@@ -44,8 +44,8 @@ rim_width = 6; // [0:0.5:20]
 // Text embossed around the rim. Leave empty for no label.
 label = "FLOUR";
 
-// Font for the label.
-label_font = "DejaVu Sans:style=Bold"; // [DejaVu Sans:Sans, DejaVu Sans:style=Bold:Sans Bold, DejaVu Sans Mono:Mono, DejaVu Sans Mono:style=Bold:Mono Bold]
+// Lettering style. Bold holds up better at small sizes once printed.
+label_style = "Bold"; // [Regular, Bold, Mono, Mono Bold]
 
 // Label height as a fraction of the rim width.
 label_scale = 0.7; // [0.3:0.05:1]
@@ -69,6 +69,13 @@ mouth_radius = mouth_diameter / 2;
 spout_top_radius = spout_top_diameter / 2;
 spout_radius = spout_diameter / 2;
 total_height = cone_height + spout_length;
+
+// Dropdown values stay plain so they read well in the customizer; the actual
+// fontconfig pattern is assembled here.
+label_font = label_style == "Bold" ? "DejaVu Sans:style=Bold"
+           : label_style == "Mono" ? "DejaVu Sans Mono"
+           : label_style == "Mono Bold" ? "DejaVu Sans Mono:style=Bold"
+           : "DejaVu Sans";
 
 echo(str("Overall height: ", total_height + wall, " mm"));
 echo(str("Rim diameter: ", mouth_diameter + rim_width * 2, " mm"));

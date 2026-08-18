@@ -1,0 +1,9 @@
+{
+  "fileFormatVersion": "1",
+  "parameterSets": {
+    "Kitchen — flour": { "mouth_diameter": "70", "cone_height": "34", "spout_diameter": "14", "spout_top_diameter": "16", "spout_length": "22", "rim_width": "8", "label": "FLOUR", "label_style": "Bold" },
+    "Narrow bottle — oil": { "mouth_diameter": "50", "cone_height": "26", "spout_diameter": "8", "spout_top_diameter": "9", "spout_length": "26", "rim_width": "6", "label": "OIL", "label_style": "Bold" },
+    "Powder scoop": { "mouth_diameter": "40", "cone_height": "20", "spout_diameter": "8.5", "spout_top_diameter": "9.5", "spout_length": "13", "rim_width": "6", "label": "PROTEIN", "label_style": "Mono Bold", "label_scale": "0.6" },
+    "Unlabelled": { "mouth_diameter": "40", "cone_height": "20", "spout_diameter": "8.5", "spout_top_diameter": "9.5", "spout_length": "13", "rim_width": "6", "label": "" }
+  }
+}

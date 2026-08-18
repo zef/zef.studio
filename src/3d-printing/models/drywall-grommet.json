@@ -1,0 +1,9 @@
+{
+  "fileFormatVersion": "1",
+  "parameterSets": {
+    "Cable pass-through, 1-1/8 in": { "hole_diameter": "28.6", "wall_thickness": "12.7", "flange_overhang": "15", "screw_count": "3", "rib_count": "3", "rib_gap": "0.85" },
+    "Two-by-four interior wall": { "hole_diameter": "38", "wall_thickness": "12.7", "flange_overhang": "18", "screw_count": "4", "rib_count": "3", "rib_gap": "0.8" },
+    "Thick wall, plaster over lath": { "hole_diameter": "28.6", "wall_thickness": "25", "flange_overhang": "16", "screw_count": "4", "rib_count": "4", "rib_gap": "0.85" },
+    "Smooth bore, no grip": { "hole_diameter": "50", "wall_thickness": "12.7", "flange_overhang": "20", "screw_count": "4", "rib_count": "0" }
+  }
+}

@@ -37,7 +37,7 @@ function parameters() {
 const verbose = flag("--verbose")
 const kernel = createKernel()
 
-async function renderModel(slug, params, outputPath) {
+async function renderModel(slug, params, outputPath, label = null) {
   const model = readModel(slug)
   const directives = modelDirectives(model.source)
   const result = await kernel.render({
@@ -51,7 +51,7 @@ async function renderModel(slug, params, outputPath) {
 
   if (!result.ok) {
     const problems = result.log.filter((l) => /ERROR|WARNING|Parser error/i.test(l))
-    console.log(`  \x1b[31m✗\x1b[0m ${slug} — exit ${result.exitCode} (${result.ms} ms)`)
+    console.log(`  \x1b[31m✗\x1b[0m ${label || slug} — exit ${result.exitCode} (${result.ms} ms)`)
     for (const line of problems.slice(0, 8)) console.log(`      ${line}`)
     if (!problems.length) for (const line of result.log.slice(-6)) console.log(`      ${line}`)
     return { slug, ok: false }
@@ -61,7 +61,7 @@ async function renderModel(slug, params, outputPath) {
   const dims = info.size.map((n) => n.toFixed(1)).join(" × ")
   const warnings = result.log.filter((l) => /WARNING/i.test(l))
   console.log(
-    `  \x1b[32m✓\x1b[0m ${slug.padEnd(22)} ${String(result.ms).padStart(6)} ms  ` +
+    `  \x1b[32m✓\x1b[0m ${(label || slug).padEnd(26)} ${String(result.ms).padStart(6)} ms  ` +
       `${String(info.triangles).padStart(7)} tris  ${dims} mm` +
       (warnings.length ? `  \x1b[33m(${warnings.length} warning${warnings.length > 1 ? "s" : ""})\x1b[0m` : "")
   )
@@ -86,6 +86,22 @@ console.log("")
 const results = []
 for (const slug of slugs) {
   results.push(await renderModel(slug, parameters(), slugs.length === 1 ? value("-o") : null))
+
+  // --presets also renders every saved parameter set, so a preset that has
+  // drifted out of sync with the model gets caught here rather than by a visitor.
+  if (flag("--presets")) {
+    const { presets } = readModel(slug)
+    for (const [name, values] of Object.entries(presets?.parameterSets || {})) {
+      const typed = Object.fromEntries(
+        Object.entries(values).map(([k, v]) => {
+          const n = Number(v)
+          return [k, v === "true" || v === "false" ? v === "true" : Number.isFinite(n) && v !== "" ? n : v]
+        })
+      )
+      process.stdout.write("    preset ")
+      results.push(await renderModel(slug, { ...parameters(), ...typed }, null, name))
+    }
+  }
 }
 const failed = results.filter((r) => !r.ok)
 console.log(`\n  ${results.length - failed.length}/${results.length} rendered\n`)

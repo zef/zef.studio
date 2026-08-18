@@ -1,0 +1,9 @@
+{
+  "fileFormatVersion": "1",
+  "parameterSets": {
+    "Thin — speaker wire": { "cable_diameter": "2.2", "clip_width": "6", "gap_ratio": "0.75", "screw_hole_diameter": "3.3", "screw_head_diameter": "6.5", "perimeters": "2" },
+    "USB / lamp cord": { "cable_diameter": "3.3", "clip_width": "8", "gap_ratio": "0.8", "screw_hole_diameter": "3.3", "screw_head_diameter": "7", "perimeters": "2" },
+    "Extension cord": { "cable_diameter": "7.5", "clip_width": "10", "gap_ratio": "0.85", "screw_hole_diameter": "4.2", "screw_head_diameter": "8.5", "perimeters": "3" },
+    "Stiff — coax or romex": { "cable_diameter": "13", "clip_width": "14", "gap_ratio": "0.9", "screw_hole_diameter": "4.2", "screw_head_diameter": "9", "perimeters": "4", "fillet": "2" }
+  }
+}

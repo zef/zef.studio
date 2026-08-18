@@ -1,0 +1,9 @@
+{
+  "fileFormatVersion": "1",
+  "parameterSets": {
+    "1/4 in aquarium line": { "end_a_diameter": "6.4", "end_b_diameter": "6.4", "insert_length": "12", "rib_count": "5", "rib_thickness": "0.3", "wall": "1", "$fn": "48" },
+    "1/2 in garden hose": { "end_a_diameter": "12.7", "end_b_diameter": "12.7", "insert_length": "22", "rib_count": "8", "rib_thickness": "0.4", "wall": "1.4" },
+    "Shop vac 1-1/4 in": { "end_a_diameter": "31.8", "end_b_diameter": "31.8", "insert_length": "34", "rib_count": "6", "rib_thickness": "0.6", "wall": "2", "$fn": "96" },
+    "Reducer, 1/2 to 1/4 in": { "end_a_diameter": "12.7", "end_b_diameter": "6.4", "insert_length": "18", "rib_count": "6", "rib_thickness": "0.4", "wall": "1.2" }
+  }
+}

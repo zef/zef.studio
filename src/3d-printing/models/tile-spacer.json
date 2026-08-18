@@ -1,0 +1,10 @@
+{
+  "fileFormatVersion": "1",
+  "parameterSets": {
+    "1/16 in — mosaic": { "spacing": "1.59", "arm_length": "8", "arms": "4", "chamfer": "0.3", "copies": "4" },
+    "1/8 in — wall tile": { "spacing": "3.18", "arm_length": "10", "arms": "4", "chamfer": "0.4", "copies": "3" },
+    "3/16 in — floor tile": { "spacing": "4.76", "arm_length": "11.5", "arms": "4", "chamfer": "0.5", "copies": "1" },
+    "1/4 in — large format": { "spacing": "6.35", "arm_length": "14", "arms": "4", "chamfer": "0.6", "copies": "1" },
+    "Tee against a wall": { "spacing": "4.76", "arm_length": "11.5", "arms": "3", "chamfer": "0.5", "copies": "2" }
+  }
+}

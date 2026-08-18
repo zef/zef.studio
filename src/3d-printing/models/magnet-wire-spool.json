@@ -1,0 +1,9 @@
+{
+  "fileFormatVersion": "1",
+  "parameterSets": {
+    "22 AWG, 100 turns": { "wire_diameter": "0.65", "target_turns": "100", "core_diameter": "5", "core_length": "16" },
+    "30 AWG, 500 turns": { "wire_diameter": "0.26", "target_turns": "500", "core_diameter": "6", "core_length": "14" },
+    "36 AWG, 2000 turns": { "wire_diameter": "0.13", "target_turns": "2000", "core_diameter": "8", "core_length": "12" },
+    "Chunky 18 AWG coil": { "wire_diameter": "1.02", "target_turns": "60", "core_diameter": "12", "core_length": "24", "wall": "1.2" }
+  }
+}

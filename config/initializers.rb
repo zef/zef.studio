@@ -43,6 +43,15 @@ Bridgetown.configure do |config|
   #
   permalink "simple"
 
+  # OpenSCAD models with in-browser customizers. The collection lives in
+  # src/_models; each page pairs with a .scad file under src/3d-printing/models.
+  collections do
+    models do
+      output true
+      permalink "/3d-printing/:slug/"
+    end
+  end
+
   # Optionally host your site off a path, e.g. /blog. If you set this option,
   # ensure you use the `relative_url` helper for all links and assets in your HTML.
   # If you're using esbuild for frontend assets, edit `esbuild.config.js` to
