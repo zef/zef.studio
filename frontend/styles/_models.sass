@@ -774,6 +774,11 @@ $controlBg: #f5f4f1
   font-size: 0.85em
   margin: 1em 0 0.3em
 
+// The UA stylesheet's [hidden] rule loses to any explicit display, and several
+// panels here are flex. Make hidden mean hidden throughout the customizer.
+.scad-customizer [hidden]
+  display: none !important
+
 .scad-substat
   align-items: center
   display: flex
