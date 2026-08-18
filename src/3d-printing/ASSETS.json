@@ -1,0 +1,32 @@
+{
+  "generatedBy": "scripts/scad-assets.mjs",
+  "openscad": "2025.03.25.wasm24456",
+  "bosl2": "v2.0.751",
+  "font": "DejaVu 2.37",
+  "files": {
+    "runtime/openscad.js": {
+      "bytes": 124567,
+      "sha256": "904a47f29e63afb5"
+    },
+    "runtime/openscad.wasm": {
+      "bytes": 9603115,
+      "sha256": "f72ce246c02c0e50"
+    },
+    "libraries/bosl2.json": {
+      "bytes": 1552762,
+      "sha256": "0f632a35d2184846"
+    },
+    "fonts/DejaVuSans.ttf": {
+      "bytes": 757076,
+      "sha256": "7da195a74c55bef9"
+    },
+    "fonts/DejaVuSans-Bold.ttf": {
+      "bytes": 705684,
+      "sha256": "e6476c1b80502924"
+    },
+    "fonts/DejaVuSansMono.ttf": {
+      "bytes": 340712,
+      "sha256": "b4a6c3e4faab8773"
+    }
+  }
+}

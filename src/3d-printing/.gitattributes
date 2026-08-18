@@ -1,0 +1,5 @@
+# The vendored OpenSCAD kernel and its fonts are large binaries; keep them out
+# of the git object store the same way the site's photos are handled.
+# Scoped to this directory so the site's own Calluna .ttf webfonts are untouched.
+*.wasm filter=lfs diff=lfs merge=lfs -text
+*.ttf filter=lfs diff=lfs merge=lfs -text
