@@ -25,12 +25,11 @@ $cornerRadius: 16px
 // Grids have no such limit, so they step out to $wideContentWidth on screens
 // with the room. That width is chosen so a card stays the size it is in the
 // two-column layout: three cards and two gutters, rather than two stretched.
-// Three measures, and a page picks one. `wide` fits three cards at the size
-// two of them are in the reading column; `wider` is for the model customizer,
-// which puts a viewport and a control panel side by side.
+// Two measures. Prose keeps to $contentWidth; everything wider than prose —
+// the masthead, card grids, the model customizer — shares $wideContentWidth,
+// which fits three cards at the size two of them are in the reading column.
 $contentWidth: 624px
 $wideContentWidth: 960px
-$widerContentWidth: 1120px
 // 2rem is what the old two-column layout gutter worked out to, so that
 // arrangement comes through this change pixel for pixel.
 $gridGutter: 2rem

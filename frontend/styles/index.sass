@@ -99,25 +99,25 @@ body.section-portfolio
     .body
       +contentContainer(710px)
 
-// A page states how much room its content needs, and the header takes the same
-// measure so the two share an edge. Prose inside a wide page holds itself to
-// the reading width — being narrower than the masthead is ordinary; being wider
-// is what looks wrong. The cost is that the header moves as you go from an
-// index to a post, which is the trade for content that lines up with it.
+// A page whose content is a grid rather than prose takes the same measure the
+// header does, so the two share an edge. Prose keeps to the reading width and
+// centres inside it — narrower than the masthead is ordinary; wider is what
+// looked wrong.
 body.width-wide
   +grid-breakpoints.medium
-    header,
     .content .body
       max-width: $wideContentWidth
 
-body.width-wider
-  +grid-breakpoints.small
-    header,
-    .content .body
-      max-width: $widerContentWidth
-
 header
   +contentContainer
+
+  // One masthead width, everywhere. It widens at the same breakpoint the card
+  // grids gain their third column and snaps back with them, so the header and
+  // the content below it always change together. On a post the nav then sits
+  // wider than the text — which is the ordinary, centred arrangement, and
+  // reads as deliberate in a way the reverse never did.
+  +grid-breakpoints.medium
+    max-width: $wideContentWidth
 
   a.logo
     background: url(/images/z.svg)
@@ -318,21 +318,23 @@ code
 .highlight[data-language]
   position: relative
 
+  // A pill floating clear of the corner rather than tucked into it, so it
+  // reads as a label on the block instead of part of the code's first line.
   &:before
     content: attr(data-language)
     +sans
-    background-color: rgba($background, 0.85)
-    border-bottom-left-radius: 5px
+    background-color: rgba($textColor, 0.07)
+    border-radius: 99px
     color: $lightTextColor
-    font-size: 0.66rem
-    letter-spacing: 0.04em
+    font-size: 0.64rem
+    letter-spacing: 0.05em
     line-height: 1
-    padding: 0.35em 0.55em
+    padding: 0.4em 0.75em
     pointer-events: none
     position: absolute
-    right: 0
+    right: 0.7em
     text-transform: uppercase
-    top: 0
+    top: 0.7em
     z-index: 1
 
 // a few various styles for inline usage inside markdown
