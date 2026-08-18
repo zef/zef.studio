@@ -368,17 +368,23 @@ export class ScadCustomizer extends HTMLElement {
 
   // ----------------------------------------------------------- download
 
+  // Downloads end up in a folder alongside other variants of the same part, so
+  // the name has to say which one this is: the preset, or what was changed and
+  // what to.
   fileStem() {
     const suffix = this.activePreset
       ? slugify(this.activePreset)
-      : this.changedNames().slice(0, 3).map(slugify).join("-")
+      : this.changed()
+          .slice(0, 2)
+          .map(([name, value]) => `${slugify(name)}-${slugify(value)}`)
+          .join("-")
     return [this.schema.slug, suffix].filter(Boolean).join("-")
   }
 
-  changedNames() {
-    return Object.entries(this.values)
-      .filter(([name, value]) => String(value) !== String(this.schema.defaults[name]))
-      .map(([name]) => name)
+  changed() {
+    return Object.entries(this.values).filter(
+      ([name, value]) => String(value) !== String(this.schema.defaults[name])
+    )
   }
 
   downloadSTL() {
