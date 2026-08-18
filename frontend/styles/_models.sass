@@ -771,6 +771,9 @@ $controlBg: #f5f4f1
   margin-top: 0.9em
   padding-top: 0.8em
 
+  .scad-subhead
+    margin-top: 0
+
 .scad-parameter-row
   align-items: center
   display: flex
@@ -793,17 +796,20 @@ $controlBg: #f5f4f1
   color: $lightTextColor
   font-size: 0.74rem
 
-// A file input styled as one of the buttons beside it.
+// A file input styled as one of the buttons beside it. The input is taken out
+// of flow so its own "Choose file" chrome can't stretch the button, and made
+// invisible — it isn't the click target. A <label> wrapping an input forwards
+// clicks to it natively, which is what actually opens the picker.
 .scad-upload
   cursor: pointer
-  position: relative
   overflow: hidden
+  position: relative
 
   input[type="file"]
+    cursor: pointer
     inset: 0
     opacity: 0
     position: absolute
-    cursor: pointer
 
 .scad-upload-status
   +uiFont
