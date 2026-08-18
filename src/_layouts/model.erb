@@ -4,11 +4,11 @@ layout: default
 
 <%
   scad = resource.data.scad
-  worker_version = site.data[:scad_worker_version]
-  worker_url = "/3d-printing/worker/worker.js?v=#{worker_version}"
+  worker_url = "/3d-printing/worker/worker.js?v=#{site.data[:scad_worker_version]}"
   preview = resource.data.image
   parameter_count = scad["groups"].sum { |group| group["parameters"].length }
   preset_count = scad["presets"]&.length || 0
+  openscad_link = %(<a href="https://openscad.org">OpenSCAD</a>)
 %>
 
 <article class="model">
@@ -24,69 +24,114 @@ layout: default
         break out of a script element is neutralised. %>
     <script type="application/json"><%= scad.to_json.gsub("</", "<\\/").html_safe %></script>
 
-    <div class="scad-stage" data-role="stage">
-      <canvas data-role="canvas" aria-label="3D preview of the <%= resource.data.title %>"></canvas>
+    <div class="scad-viewport">
+      <div class="scad-stage" data-role="stage">
+        <canvas data-role="canvas" aria-label="3D preview of the <%= resource.data.title %>"></canvas>
 
-      <div class="scad-poster" data-role="poster">
-        <% if preview %>
-          <img src="<%= preview %>" alt="Rendering of the <%= resource.data.title %>" loading="lazy">
-        <% end %>
-        <div class="scad-poster-prompt">
-          <button type="button" class="scad-start" data-role="start">Customize this model</button>
-          <p>
-            Runs OpenSCAD in your browser. Nothing is uploaded — the geometry is
-            built on your own machine, which means a one-time download of about
-            11&nbsp;MB.
-          </p>
+        <div class="scad-poster" data-role="poster">
+          <% if preview %>
+            <img src="<%= preview %>" alt="Rendering of the <%= resource.data.title %>" loading="lazy">
+          <% end %>
+          <div class="scad-poster-prompt">
+            <button type="button" class="scad-start" data-role="start">Customize this model</button>
+            <p>
+              Runs OpenSCAD in your browser. Nothing is uploaded — the geometry is
+              built on your own machine, which means a one-time download of about
+              11&nbsp;MB.
+            </p>
+          </div>
+        </div>
+
+        <div class="scad-stage-bar">
+          <p class="scad-status" data-role="status"></p>
+          <button type="button" class="scad-ghost" data-role="recenter">Recenter</button>
         </div>
       </div>
 
-      <div class="scad-stage-bar">
-        <p class="scad-status" data-role="status"></p>
-        <button type="button" class="scad-ghost" data-role="recenter">Recenter</button>
+      <div class="scad-source-panel" data-role="source-panel">
+        <button type="button" class="scad-source-toggle" data-role="source-toggle" aria-expanded="false">
+          Show the OpenSCAD source
+        </button>
+        <pre class="scad-source" data-role="source" hidden><code></code></pre>
       </div>
     </div>
 
     <div class="scad-panel">
-      <% if preset_count > 0 %>
-        <section class="scad-section" data-role="presets-panel">
-          <h2>Starting points</h2>
-          <div class="scad-presets" data-role="presets"></div>
-        </section>
-      <% end %>
+      <section class="scad-section" data-role="presets-panel">
+        <h2>Starting points</h2>
+        <div class="scad-presets" data-role="presets"></div>
+      </section>
 
       <section class="scad-section">
         <h2>
           Parameters
           <span class="scad-count"><%= parameter_count %></span>
+          <label class="scad-switch" data-role="inch-switch">
+            <input type="checkbox" data-role="inches">
+            <span class="scad-switch-track"></span>
+            <span class="scad-switch-label">inches</span>
+          </label>
         </h2>
         <div class="scad-controls" data-role="controls"></div>
-        <button type="button" class="scad-ghost scad-reset" data-role="reset">Back to defaults</button>
       </section>
 
       <section class="scad-section">
-        <h2>Take it away</h2>
-        <div class="scad-actions">
-          <button type="button" class="scad-action is-primary" data-role="download-stl" disabled>Download STL</button>
-          <button type="button" class="scad-action" data-role="download-scad" disabled>Download .scad</button>
-          <button type="button" class="scad-action" data-role="download-preset" disabled>Download parameters</button>
-          <button type="button" class="scad-action" data-role="share">Copy share link</button>
+        <h2>Download</h2>
+        <ul class="scad-downloads">
+          <li>
+            <button type="button" class="scad-action is-primary" data-role="download-stl" disabled>Download STL</button>
+            <p>The mesh itself. This is what you open in your slicer to print.</p>
+          </li>
+          <li>
+            <button type="button" class="scad-action" data-role="download-scad" disabled>Download .scad</button>
+            <p>The <%= openscad_link.html_safe %> source with your values written into it, ready to edit further.</p>
+          </li>
+          <li>
+            <button type="button" class="scad-action" data-role="share">Copy share link</button>
+            <p>A link that reopens this page with exactly these settings. No account, no database — the settings are the link.</p>
+          </li>
+        </ul>
+
+        <div class="scad-parameter-file">
+          <p class="scad-note">
+            Parameter sets are the format <%= openscad_link.html_safe %>'s own customizer
+            reads and writes, so they carry between here and the desktop app.
+          </p>
+          <div class="scad-parameter-row">
+            <label class="scad-field-label" for="scad-preset-name">Name</label>
+            <input type="text" id="scad-preset-name" class="scad-text" data-role="preset-name" value="customized">
+          </div>
+          <div class="scad-parameter-row">
+            <button type="button" class="scad-action" data-role="download-preset" disabled>Save parameters</button>
+            <label class="scad-action scad-upload">
+              Load parameters
+              <input type="file" accept="application/json,.json" data-role="upload-preset">
+            </label>
+          </div>
+          <p class="scad-upload-status" data-role="upload-status" hidden></p>
         </div>
-        <p class="scad-note">
-          Your settings live in this page's address, so the link above reproduces
-          exactly what you see. The <code>.scad</code> download opens in OpenSCAD
-          with your values already filled in.
-        </p>
       </section>
 
       <section class="scad-section">
-        <h2>What you get</h2>
+        <h2>Stats</h2>
         <dl class="scad-stats" data-role="stats"></dl>
-      </section>
 
-      <section class="scad-section" data-role="computed-panel" hidden>
-        <h2>Worked out for you</h2>
-        <dl class="scad-stats" data-role="computed"></dl>
+        <div class="scad-substat" data-role="infill-row">
+          <label class="scad-field-label" for="scad-infill">Infill</label>
+          <input type="number" id="scad-infill" class="scad-number-box" data-role="infill"
+                 value="20" min="0" max="100" step="5">
+          <span class="scad-unit">%</span>
+        </div>
+
+        <div data-role="computed-panel" hidden>
+          <h3 class="scad-subhead">Calculated by the model</h3>
+          <dl class="scad-stats" data-role="computed"></dl>
+        </div>
+
+        <p class="scad-note">
+          Source: <a href="<%= scad["source_url"] %>"><%= scad["slug"] %>.scad</a><% if scad["libraries"].any? %>,
+          built with <%= scad["libraries"].join(", ") %><% end %>.
+        </p>
       </section>
 
       <ul class="scad-problems" data-role="problems" hidden></ul>
@@ -104,20 +149,7 @@ layout: default
     <% end %>
 
     <%= yield %>
-
-    <dl class="model-meta">
-      <% if resource.data.material %>
-        <dt>Printed in</dt>
-        <dd><%= resource.data.material %></dd>
-      <% end %>
-      <dt>Built with</dt>
-      <dd>
-        OpenSCAD<% if scad["libraries"].any? %> and <%= scad["libraries"].join(", ") %><% end %>
-      </dd>
-      <dt>Source</dt>
-      <dd><a href="<%= scad["source_url"] %>"><%= scad["slug"] %>.scad</a></dd>
-    </dl>
   </div>
 
-  <p class="model-back"><a href="/3d-printing/">All models</a></p>
+  <p class="model-back"><a class="scad-action" href="/3d-printing/">All models</a></p>
 </article>

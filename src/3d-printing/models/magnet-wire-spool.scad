@@ -15,14 +15,17 @@
 include <BOSL2/std.scad>
 
 /* [Winding] */
+// scad-web: note = Tell it the wire and the turns you want; the flanges are sized from these.
 
 // Bare diameter of the wire, including its enamel. 22 AWG is about 0.65 mm.
 wire_diameter = 0.65; // [0.05:0.01:3]
 
 // How many turns you intend to wind on.
+// scad-web: unit = count
 target_turns = 100; // [10:10:5000]
 
 /* [Core] */
+// scad-web: note = The barrel the coil winds onto.
 
 // Inside diameter of the core — size this to whatever the coil goes around.
 core_diameter = 5; // [2:0.1:40]
@@ -34,6 +37,7 @@ core_length = 16; // [4:0.5:80]
 wall = 0.8; // [0.4:0.05:4]
 
 /* [Flanges] */
+// scad-web: note = Sized automatically to clear the finished winding, plus this margin.
 
 // Flange thickness.
 flange_thickness = 1.6; // [0.6:0.1:6]

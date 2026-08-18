@@ -13,6 +13,7 @@
 include <BOSL2/std.scad>
 
 /* [Funnel] */
+// scad-web: note = The cone, and how deeply its throat curves into the spout.
 
 // Diameter across the top of the cone, not counting the rim.
 mouth_diameter = 40; // [15:0.5:150]
@@ -22,9 +23,11 @@ cone_height = 20; // [8:0.5:120]
 
 // How much the throat curves between cone and spout. 0 is a straight cone,
 // 1 is a deep bell.
+// scad-web: unit = ratio
 throat_curve = 0.5; // [0:0.05:1]
 
 /* [Spout] */
+// scad-web: note = Size the tip to whatever the funnel feeds into.
 
 // Outside diameter at the tip of the spout — size this to the bottle neck.
 spout_diameter = 8.5; // [3:0.1:40]
@@ -37,6 +40,7 @@ spout_top_diameter = 9.5; // [3:0.1:40]
 spout_length = 13; // [4:0.5:60]
 
 /* [Rim] */
+// scad-web: note = The flat lip it prints on and stands on, and the lettering wrapped around it.
 
 // How far the rim extends out past the mouth. Also the flat the funnel prints on.
 rim_width = 6; // [0:0.5:20]
@@ -53,6 +57,7 @@ label_style = "Bold"; // [Regular, Bold, Mono, Mono Bold]
 label_face = "Top"; // [Top, Underside]
 
 // Label height as a fraction of the rim width.
+// scad-web: unit = ratio
 label_scale = 0.7; // [0.3:0.05:1]
 
 // How deep the lettering is cut into the rim.

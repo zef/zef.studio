@@ -13,6 +13,7 @@ include <BOSL2/std.scad>
 include <BOSL2/screws.scad>
 
 /* [Opening] */
+// scad-web: note = The hole you already cut, and how thick the wall around it is.
 
 // Diameter of the hole through the wall. 1-1/8" is 28.6 mm.
 hole_diameter = 28.6; // [10:0.1:120]
@@ -24,6 +25,7 @@ wall_thickness = 12.7; // [5:0.5:60]
 wall = 1.4; // [0.8:0.05:5]
 
 /* [Flange] */
+// scad-web: note = The face that covers the torn edge of the drywall.
 
 // How far the flange overhangs past the hole on every side.
 flange_overhang = 15; // [3:0.5:50]
@@ -32,6 +34,7 @@ flange_overhang = 15; // [3:0.5:50]
 flange_thickness = 3; // [1:0.1:10]
 
 // Number of mounting screws around the flange.
+// scad-web: unit = count
 screw_count = 3; // [0:1:8]
 
 // Screw size. The clearance hole and countersink are sized to match.
@@ -41,17 +44,21 @@ screw_size = "#8-32"; // [#6-32, #8-32, #10-24, M3, M4, M5]
 screw_length = 20; // [8:1:60]
 
 /* [Grip Ribs] */
+// scad-web: note = Short fingers inside the barrel that hold the cable. Set the count to zero for a plain smooth sleeve.
 
 // Rings of ribs inside the barrel that grip the cable or conduit.
+// scad-web: unit = count
 rib_count = 3; // [0:1:8]
 
 // How far the ribs reach inward.
 rib_thickness = 1.6; // [0.4:0.1:6]
 
 // How much of each ring is open. 0.85 leaves short fingers that flex.
+// scad-web: unit = ratio
 rib_gap = 0.85; // [0.4:0.01:0.95]
 
 // Fingers per ring.
+// scad-web: unit = count
 rib_fingers = 6; // [3:1:12]
 
 /* [Quality] */

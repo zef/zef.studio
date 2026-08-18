@@ -13,6 +13,7 @@
 include <BOSL2/std.scad>
 
 /* [Ends] */
+// scad-web: note = Size each barb to the inner bore of the hose it goes into. Different sizes make a reducer.
 
 // Outside diameter of the barb on the first end — measure the hose's inner bore.
 end_a_diameter = 14.5; // [4:0.1:60]
@@ -24,8 +25,10 @@ end_b_diameter = 14.5; // [4:0.1:60]
 insert_length = 22; // [8:0.5:60]
 
 /* [Barbs] */
+// scad-web: note = The ribs that let the hose slide on but bite when it pulls back.
 
 // Number of gripping ribs on each end.
+// scad-web: unit = count
 rib_count = 8; // [0:1:20]
 
 // How far each rib stands out past the barb. More grip, harder to push on.
@@ -35,6 +38,7 @@ rib_thickness = 0.4; // [0.1:0.05:1.5]
 rib_height = 0.8; // [0.4:0.05:3]
 
 /* [Wall] */
+// scad-web: note = The bore through the middle is the barb diameter less twice this.
 
 // Wall thickness. The bore through the middle is the barb diameter less twice this.
 wall = 1.4; // [0.6:0.05:5]

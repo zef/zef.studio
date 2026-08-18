@@ -39,7 +39,7 @@ module ScadCustomizer
   }.freeze
 
   class Parameter
-    ATTRIBUTES = %i[name label description type default min max step options group max_length].freeze
+    ATTRIBUTES = %i[name label description type default min max step options group max_length unit].freeze
     attr_accessor(*ATTRIBUTES)
 
     def initialize(**attrs)
@@ -55,9 +55,9 @@ module ScadCustomizer
   end
 
   class Model
-    attr_reader :slug, :source, :title, :summary, :directives, :parameters, :presets
+    attr_reader :slug, :source, :title, :summary, :directives, :parameters, :presets, :group_notes
 
-    def initialize(slug:, source:, title:, summary:, directives:, parameters:, presets:)
+    def initialize(slug:, source:, title:, summary:, directives:, parameters:, presets:, group_notes: {})
       @slug = slug
       @source = source
       @title = title
@@ -65,12 +65,13 @@ module ScadCustomizer
       @directives = directives
       @parameters = parameters
       @presets = presets
+      @group_notes = group_notes
     end
 
     # Parameters bucketed by their section, in the order the file declares them.
     def groups
       parameters.group_by(&:group).map do |name, params|
-        { "name" => name, "parameters" => params.map(&:to_h) }
+        { "name" => name, "note" => group_notes[name], "parameters" => params.map(&:to_h) }.compact
       end
     end
 
@@ -99,7 +100,7 @@ module ScadCustomizer
       # trailing newline would otherwise defeat.
       lines = source.lines.map(&:chomp)
       title, summary, directives, body_start = parse_header(lines)
-      parameters = parse_parameters(lines, body_start)
+      parameters, group_notes = parse_parameters(lines, body_start)
       Model.new(
         slug: slug,
         source: source,
@@ -107,7 +108,8 @@ module ScadCustomizer
         summary: summary,
         directives: directives,
         parameters: parameters,
-        presets: normalize_presets(presets, parameters)
+        presets: normalize_presets(presets, parameters),
+        group_notes: group_notes
       )
     end
 
@@ -158,16 +160,28 @@ module ScadCustomizer
       hidden = false
       description = []
       parameters = []
+      group_notes = {}
+      unit = nil
 
       lines[start_index..].to_a.each do |line|
         if (match = SECTION.match(line))
           group = match[1].strip
           hidden = group.downcase == HIDDEN_SECTION
           description = []
+          unit = nil
           next
         end
 
-        next if DIRECTIVE.match?(line)
+        # `scad-web:` lines are configuration rather than prose. A `note`
+        # annotates the section it follows; a `unit` annotates the next
+        # parameter. Both are plain comments, so OpenSCAD ignores them.
+        if (match = DIRECTIVE.match(line))
+          case match[1]
+          when "note" then group_notes[group] = match[2].strip
+          when "unit" then unit = match[2].strip
+          end
+          next
+        end
 
         if (match = COMMENT.match(line))
           description << match[1].rstrip
@@ -186,18 +200,20 @@ module ScadCustomizer
             literal: match[2],
             annotation: match[3],
             description: description.join(" ").strip,
-            group: group
+            group: group,
+            unit: unit
           )
           parameters << param if param
         end
 
         description = []
+        unit = nil
       end
 
-      parameters
+      [parameters, group_notes]
     end
 
-    def build_parameter(name:, literal:, annotation:, description:, group:)
+    def build_parameter(name:, literal:, annotation:, description:, group:, unit: nil)
       default = parse_literal(literal)
       # Anything computed rather than assigned outright isn't a parameter.
       return nil if default == :not_a_literal
@@ -208,10 +224,21 @@ module ScadCustomizer
         description: description.empty? ? nil : description,
         default: default,
         group: group,
-        type: type_for(default)
+        type: type_for(default),
+        unit: unit_for(name, default, unit)
       )
       apply_annotation(param, annotation)
       param
+    end
+
+    # These are CAD models, so a bare number is a length in millimetres unless
+    # the model says otherwise. Special variables like $fn never are.
+    def unit_for(name, default, declared)
+      return declared if declared
+      return nil unless default.is_a?(Numeric)
+      return "none" if name.start_with?("$")
+
+      "mm"
     end
 
     def label_for(name)

@@ -101,7 +101,7 @@ function repairNormals(positions, normals, count) {
   }
 }
 
-/** Rough print volume, for showing how much plastic a set of parameters costs. */
+/** Enclosed volume of the mesh, in mm³. */
 export function estimateVolume(geometry) {
   const { positions, triangles } = geometry
   // Signed volume of the tetrahedron each triangle makes with the origin.
@@ -115,4 +115,46 @@ export function estimateVolume(geometry) {
       (ax * (by * cz - bz * cy) - ay * (bx * cz - bz * cx) + az * (bx * cy - by * cx)) / 6
   }
   return Math.abs(total) // mm³
+}
+
+/** Total surface area of the mesh, in mm². Used to estimate the printed shell. */
+export function surfaceArea(geometry) {
+  const { positions, triangles } = geometry
+  let total = 0
+  for (let t = 0; t < triangles; t++) {
+    const i = t * 9
+    const ux = positions[i + 3] - positions[i]
+    const uy = positions[i + 4] - positions[i + 1]
+    const uz = positions[i + 5] - positions[i + 2]
+    const vx = positions[i + 6] - positions[i]
+    const vy = positions[i + 7] - positions[i + 1]
+    const vz = positions[i + 8] - positions[i + 2]
+    // Half the magnitude of the cross product.
+    total += Math.hypot(uy * vz - uz * vy, uz * vx - ux * vz, ux * vy - uy * vx) / 2
+  }
+  return total
+}
+
+// A slicer fills the outside of a part solid and the inside at the infill
+// density, so a printed part weighs far less than its volume suggests — but
+// only once it's big enough to have an inside at all.
+//
+// Eroding the solid by the shell thickness removes roughly `surface area ×
+// thickness`, which is a good enough stand-in for what the slicer does without
+// reimplementing one. Small or thin-walled parts come out all shell, which is
+// exactly right: a 2 mm funnel wall has no interior to skimp on.
+const SHELL_MM = 0.9 // ~2 perimeters plus top and bottom layers
+const DENSITY_G_PER_CM3 = 1.24 // PLA; PETG is 1.27, close enough to share
+
+export function estimateWeight(geometry, infillFraction) {
+  const volume = estimateVolume(geometry)
+  const shell = Math.min(surfaceArea(geometry) * SHELL_MM, volume)
+  const interior = Math.max(0, volume - shell)
+  const printed = shell + interior * infillFraction
+  return {
+    solidVolume: volume / 1000, // cm³
+    printedVolume: printed / 1000, // cm³
+    grams: (printed / 1000) * DENSITY_G_PER_CM3,
+    mostlyShell: interior < volume * 0.15,
+  }
 }

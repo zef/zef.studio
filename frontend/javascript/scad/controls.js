@@ -6,6 +6,8 @@
 // slider for exploring, the box for typing an exact measurement, since these
 // are real millimetres that have to match real hardware.
 
+import { convertible, inchLabel, toInches } from "./units.js"
+
 const GROUP_OPEN_BY_DEFAULT = 2 // later sections start collapsed
 
 export class Controls {
@@ -19,6 +21,7 @@ export class Controls {
     this.schema = schema
     this.onChange = onChange
     this.inputs = new Map() // name -> {set(value)}
+    this.readouts = [] // inch equivalents, refreshed together
     this.render()
   }
 
@@ -42,6 +45,8 @@ export class Controls {
     details.append(summary)
 
     const body = element("div", "scad-group-body")
+    // A section can explain itself, via `// scad-web: note =` in the .scad file.
+    if (group.note) body.append(element("p", "scad-group-note", group.note))
     for (const parameter of group.parameters) {
       body.append(this.renderParameter(parameter))
     }
@@ -86,15 +91,31 @@ export class Controls {
     box.type = "number"
     box.id = id
     box.step = String(step)
-    if (hasRange) {
-      box.min = String(parameter.min)
-      box.max = String(parameter.max)
-    }
+    // Deliberately no min/max here. The slider's range is a suggestion of where
+    // the useful values live, not a limit — if you need 7000 where the slider
+    // stops at 5000, type it. Dragging the slider afterwards snaps back inside.
     box.value = String(parameter.default)
 
-    let slider = null
-    if (hasRange) {
-      slider = element("input", "scad-slider")
+    const slider = hasRange ? element("input", "scad-slider") : null
+    const readout = convertible(parameter) ? element("span", "scad-inches") : null
+
+    // Keeps the row's appearance in step with the value: the inch equivalent,
+    // and a mark when the value sits outside the slider's range, so it's clear
+    // why the handle has stopped moving.
+    const reflect = (value) => {
+      const beyond = hasRange && (value < parameter.min || value > parameter.max)
+      wrapper.classList.toggle("is-beyond", beyond)
+      wrapper.title = beyond
+        ? `Outside the usual range of ${parameter.min}–${parameter.max}. The slider stops at the edge; the value stands.`
+        : ""
+      if (readout) {
+        const { text, decimal } = toInches(value)
+        readout.textContent = inchLabel(value)
+        readout.title = text === decimal ? "" : decimal
+      }
+    }
+
+    if (slider) {
       slider.type = "range"
       slider.min = String(parameter.min)
       slider.max = String(parameter.max)
@@ -102,31 +123,36 @@ export class Controls {
       slider.value = String(parameter.default)
       slider.setAttribute("aria-label", parameter.label)
       slider.addEventListener("input", () => {
+        const value = Number(slider.value)
         box.value = slider.value
-        this.emit(parameter, Number(slider.value))
+        reflect(value)
+        this.emit(parameter, value)
       })
       wrapper.append(slider)
     }
 
-    const commit = () => {
-      let value = Number(box.value)
+    box.addEventListener("change", () => {
+      const value = Number(box.value)
       if (!Number.isFinite(value)) return
-      // A typed value outside the slider's range is a legitimate request —
-      // clamp only to what OpenSCAD needs, not to what the slider shows.
-      if (hasRange) {
-        value = Math.min(Math.max(value, parameter.min), parameter.max)
-        box.value = String(value)
-        slider.value = String(value)
-      }
+      // The slider pins itself to whichever end it can reach; the value stands.
+      if (slider) slider.value = String(value)
+      reflect(value)
       this.emit(parameter, value)
-    }
-    box.addEventListener("change", commit)
-
+    })
     wrapper.append(box)
+
+    if (readout) {
+      wrapper.append(readout)
+      this.readouts.push(readout)
+    }
+
+    reflect(parameter.default)
+
     this.inputs.set(parameter.name, {
       set(value) {
         box.value = String(value)
         if (slider) slider.value = String(value)
+        reflect(value)
       },
     })
     return wrapper

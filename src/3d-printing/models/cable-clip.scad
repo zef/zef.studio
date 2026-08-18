@@ -12,6 +12,7 @@
 include <BOSL2/std.scad>
 
 /* [Cable] */
+// scad-web: note = Measure the cable jacket; the loop is built around it.
 
 // Diameter of the cable, plus whatever clearance you want. Measure the jacket.
 cable_diameter = 3.3; // [1:0.1:30]
@@ -21,9 +22,11 @@ clip_width = 8; // [3:0.5:40]
 
 // Width of the snap-in gap, as a fraction of the cable diameter. Below 1.0 the
 // cable has to be pushed past a pinch point, which is what keeps it in.
+// scad-web: unit = ratio
 gap_ratio = 0.8; // [0.4:0.05:1.2]
 
 /* [Mounting] */
+// scad-web: note = The screw that holds it to the wall, and the pad around it.
 
 // Diameter of the screw shank. A #6 wood screw is about 3.5 mm.
 screw_hole_diameter = 3.3; // [1.5:0.1:8]
@@ -35,11 +38,13 @@ screw_head_diameter = 7; // [3:0.1:16]
 countersink = true;
 
 /* [Walls] */
+// scad-web: note = Thickness is set in whole extrusion widths, so the slicer prints solid loops instead of filling a thin gap.
 
 // Extrusion width your slicer is set to. Used to size the wall in whole beads.
 extrusion_width = 0.45; // [0.2:0.01:1.2]
 
 // Wall thickness in perimeters. Two is springy, three or four is stiff.
+// scad-web: unit = count
 perimeters = 2; // [1:1:8]
 
 // Rounding where the loop meets the mounting pad.

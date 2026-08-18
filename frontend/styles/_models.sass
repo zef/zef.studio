@@ -143,26 +143,6 @@ $controlBg: #f5f4f1
     background: none
     color: inherit
 
-.model-meta
-  +uiFont
-  border-top: 1px solid rgba($textColor, 0.16)
-  color: $lightTextColor
-  display: grid
-  gap: 0.2em 1em
-  grid-template-columns: auto 1fr
-  margin-top: 2rem
-  padding-top: 1rem
-
-  dt
-    +smallCaps
-    font-weight: normal
-    margin: 0
-
-  dd
-    +italic
-    font-size: 1em
-    margin: 0
-
 ////////////////////////////////////////////////////////////
 // Customizer shell
 
@@ -182,7 +162,12 @@ $controlBg: #f5f4f1
     align-items: start
     display: grid
     gap: 1.2rem
-    grid-template-columns: minmax(0, 1.4fr) minmax(340px, 1fr)
+    grid-template-columns: minmax(0, 1.4fr) minmax(360px, 1fr)
+
+.scad-viewport
+  +grid-breakpoints.medium
+    position: sticky
+    top: 1rem
 
 ////////////////////////////////////////////////////////////
 // Viewport
@@ -200,9 +185,7 @@ $controlBg: #f5f4f1
 
   +grid-breakpoints.medium
     aspect-ratio: auto
-    height: clamp(460px, 68vh, 720px)
-    position: sticky
-    top: 1rem
+    height: clamp(440px, 62vh, 680px)
 
   canvas
     display: block
@@ -570,9 +553,17 @@ $controlBg: #f5f4f1
   +uiFont
   +pill-button-secondary($height: 34px, $verticalOffset: 2px)
   cursor: pointer
+  white-space: nowrap
 
   &.is-primary
     +pill-button($height: 34px, $verticalOffset: 2px)
+    // Solid fill stands on its own; the outline belongs to the secondary style.
+    border: none
+    padding-top: 4px
+
+  &.is-failed
+    border-color: rgba($secondaryColor, 0.6)
+    color: color.adjust($secondaryColor, $lightness: -18%)
 
   &:disabled
     cursor: default
@@ -583,20 +574,6 @@ $controlBg: #f5f4f1
 
     &.is-primary:hover
       background-color: $darkBgColor
-
-.scad-reset
-  +uiFont
-  background-color: transparent
-  border: 1px solid $panelBorder
-  border-radius: $cornerRadius
-  color: $lightTextColor
-  cursor: pointer
-  margin-top: 0.6em
-  padding: 0.35em 0.9em
-
-  &:hover
-    border-color: rgba($highlightColor, 0.5)
-    color: $highlightColor
 
 .scad-stats
   +uiFont
@@ -638,3 +615,221 @@ $controlBg: #f5f4f1
 
     &:last-child
       margin-bottom: 0
+
+
+////////////////////////////////////////////////////////////
+// Section notes, inch readouts, out-of-range values
+
+.scad-group-note
+  +uiFont
+  color: $lightTextColor
+  font-size: 0.74rem
+  line-height: 1.45
+  margin: 0 0 0.9em
+  padding-left: 0.7em
+  border-left: 2px solid rgba($darkBgColor, 0.22)
+
+.scad-inches
+  +uiFont
+  color: $lightTextColor
+  font-size: 0.72rem
+  font-variant-numeric: lining-nums
+  min-width: 4.4em
+  // Hidden until the inches switch is on, so the row keeps its rhythm either way.
+  display: none
+
+.shows-inches .scad-inches
+  display: inline
+
+// A value the slider can't reach is legitimate — just worth marking.
+.scad-number.is-beyond
+  .scad-number-box
+    border-color: rgba($darkBgColor, 0.55)
+    box-shadow: inset 2px 0 0 $darkBgColor
+
+  .scad-slider
+    opacity: 0.45
+
+////////////////////////////////////////////////////////////
+// The inches switch in the Parameters heading
+
+.scad-switch
+  +uiFont
+  align-items: center
+  cursor: pointer
+  display: inline-flex
+  font-size: 0.72rem
+  font-variant: none
+  gap: 0.4em
+  margin-left: auto
+  user-select: none
+
+  input
+    position: absolute
+    opacity: 0
+    pointer-events: none
+
+  .scad-switch-track
+    background-color: rgba($textColor, 0.2)
+    border-radius: 8px
+    display: block
+    height: 16px
+    transition: background-color 150ms ease-in-out
+    width: 28px
+
+    &:after
+      background: white
+      border-radius: 50%
+      box-shadow: 0 1px 2px rgba($textColor, 0.4)
+      content: ""
+      display: block
+      height: 12px
+      margin: 2px
+      transition: transform 150ms ease-in-out
+      width: 12px
+
+  input:checked + .scad-switch-track
+    background-color: $darkBgColor
+
+    &:after
+      transform: translateX(12px)
+
+  input:focus-visible + .scad-switch-track
+    box-shadow: 0 0 0 2px rgba($highlightColor, 0.5)
+
+  .scad-switch-label
+    color: $lightTextColor
+
+////////////////////////////////////////////////////////////
+// Download pane
+
+.scad-downloads
+  display: flex
+  flex-direction: column
+  gap: 0.7em
+  list-style: none
+  margin: 0
+  padding: 0
+
+  li
+    align-items: baseline
+    display: grid
+    gap: 0.2em 0.8em
+    grid-template-columns: auto 1fr
+
+  p
+    +uiFont
+    color: $lightTextColor
+    font-size: 0.74rem
+    line-height: 1.4
+    margin: 0
+
+.scad-share-fallback
+  grid-column: 1 / -1
+  margin-top: 0.3em
+
+.scad-parameter-file
+  border-top: 1px dotted rgba($textColor, 0.18)
+  margin-top: 0.9em
+  padding-top: 0.8em
+
+.scad-parameter-row
+  align-items: center
+  display: flex
+  gap: 0.5em
+  margin-top: 0.5em
+
+.scad-field-label
+  +uiFont
+  color: $lightTextColor
+  font-size: 0.74rem
+
+// A file input styled as one of the buttons beside it.
+.scad-upload
+  cursor: pointer
+  position: relative
+  overflow: hidden
+
+  input[type="file"]
+    inset: 0
+    opacity: 0
+    position: absolute
+    cursor: pointer
+
+.scad-upload-status
+  +uiFont
+  color: $lightTextColor
+  font-size: 0.74rem
+  margin: 0.6em 0 0
+
+  &.is-failed
+    color: color.adjust($secondaryColor, $lightness: -18%)
+
+////////////////////////////////////////////////////////////
+// Stats pane
+
+.scad-subhead
+  +headerText
+  color: $lightTextColor
+  font-size: 0.85em
+  margin: 1em 0 0.3em
+
+.scad-substat
+  align-items: center
+  display: flex
+  gap: 0.5em
+  margin-top: 0.7em
+
+  .scad-number-box
+    width: 4.4em
+
+.scad-unit
+  +uiFont
+  color: $lightTextColor
+  font-size: 0.74rem
+
+////////////////////////////////////////////////////////////
+// Source view
+
+.scad-source-panel
+  margin-top: 0.6rem
+
+.scad-source-toggle
+  +uiFont
+  background-color: transparent
+  border: 1px solid $panelBorder
+  border-radius: $cornerRadius
+  color: $lightTextColor
+  cursor: pointer
+  padding: 0.35em 0.9em
+
+  &:hover
+    border-color: rgba($highlightColor, 0.5)
+    color: $highlightColor
+
+.scad-source
+  +card
+  +codeFont
+  color: $textColor
+  font-size: 0.72rem
+  line-height: 1.5
+  margin: 0.6em 0 0
+  max-height: 26rem
+  overflow: auto
+  padding: 0.9em 1em
+  tab-size: 2
+  white-space: pre
+
+  code
+    background: none
+    color: inherit
+    font-size: inherit
+
+.scad-customizer:not([data-started]) .scad-source-panel
+  display: none
+
+////////////////////////////////////////////////////////////
+
+.model-back
+  a
+    display: inline-block
