@@ -8,7 +8,19 @@
   <%
     is_portfolio = resource.data.slug == 'portfolio'
     header_class = is_portfolio ? 'portfolio' : ''
-    body_class = is_portfolio ? 'section-portfolio' : ''
+
+    # The header is sized to the widest thing on the page. Content narrower
+    # than the masthead is ordinary and reads as centred; content wider than it
+    # reads as a mistake, because the eye gets two competing left edges with no
+    # reason for either. So a page says how much room its content needs and the
+    # header takes the same. Collections are card grids by definition; anything
+    # else declares `width: wide` or `width: wider` in its front matter.
+    width = resource.data.width || ("wide" if resource.data.layout == "collection")
+
+    body_class = [
+      ("section-portfolio" if is_portfolio),
+      ("width-#{width}" if width),
+    ].compact.join(" ")
   %>
   <body class="<%= body_class %>">
     <div class="content">

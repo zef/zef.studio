@@ -25,8 +25,12 @@ $cornerRadius: 16px
 // Grids have no such limit, so they step out to $wideContentWidth on screens
 // with the room. That width is chosen so a card stays the size it is in the
 // two-column layout: three cards and two gutters, rather than two stretched.
+// Three measures, and a page picks one. `wide` fits three cards at the size
+// two of them are in the reading column; `wider` is for the model customizer,
+// which puts a viewport and a control panel side by side.
 $contentWidth: 624px
 $wideContentWidth: 960px
+$widerContentWidth: 1120px
 // 2rem is what the old two-column layout gutter worked out to, so that
 // arrangement comes through this change pixel for pixel.
 $gridGutter: 2rem
@@ -82,16 +86,6 @@ $gridGutter: 2rem
   max-width: $maxWidth
   margin: 0 auto
 
-// Steps an element out of the reading column to a wider one, centred on the
-// page. Used by things that aren't prose — card grids, the model customizer —
-// so the column around them can stay narrow for the text that needs it.
-// The viewport clamp leaves room for a scrollbar, so this can't cause the page
-// to scroll sideways.
-=breakOut($width: $wideContentWidth)
-  left: 50%
-  position: relative
-  transform: translateX(-50%)
-  width: min(#{$width}, calc(100vw - 3rem))
 
 =deboss
   text-shadow: 0px 1px 0px rgba(white,.1), 0px -1px 0px rgba(black,.3)

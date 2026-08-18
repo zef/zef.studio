@@ -60,8 +60,11 @@ $controlBg: #f5f4f1
 ////////////////////////////////////////////////////////////
 // Index
 
+// This page is wide for the sake of its grid, but its prose is still prose —
+// held to the reading measure and centred within the wider column.
 .model-intro,
 .model-colophon
+  +contentContainer
   text-align: left
 
   p
@@ -86,7 +89,6 @@ $controlBg: #f5f4f1
     grid-template-columns: repeat(2, 1fr)
 
   +grid-breakpoints.medium
-    +breakOut
     grid-template-columns: repeat(3, 1fr)
 
   li
@@ -160,7 +162,10 @@ $controlBg: #f5f4f1
     margin: 0 auto 1.6rem
     max-width: 34em
 
+  // The page is wide for the customizer's sake; the writing under it is still
+  // writing, and keeps to the reading measure.
   .model-notes
+    +contentContainer
     margin-top: 2.5rem
     text-align: left
 
@@ -191,11 +196,8 @@ $controlBg: #f5f4f1
   margin: 1.5rem 0 0
   text-align: left
 
-  // Break out of the site's narrow reading column: this thing needs room. Wider
-  // than the card grids, since it has a viewport and a control panel side by side.
-  +grid-breakpoints.small
-    +breakOut(1120px)
-
+  // The page is already at the `wider` measure for this thing's sake, so it
+  // simply fills the column rather than breaking out of it.
   +grid-breakpoints.medium
     align-items: start
     display: grid

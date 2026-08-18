@@ -99,6 +99,23 @@ body.section-portfolio
     .body
       +contentContainer(710px)
 
+// A page states how much room its content needs, and the header takes the same
+// measure so the two share an edge. Prose inside a wide page holds itself to
+// the reading width — being narrower than the masthead is ordinary; being wider
+// is what looks wrong. The cost is that the header moves as you go from an
+// index to a post, which is the trade for content that lines up with it.
+body.width-wide
+  +grid-breakpoints.medium
+    header,
+    .content .body
+      max-width: $wideContentWidth
+
+body.width-wider
+  +grid-breakpoints.small
+    header,
+    .content .body
+      max-width: $widerContentWidth
+
 header
   +contentContainer
 
@@ -393,8 +410,8 @@ table
     gap: 2rem $gridGutter
     grid-template-columns: repeat(2, 1fr)
 
+  // No breaking out of the column: on these pages the column itself is wide.
   +grid-breakpoints.medium
-    +breakOut
     grid-template-columns: repeat(3, 1fr)
 
   a
@@ -753,11 +770,6 @@ ul.pagination
   +grid-mixins.row
   +grid-mixins.between
   padding: 2em 0
-
-  // Follows the grid out on wide screens so the first and last controls line
-  // up with the outer edge of the cards above them.
-  +grid-breakpoints.medium
-    +breakOut
 
   li
     &.current
