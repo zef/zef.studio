@@ -555,8 +555,28 @@ article
   h1, h2, h3, h4
     +mixins.clearbefore
 
-  h3, h4, p, ul, ol
+  h3, h4, p, ul, ol, pre
     text-align: left
+
+  // Code blocks: Rouge's theme supplies the colours, this supplies the shape.
+  // Long lines scroll rather than stretching the column.
+  //
+  // Everything hangs off `pre.highlight` rather than the wrapper Rouge puts
+  // around it, so this can't reach into other things that use the theme's
+  // classes — the customizer's source view styles its own container and
+  // deliberately leaves the `<pre>` unclassed.
+  pre.highlight
+    +codeFont
+    border-radius: 8px
+    line-height: 1.5
+    margin: 0 0 1.2em
+    overflow-x: auto
+    padding: 0.9em 1em
+
+    code
+      background: none
+      color: inherit
+      font-size: inherit
 
   blockquote
     +italic
@@ -842,6 +862,11 @@ ul.pagination
       font-size: 0.8em
     +grid-breakpoints.small
       width: $icon-width + 50
+
+// Rouge's theme, shared by build-time highlighting in posts and the runtime
+// highlighter in frontend/javascript/syntax. Imported here rather than from
+// index.js because only the sass bundle is linked into the page.
+@import "syntax-highlighting.css"
 
 @import "photoswipe/style.css"
 @import "photoswipe-dynamic-caption-plugin/photoswipe-dynamic-caption-plugin.css"

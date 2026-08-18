@@ -7,6 +7,8 @@
 
 import { Controls } from "./controls.js"
 import { decodeState, encodeState, replaceHash, shareURL } from "./share.js"
+import { highlight } from "../syntax/highlight.js"
+import "../syntax/openscad.js"
 import { customizeSource } from "./source.js"
 import { estimateWeight, parseSTL } from "./stl.js"
 import { Viewer } from "./viewer.js"
@@ -367,7 +369,8 @@ export class ScadCustomizer extends HTMLElement {
   /** Shows the source as it would download — with the current values in it. */
   refreshSource() {
     if (!this.el.source || this.el.source.hasAttribute("hidden")) return
-    this.el.source.querySelector("code").textContent = customizeSource(this.schema.source, this.values)
+    const source = customizeSource(this.schema.source, this.values)
+    this.el.source.querySelector("code").innerHTML = highlight(source, "openscad")
   }
 
   setStatus(text, state) {

@@ -30,6 +30,17 @@ Customizer annotations, so each model is its own single source of truth.
 
 See [docs/3d-printing.md](docs/3d-printing.md) for how to add one.
 
+### Syntax Highlighting
+
+Fenced code blocks are highlighted by Rouge at build time, themed by
+`frontend/styles/syntax-highlighting.css`.
+
+`frontend/javascript/syntax/` fills the two gaps Rouge can't: languages it has
+no lexer for (OpenSCAD is one), and code that doesn't exist until runtime. It
+emits Rouge's own class names, so one stylesheet themes both and a block it
+highlighted is indistinguishable from one Rouge did. Adding a language is a
+grammar file plus a `registerLanguage` call.
+
 ### Image Handling
 
 Laying out images nicely is very important to me. I use lists to set images in

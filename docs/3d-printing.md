@@ -193,6 +193,7 @@ src/_models/     the pages
 plugins/scad_customizer.rb          parses the annotations
 plugins/builders/scad_models.rb     attaches the schema to each page
 frontend/javascript/scad/           viewer, controls, sharing (bundled)
+frontend/javascript/syntax/         syntax highlighting (site-wide, not just here)
 frontend/styles/_models.sass        styling
 ```
 
@@ -218,6 +219,11 @@ A few implementation notes that aren't obvious from the code:
   chosen infill. Parts too thin to have an interior — a 2 mm funnel wall — come
   out all shell, which is correct, and the UI says so rather than showing an
   infill control that would do nothing. Density assumes PLA at 1.24 g/cm³.
+- The **source view** is highlighted at runtime by
+  `frontend/javascript/syntax/`, because it changes with every parameter and so
+  can't be highlighted at build time. Rouge has no OpenSCAD lexer either, so the
+  same grammar serves any ```openscad block in a post. It emits Rouge's class
+  names, so `syntax-highlighting.css` themes both.
 - **Inch conversion is display-only.** The models are millimetres throughout,
   because OpenSCAD is and because mixing units inside a model is how you end up
   with a part that is wrong by a factor of 25.4. Parameters can declare
