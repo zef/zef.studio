@@ -62,6 +62,33 @@ function trimZeros(text) {
   return text.replace(/\.?0+$/, "")
 }
 
+// Below this the value is already imperial for any purpose a printed part
+// cares about, and offering to "correct" it would be noise.
+const WORTH_SNAPPING_MM = 0.01
+
+/**
+ * The exact millimetre value behind an approximate inch readout.
+ *
+ * A part that has to meet imperial hardware wants the real number — 3/16" is
+ * 4.7625 mm, not 4.7 — but only when the readout is already naming a fraction.
+ * If it fell back to a decimal there's no tidy value nearby to snap to, and
+ * dragging someone to the nearest 64th would be a disservice.
+ *
+ * @returns {{mm: number, label: string}|null}
+ */
+export function snapTarget(mm) {
+  const { text, exact } = toInches(mm)
+  if (exact || !text || !Number.isFinite(mm)) return null
+  if (!text.includes("/") && !/^-?\d+″$/.test(text)) return null
+
+  const ticks = Math.round((mm / MM_PER_INCH) * FINEST)
+  const target = (ticks / FINEST) * MM_PER_INCH
+  if (Math.abs(target - mm) < WORTH_SNAPPING_MM) return null
+
+  // Four places is past any printer's resolution and keeps 1/64ths exact.
+  return { mm: Number(target.toFixed(4)), label: text }
+}
+
 /** Which parameters get an inch readout at all. */
 export function convertible(parameter) {
   return parameter.type === "number" && parameter.unit === "mm"

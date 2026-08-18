@@ -49,20 +49,16 @@ layout: default
       </div>
 
       <div class="scad-source-panel" data-role="source-panel">
-        <div class="scad-source-bar">
-          <button type="button" class="scad-source-toggle" data-role="source-toggle" aria-expanded="false">
-            View Source
-          </button>
-          <%# The .scad download belongs next to the source it downloads. %>
-          <button type="button" class="scad-action" data-role="download-scad" disabled>Download .scad</button>
-        </div>
+        <button type="button" class="scad-source-toggle" data-role="source-toggle" aria-expanded="false">
+          View Source
+        </button>
         <div class="scad-source highlight" data-language="OpenSCAD" data-role="source" hidden><pre><code></code></pre></div>
       </div>
     </div>
 
     <div class="scad-panel">
       <section class="scad-section" data-role="presets-panel">
-        <h2>Starting points</h2>
+        <h2>Templates</h2>
         <div class="scad-presets" data-role="presets"></div>
       </section>
 
@@ -82,10 +78,15 @@ layout: default
       <section class="scad-section">
         <h2>Download</h2>
         <div class="scad-downloads">
-          <button type="button" class="scad-action is-primary" data-role="download-stl" disabled>Download .stl</button>
+          <div class="scad-parameter-row">
+            <button type="button" class="scad-action is-primary" data-role="download-stl" disabled>Download .stl</button>
+            <button type="button" class="scad-action" data-role="download-scad" disabled>Download .scad</button>
+          </div>
           <p class="scad-note">
-            The printable file. Open it in your slicer — PrusaSlicer, Bambu Studio,
-            Cura — and send it to the printer.
+            The <code>.stl</code> is the printable file — open it in your slicer,
+            PrusaSlicer or Bambu Studio or Cura, and send it to the printer. The
+            <code>.scad</code> is the <%= openscad_link.html_safe %> source with your
+            values written into it, if you want to take the design further.
           </p>
         </div>
 

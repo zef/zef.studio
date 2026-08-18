@@ -38,6 +38,15 @@ $controlBg: #f5f4f1
   transition: all 150ms ease-in-out
   white-space: nowrap
 
+// The site's paper texture, washed back toward flat colour. At full strength
+// it competes with the part, and because the background doesn't turn with the
+// scene it reads as a texture laid *over* the grid rather than behind it —
+// which is oddly distracting while orbiting.
+=paperBgDarkFaded($fade: 0.76)
+  background-color: $darkBgColor
+  background-image: linear-gradient(rgba($darkBgColor, $fade), rgba($darkBgColor, $fade)), url(/images/bg-texture-dark.svg)
+  background-position: center
+
 =card
   background-color: $panelBg
   border-radius: 8px
@@ -198,7 +207,7 @@ $controlBg: #f5f4f1
 // Viewport
 
 .scad-stage
-  +paperBgDark
+  +paperBgDarkFaded
   border-radius: 10px
   box-shadow: rgba($textColor, 0.3) 0px 2px 6px
   overflow: hidden
@@ -665,19 +674,42 @@ $controlBg: #f5f4f1
   padding-left: 0.7em
   border-left: 2px solid rgba($darkBgColor, 0.22)
 
+// The inch reading, and — when it's approximate — the offer to make it exact.
+// It's a button, so it resets to look like the text it is until there's
+// something to press.
 .scad-inches
   +uiFont
+  appearance: none
+  background: none
+  border: none
   color: $lightTextColor
   font-size: 0.72rem
   font-variant-numeric: lining-nums
+  margin: 0
+  padding: 0
   text-align: right
   white-space: nowrap
   // Nothing reserves space for this: it lives on the label's line, so showing
   // or hiding it can't move the slider or the number box.
   display: none
 
+  &:disabled
+    cursor: default
+
+  // A dotted underline is about as quiet as an affordance gets, which suits
+  // something most people will never need. The tooltip says what it does.
+  &:not(:disabled)
+    border-bottom: 1px dotted rgba($textColor, 0.35)
+    cursor: pointer
+    line-height: 1.1
+
+    &:hover,
+    &:focus-visible
+      border-bottom-color: $highlightColor
+      color: $highlightColor
+
 .shows-inches .scad-inches
-  display: inline
+  display: inline-block
 
 // A value the slider can't reach is legitimate — just worth marking.
 .scad-number.is-beyond
@@ -825,12 +857,6 @@ $controlBg: #f5f4f1
 .scad-source-panel
   margin-top: 0.6rem
 
-.scad-source-bar
-  align-items: center
-  display: flex
-  gap: 0.5em
-  justify-content: space-between
-
 .scad-source-toggle
   +uiButton($height: 30px)
   border-color: $panelBorder
@@ -871,6 +897,3 @@ $controlBg: #f5f4f1
 
 ////////////////////////////////////////////////////////////
 
-.model-back
-  a
-    display: inline-block

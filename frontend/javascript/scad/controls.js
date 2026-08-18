@@ -6,7 +6,7 @@
 // slider for exploring, the box for typing an exact measurement, since these
 // are real millimetres that have to match real hardware.
 
-import { convertible, inchLabel, toInches } from "./units.js"
+import { convertible, inchLabel, snapTarget, toInches } from "./units.js"
 
 const GROUP_OPEN_BY_DEFAULT = 2 // later sections start collapsed
 
@@ -64,7 +64,12 @@ export class Controls {
     // The inch equivalent shares the label's line, sitting above the number
     // box rather than beside it. Turning the switch on then changes nothing
     // about the width of the control row — the sliders stay where they were.
-    const readout = convertible(parameter) ? element("span", "scad-inches") : null
+    //
+    // It's a button because an approximate reading is also an offer: press it
+    // and the value becomes exactly the fraction it was rounding to. Disabled
+    // when there's nothing to snap to, which is most of the time.
+    const readout = convertible(parameter) ? element("button", "scad-inches") : null
+    if (readout) readout.type = "button"
 
     const heading = element("div", "scad-label-row")
     heading.append(label)
@@ -105,21 +110,46 @@ export class Controls {
 
     const slider = hasRange ? element("input", "scad-slider") : null
 
+    // The exact millimetre value behind the current approximate reading, or
+    // null when there's nothing worth snapping to. Kept here so the readout's
+    // click handler and its appearance stay in agreement.
+    let snap = null
+
     // Keeps the row's appearance in step with the value: the inch equivalent,
-    // and a mark when the value sits outside the slider's range, so it's clear
-    // why the handle has stopped moving.
+    // whether that reading can be snapped to exactly, and a mark when the value
+    // sits outside the slider's range so it's clear why the handle has stopped.
     const reflect = (value) => {
       const beyond = hasRange && (value < parameter.min || value > parameter.max)
       wrapper.classList.toggle("is-beyond", beyond)
       wrapper.title = beyond
         ? `Outside the usual range of ${parameter.min}–${parameter.max}. The slider stops at the edge; the value stands.`
         : ""
-      if (readout) {
-        const { text, decimal } = toInches(value)
-        readout.textContent = inchLabel(value)
-        readout.title = text === decimal ? "" : decimal
-      }
+      if (!readout) return
+
+      const { text, decimal } = toInches(value)
+      readout.textContent = inchLabel(value)
+      snap = snapTarget(value)
+      readout.disabled = !snap
+      readout.title = snap
+        ? `Snap to exactly ${snap.label} — ${snap.mm} mm`
+        : text === decimal
+          ? ""
+          : decimal
     }
+
+    // One path for every way the value can change: put it in both inputs,
+    // refresh the row, tell the customizer. The slider pins itself to whichever
+    // end it can reach when the value is outside its range; the value stands.
+    const apply = (value) => {
+      box.value = String(value)
+      if (slider) slider.value = String(value)
+      reflect(value)
+      this.emit(parameter, value)
+    }
+
+    readout?.addEventListener("click", () => {
+      if (snap) apply(snap.mm)
+    })
 
     if (slider) {
       slider.type = "range"
@@ -128,22 +158,13 @@ export class Controls {
       slider.step = String(step)
       slider.value = String(parameter.default)
       slider.setAttribute("aria-label", parameter.label)
-      slider.addEventListener("input", () => {
-        const value = Number(slider.value)
-        box.value = slider.value
-        reflect(value)
-        this.emit(parameter, value)
-      })
+      slider.addEventListener("input", () => apply(Number(slider.value)))
       wrapper.append(slider)
     }
 
     box.addEventListener("change", () => {
       const value = Number(box.value)
-      if (!Number.isFinite(value)) return
-      // The slider pins itself to whichever end it can reach; the value stands.
-      if (slider) slider.value = String(value)
-      reflect(value)
-      this.emit(parameter, value)
+      if (Number.isFinite(value)) apply(value)
     })
     wrapper.append(box)
 
