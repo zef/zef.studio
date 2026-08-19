@@ -88,6 +88,7 @@ export class ScadCustomizer extends HTMLElement {
       downloadSCAD: find("download-scad"),
       downloadPreset: find("download-preset"),
       presetName: find("preset-name"),
+      presetVersion: find("preset-version"),
       uploadPreset: find("upload-preset"),
       uploadStatus: find("upload-status"),
       share: find("share"),
@@ -138,8 +139,9 @@ export class ScadCustomizer extends HTMLElement {
   }
 
   applyHashState({ render }) {
-    const { values, preset, name } = decodeState(window.location.hash, this.controls.parameters)
+    const { values, preset, name, version } = decodeState(window.location.hash, this.controls.parameters)
     if (name && this.el.presetName) this.el.presetName.value = name
+    if (this.el.presetVersion) this.el.presetVersion.value = version || ""
 
     if (preset && this.presetValues(preset)) {
       this.applyPreset(preset, { render })
@@ -162,17 +164,19 @@ export class ScadCustomizer extends HTMLElement {
     this.el.inches?.addEventListener("change", () => this.setInches(this.el.inches.checked))
     this.el.sourceToggle?.addEventListener("click", () => this.toggleSource())
     this.el.uploadPreset?.addEventListener("change", (event) => this.loadParameterFile(event))
-    // Slugify as you type: this becomes a filename, so show what it will be.
-    this.el.presetName?.addEventListener("input", () => {
-      const field = this.el.presetName
-      const caretAtEnd = field.selectionStart === field.value.length
-      const cleaned = slugifyLive(field.value)
-      if (cleaned !== field.value) {
-        field.value = cleaned
-        if (caretAtEnd) field.setSelectionRange(cleaned.length, cleaned.length)
-      }
-      this.syncURL()
-    })
+    // Both of these end up in filenames, so slugify as you type and show what
+    // you're actually going to get.
+    for (const field of [this.el.presetName, this.el.presetVersion]) {
+      field?.addEventListener("input", () => {
+        const caretAtEnd = field.selectionStart === field.value.length
+        const cleaned = slugifyLive(field.value)
+        if (cleaned !== field.value) {
+          field.value = cleaned
+          if (caretAtEnd) field.setSelectionRange(cleaned.length, cleaned.length)
+        }
+        this.syncURL()
+      })
+    }
     this.el.downloadSTL?.addEventListener("click", () => this.downloadSTL())
     this.el.downloadSCAD?.addEventListener("click", () => this.downloadSCAD())
     this.el.downloadPreset?.addEventListener("click", () => this.downloadPreset())
@@ -402,6 +406,7 @@ export class ScadCustomizer extends HTMLElement {
     if (this.el.presetName) {
       this.el.presetName.value = name === AS_DESIGNED ? DEFAULT_SET_NAME : slugify(name)
     }
+    if (this.el.presetVersion) this.el.presetVersion.value = ""
     this.setActivePreset(name)
     this.syncURL()
     if (render) this.scheduleRender()
@@ -429,6 +434,7 @@ export class ScadCustomizer extends HTMLElement {
       defaults: this.schema.defaults,
       preset: this.activePreset,
       name: worthSharing ? name : null,
+      version: this.parameterSetVersion() || null,
     })
   }
 
@@ -478,7 +484,8 @@ export class ScadCustomizer extends HTMLElement {
 
   variantName() {
     const named = this.parameterSetName()
-    if (named !== DEFAULT_SET_NAME) return slugify(named)
+    const version = this.parameterSetVersion()
+    if (named !== DEFAULT_SET_NAME || version) return slugify(this.parameterSetLabel())
     if (this.activePreset && this.activePreset !== AS_DESIGNED) return slugify(this.activePreset)
     return this.changed()
       .slice(0, 2)
@@ -507,7 +514,7 @@ export class ScadCustomizer extends HTMLElement {
   // OpenSCAD's own parameter-set format, so a configuration made here can be
   // opened in the desktop Customizer — and read back in below.
   downloadPreset() {
-    const name = this.parameterSetName()
+    const name = this.parameterSetLabel()
     const values = Object.fromEntries(
       Object.entries(this.values).map(([key, value]) => [key, String(value)])
     )
@@ -515,8 +522,20 @@ export class ScadCustomizer extends HTMLElement {
     save(new Blob([json], { type: "application/json" }), `${this.schema.slug}-${slugify(name)}.json`)
   }
 
+  // The fields hold *live* slugs, which keep a trailing hyphen while you're
+  // typing so a separator doesn't vanish mid-word. Anything that consumes them
+  // — a filename, a set key, a link — takes the settled form instead.
   parameterSetName() {
-    return this.el.presetName?.value.trim() || this.activePreset || DEFAULT_SET_NAME
+    return slugify(this.el.presetName?.value.trim() || this.activePreset || DEFAULT_SET_NAME)
+  }
+
+  parameterSetVersion() {
+    return slugify(this.el.presetVersion?.value.trim() || "")
+  }
+
+  /** Name and version as one label, for a filename or a set key. */
+  parameterSetLabel() {
+    return [this.parameterSetName(), this.parameterSetVersion()].filter(Boolean).join("-")
   }
 
   /**
@@ -551,6 +570,7 @@ export class ScadCustomizer extends HTMLElement {
       this.controls.setValues(this.values)
       this.setActivePreset(null, { keepValues: true })
       if (this.el.presetName && name) this.el.presetName.value = slugify(name)
+      if (this.el.presetVersion) this.el.presetVersion.value = ""
       this.syncURL()
       this.refreshSource()
       this.scheduleRender()

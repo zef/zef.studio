@@ -143,7 +143,10 @@ can be as large as your camera makes them.
 **4. Optionally, presets**, at `src/3d-printing/models/<slug>.json`.
 
 OpenSCAD's native parameter-set format, so you can author these in the desktop
-Customizer's "save preset" and drop the file in:
+Customizer's "save preset" and drop the file in. On the website a set is named
+in two parts — a name and an optional version — which are joined with a hyphen
+to form the set key and every download's filename, so `shed-tiles` at `rev-2`
+saves as `tile-spacer-shed-tiles-rev-2.json`:
 
 ```json
 {

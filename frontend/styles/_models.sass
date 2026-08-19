@@ -530,6 +530,9 @@ $controlBg: #f5f4f1
   background-color: $controlBg
   border: 1px solid $panelBorder
   border-radius: 5px
+  // Without this, `width: 100%` means 100% *plus* the padding and border, so
+  // these sit wider than whatever is holding them.
+  box-sizing: border-box
   color: $textColor
   padding: 0.4em 0.5em
   width: 100%
@@ -871,6 +874,31 @@ $controlBg: #f5f4f1
   +uiFont
   color: $lightTextColor
   font-size: 0.74rem
+
+// Label above its box. The name takes the room that's going; the version is
+// sized to its own label, since what goes in it is a "v2", not a sentence.
+.scad-naming
+  align-items: flex-end
+
+.scad-stacked-field
+  display: flex
+  flex: 1
+  flex-direction: column
+  gap: 0.25em
+  min-width: 6em
+
+  // The row sizes bare inputs itself; a stacked one is sized by its wrapper.
+  .scad-text
+    flex: none
+    min-width: 0
+    width: 100%
+
+  // Sized to its own label plus the box's padding — enough for a "v2" or a
+  // "rev-3", and no wider, so the name keeps the rest of the row.
+  &.is-version
+    flex: 0 0 auto
+    min-width: 0
+    width: 3.9em
 
 // A file input styled as one of the buttons beside it. The input is taken out
 // of flow so its own "Choose file" chrome can't stretch the button, and made

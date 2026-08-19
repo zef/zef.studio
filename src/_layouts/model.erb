@@ -92,9 +92,17 @@ layout: default
 
         <div class="scad-parameter-file">
           <h3 class="scad-subhead">Parameter sets</h3>
-          <div class="scad-parameter-row">
-            <label class="scad-field-label" for="scad-preset-name">Name</label>
-            <input type="text" id="scad-preset-name" class="scad-text" data-role="preset-name" value="customized">
+          <div class="scad-parameter-row scad-naming">
+            <div class="scad-stacked-field">
+              <label class="scad-field-label" for="scad-preset-name">Name</label>
+              <input type="text" id="scad-preset-name" class="scad-text" data-role="preset-name" value="customized">
+            </div>
+            <%# Optional, and narrow: wide enough for its own label and a short
+                revision like "v2" or "rev-3". %>
+            <div class="scad-stacked-field is-version">
+              <label class="scad-field-label" for="scad-preset-version">Version</label>
+              <input type="text" id="scad-preset-version" class="scad-text" data-role="preset-version" value="">
+            </div>
           </div>
           <div class="scad-parameter-row">
             <button type="button" class="scad-action" data-role="download-preset" disabled>Download .json</button>
@@ -107,7 +115,7 @@ layout: default
           <p class="scad-note">
             These use <%= openscad_link.html_safe %>'s own <code>.json</code> customizer
             format, so they work here and in the desktop app. A copied link carries
-            your settings and name too, with no file to pass around.
+            your settings, name and version too, with no file to pass around.
           </p>
           <p class="scad-upload-status" data-role="upload-status" hidden></p>
         </div>

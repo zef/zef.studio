@@ -14,9 +14,11 @@
 
 // Reserved hash keys. A model parameter with one of these names would be
 // shadowed, which is worth knowing but hasn't come up — OpenSCAD models name
-// things after dimensions, not after their own metadata.
+// things after dimensions, not after their own metadata. Each is skipped only
+// when the model doesn't claim it, so a model that did would still win.
 const PRESET_KEY = "preset"
 const NAME_KEY = "name"
+const VERSION_KEY = "version"
 
 function serialize(value) {
   if (Array.isArray(value)) return `[${value.join(",")}]`
@@ -61,7 +63,7 @@ function nearlyEqual(a, b) {
  * Builds the hash fragment for the current state.
  * @returns {string} e.g. "#arms=3" or "" when everything is at its default
  */
-export function encodeState({ values, defaults, preset = null, name = null }) {
+export function encodeState({ values, defaults, preset = null, name = null, version = null }) {
   const params = new URLSearchParams()
   if (preset) {
     params.set(PRESET_KEY, preset)
@@ -75,6 +77,7 @@ export function encodeState({ values, defaults, preset = null, name = null }) {
   // What you called this configuration travels with it, so the person opening
   // the link sees your name for it rather than "customized".
   if (name) params.set(NAME_KEY, name)
+  if (version) params.set(VERSION_KEY, version)
   const query = params.toString()
   return query ? `#${query}` : ""
 }
@@ -83,14 +86,15 @@ export function encodeState({ values, defaults, preset = null, name = null }) {
  * Reads a hash fragment back into parameter values.
  * @param {string} hash
  * @param {object[]} parameters flat schema list
- * @returns {{values: object, preset: string|null, name: string|null}}
+ * @returns {{values: object, preset: string|null, name: string|null, version: string|null}}
  */
 export function decodeState(hash, parameters) {
   const values = {}
   let preset = null
   let name = null
+  let version = null
   const text = (hash || "").replace(/^#/, "")
-  if (!text) return { values, preset, name }
+  if (!text) return { values, preset, name, version }
 
   const byName = new Map(parameters.map((parameter) => [parameter.name, parameter]))
   for (const [key, raw] of new URLSearchParams(text)) {
@@ -102,10 +106,14 @@ export function decodeState(hash, parameters) {
       name = raw
       continue
     }
+    if (key === VERSION_KEY && !byName.has(VERSION_KEY)) {
+      version = raw
+      continue
+    }
     const value = parse(raw, byName.get(key))
     if (value !== undefined) values[key] = value
   }
-  return { values, preset, name }
+  return { values, preset, name, version }
 }
 
 /** Replaces the hash without adding a history entry for every slider nudge. */
