@@ -118,6 +118,11 @@ Bridgetown.configure do |config|
     "_posts/**/*.jpg",
     "_posts/**/*.jpeg",
     "images/cache/",
+    # Original photographs of printed models. The builder resizes these into
+    # 3d-printing/photos; the full-size originals shouldn't be published.
+    "3d-printing/models/**/*.jpg",
+    "3d-printing/models/**/*.jpeg",
+    "3d-printing/models/**/*.png",
   ]
 
   init :"bridgetown-feed"

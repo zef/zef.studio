@@ -124,7 +124,23 @@ Why this part exists, what you learn from printing it, which parameter is the
 one that actually matters.
 ```
 
-**3. Optionally, presets**, at `src/3d-printing/models/<slug>.json`.
+**3. Optionally, photos** of the printed part, in
+`src/3d-printing/models/<slug>/`.
+
+A folder named for the model, beside its `.scad` file. Drop JPEGs or PNGs in
+and they appear as a gallery at the bottom of the page, opening in the site's
+lightbox. Two things are derived from the filename, so there's nothing else to
+edit:
+
+- **Order** — files are sorted by name, so prefix them `01-`, `02-` to arrange
+  them. The number is stripped from the caption.
+- **Caption** — `02-fresh-off-the-plate.jpg` captions as "Fresh off the plate".
+
+Originals are resized to a 700px thumbnail and a 2400px full size in
+`src/3d-printing/photos/`, and excluded from the built site, so the originals
+can be as large as your camera makes them.
+
+**4. Optionally, presets**, at `src/3d-printing/models/<slug>.json`.
 
 OpenSCAD's native parameter-set format, so you can author these in the desktop
 Customizer's "save preset" and drop the file in:
@@ -187,7 +203,9 @@ src/3d-printing/
   libraries/     BOSL2, comment-stripped and packed into one JSON file
   fonts/         DejaVu, for models that emboss text
   worker/        kernel.js + worker.js — plain ES modules, served as-is
-  models/        the .scad sources and their preset .json files
+  models/        the .scad sources, their preset .json files, and a folder
+                 of photographs per model
+  photos/        generated photo thumbnails and full sizes
   previews/      generated index thumbnails
 src/_models/     the pages
 plugins/scad_customizer.rb          parses the annotations

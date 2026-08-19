@@ -148,5 +148,28 @@ layout: default
     <%= yield %>
   </div>
 
+  <% photos = resource.data.photos || [] %>
+  <% if photos.any? %>
+    <section class="model-photos">
+      <h2>Photos</h2>
+      <%# Plain figures rather than a list: the site styles `ul:has(li > figure)`
+          as its in-article image columns, which would fight this grid. %>
+      <div class="model-photo-grid">
+        <% photos.each do |photo| %>
+          <figure>
+            <a href="<%= photo["full"] %>"
+               data-pswp-width="<%= photo["width"] %>"
+               data-pswp-height="<%= photo["height"] %>">
+              <img src="<%= photo["thumb"] %>" alt="<%= photo["caption"] || resource.data.title %>" loading="lazy">
+            </a>
+            <% if photo["caption"] %>
+              <figcaption><%= photo["caption"] %></figcaption>
+            <% end %>
+          </figure>
+        <% end %>
+      </div>
+    </section>
+  <% end %>
+
   <p class="model-back"><a class="scad-action" href="/3d-printing/">All Models</a></p>
 </article>

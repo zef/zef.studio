@@ -1,4 +1,6 @@
 require "digest/md5"
+require "fileutils"
+require "image_processing/vips"
 
 # Attaches parsed OpenSCAD parameter schemas to the models collection.
 #
@@ -13,6 +15,16 @@ module Builders
     MODEL_DIR = File.join("src", "3d-printing", "models").freeze
     PREVIEW_DIR = File.join("src", "3d-printing", "previews").freeze
     WORKER_DIR = File.join("src", "3d-printing", "worker").freeze
+    PHOTO_OUT_DIR = File.join("src", "3d-printing", "photos").freeze
+
+    # Photographs of the printed part live in a folder named for the model,
+    # beside its .scad file. Dropping a photo in is the whole workflow.
+    PHOTO_EXTENSIONS = %w[.jpg .jpeg .png].freeze
+
+    # A thumbnail big enough for a retina grid cell, and a full size for the
+    # lightbox. Deliberately smaller than the site's post images, which are
+    # sized for full-width display rather than a grid of thumbs.
+    PHOTO_SIZES = { thumb: 700, full: 2400 }.freeze
 
     # Where to send someone who wants to know what a library a model depends on
     # actually is. Kept apart from the plain `libraries` list, which is the
@@ -22,6 +34,14 @@ module Builders
     }.freeze
 
     def build
+      # Resizing happens before the site reads its files, so the variants exist
+      # by the time static files are collected. Generating them later would
+      # publish them only on the *next* build, which is a confusing way for a
+      # gallery to behave.
+      hook :site, :pre_read do
+        prepare_photos
+      end
+
       hook :site, :post_read do |site|
         # The worker and kernel are served as plain static ES modules rather
         # than going through the bundler, so they get no content hash of their
@@ -49,6 +69,7 @@ module Builders
 
         seen << slug
         resource.data[:scad] = schema_for(slug, path)
+        resource.data[:photos] = photos_for(slug)
         apply_defaults(resource, slug)
 
         if resource.data.placeholder_prose
@@ -118,6 +139,89 @@ module Builders
 
     def model_path(slug)
       File.join(MODEL_DIR, "#{slug}.scad")
+    end
+
+    # ---------------------------------------------------------------- photos
+
+    # Walks every model's photo folder and makes sure the resized variants are
+    # on disk. Runs before the read, so nothing depends on build ordering.
+    def prepare_photos
+      return unless Dir.exist?(MODEL_DIR)
+
+      Dir.children(MODEL_DIR).sort.each do |slug|
+        dir = File.join(MODEL_DIR, slug)
+        next unless File.directory?(dir)
+
+        photo_sources(dir).each do |source|
+          base = File.basename(source, ".*")
+          PHOTO_SIZES.each_value { |width| resize_photo(source, slug, base, width) }
+        end
+      end
+    end
+
+    def photo_sources(dir)
+      Dir.children(dir).sort.filter_map do |name|
+        next unless PHOTO_EXTENSIONS.include?(File.extname(name).downcase)
+
+        File.join(dir, name)
+      end
+    end
+
+    # Photographs of the printed part, from a folder named for the model beside
+    # its .scad file. Filenames sort the gallery and caption it, so ordering and
+    # wording are done by renaming files rather than by editing anything.
+    def photos_for(slug)
+      dir = File.join(MODEL_DIR, slug)
+      return [] unless Dir.exist?(dir)
+
+      photo_sources(dir).filter_map { |source| photo(slug, source) }
+    end
+
+    def photo(slug, source)
+      base = File.basename(source, ".*")
+      thumb = resize_photo(source, slug, base, PHOTO_SIZES[:thumb])
+      full = resize_photo(source, slug, base, PHOTO_SIZES[:full])
+      return nil unless thumb && full
+
+      {
+        "thumb" => thumb[:url],
+        "full" => full[:url],
+        # PhotoSwipe needs the real dimensions of the image it will open.
+        "width" => full[:width],
+        "height" => full[:height],
+        "caption" => photo_caption(base),
+      }.compact
+    end
+
+    def resize_photo(source, slug, base, width)
+      out_dir = File.join(PHOTO_OUT_DIR, slug)
+      file = File.join(out_dir, "#{base}-#{width}.jpg")
+
+      unless File.exist?(file) && File.mtime(file) >= File.mtime(source)
+        FileUtils.mkdir_p(out_dir)
+        Bridgetown.logger.info "ScadModels:", "Resizing #{File.basename(source)} to #{width}px"
+        ImageProcessing::Vips
+          .source(source)
+          .convert("jpg")
+          .saver(quality: 82, strip: true)
+          .resize_to_limit(width, width)
+          .call(destination: file)
+      end
+
+      image = Vips::Image.new_from_file(file)
+      { url: "/3d-printing/photos/#{slug}/#{File.basename(file)}", width: image.width, height: image.height }
+    rescue StandardError => e
+      Bridgetown.logger.warn "ScadModels:", "Couldn't prepare #{source}: #{e.message}"
+      nil
+    end
+
+    # "02-printed-in-petg" becomes "Printed in petg". A leading number orders
+    # the gallery without appearing in the caption.
+    def photo_caption(base)
+      text = base.sub(/\A\d+[-_ ]+/, "").tr("-_", "  ").squeeze(" ").strip
+      return nil if text.empty?
+
+      text.sub(/\A./, &:upcase)
     end
 
     def worker_version
