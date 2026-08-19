@@ -78,45 +78,46 @@ class SourceImage
 
   private
 
+  def resizable?(path)
+    File.extname(path).casecmp(".jpg").zero?
+  end
+
+  # Where a variant belongs on disk. An image under _posts is served from the
+  # path its post is served from, so its variants sit outside _posts, mirroring
+  # the rest of the path. Anything else keeps the place it already has.
+  def destination_for(width)
+    posts_dir = File.join(@site.source, "_posts", "")
+    path = @source_path.start_with?(posts_dir) ? @source_path.sub(posts_dir, File.join(@site.source, "")) : @source_path.dup
+    path = path.sub(/\.jpeg\z/i, ".jpg")
+    return path unless resizable?(path)
+
+    path.sub(/(\.\w+)\z/, "-#{width}\\1")
+  end
+
+  # A file's URL is just where it sits under the source directory. Deriving it
+  # relative to anything else meant patching the result afterwards, which is
+  # how every image on the site came to be served from a path containing "/..".
+  def site_path_for(disk_path)
+    "/#{Pathname.new(disk_path).relative_path_from(Pathname.new(@site.source))}"
+  end
+
   def resized(width)
-    destination = @source_path.sub("src/_posts/", "src/")
-                              .sub(/jpeg$/, "jpg")
-
-    needs_resize = [".jpg"].include?(File.extname(destination).downcase)
-    destination.sub!(/(\.\w+)$/, "-#{width}\\1") if needs_resize
-
-    base_path = @site.in_source_dir("images")
-    disk_destination = Pathname.new(destination).relative_path_from(base_path).to_s.prepend("/images/")
-
-    site_path = disk_destination
-    if @source_path.include?("/_posts/")
-      site_path = disk_destination.sub("/images/", "/")
-    end
-
-    source_disk = @source_path
-    unless source_disk && File.exist?(source_disk)
+    unless File.exist?(@source_path)
       Bridgetown.logger.error "SourceImage:", "Original source not found for #{@source_path}; skipping resize"
       return nil
     end
 
-    unless needs_resize
-      return SiteImage.new(source_disk, site_path)
-    end
+    destination = destination_for(width)
+    site_path = site_path_for(destination)
+
+    # Formats we don't resize are served as they are.
+    return SiteImage.new(@source_path, site_path) unless resizable?(destination)
 
     unless File.exist?(destination)
-      Bridgetown.logger.info "Resizing image: #{source_disk} to #{destination}"
-      Bridgetown.logger.warn "Path: #{disk_destination}"
+      Bridgetown.logger.info "ImageProcessor:", "Resizing #{File.basename(@source_path)} to #{width}px"
       FileUtils.mkdir_p(File.dirname(destination))
-      pipeline = ImageProcessing::Vips.source(source_disk).resize_to_limit(width, width)
-      pipeline.call(destination: destination.to_s)
-    else
-      Bridgetown.logger.debug "Resized image exists: #{destination}"
+      ImageProcessing::Vips.source(@source_path).resize_to_limit(width, width).call(destination: destination)
     end
-
-    # file = Bridgetown::StaticFile.new(@site, @site.source, File.dirname(disk_destination), File.basename(disk_destination))
-    # @site.static_files << file
-    # # file.write(site_path)
-    # puts("File Count: #{@site.static_files.count}")
 
     SiteImage.new(destination, site_path)
   end
@@ -126,17 +127,28 @@ class ImageProcessor < SiteBuilder
     def build
         Bridgetown.logger.info " ImageProcessor:", "Resizing images and reformatting image tags."
         hook :resources, :pre_render do |resource|
-            # convert post-based image defined in front matter, because they are not always included in the content
-            # also rewrite the "image" path to the resized version, so the RSS feed maker gets the correct path.
-            if image = resource.data["image"]
-                image = SourceImage.from_src(image, resource, site)
-                # ensure large is generated so dimensions are available if needed
-                large_img = image.large
-                small_img = image.small
-                next unless large_img && small_img
+            # Resize the image named in front matter, which isn't always one of
+            # the images in the body, and rewrite "image" to the resized path so
+            # the feed and the index cards get a usable URL.
+            #
+            # That rewrite makes this hook destructive to its own input, so the
+            # original is kept alongside it. Without that, any rebuild that
+            # re-renders a resource without re-reading its front matter — saving
+            # a layout while the dev server is running does it — would find the
+            # derived path sitting in "image", resize *that*, and leave a
+            # duplicate named foo-1248-1248.jpg behind. Reading from the
+            # original means the hook lands on the same answer however many
+            # times it runs.
+            source = resource.data["image_source"] ||= resource.data["image"]
+            next unless source
 
-                resource.data["image"] = small_img.site_path
-            end
+            image = SourceImage.from_src(source, resource, site)
+            next unless image
+
+            small_img = image.small
+            next unless small_img
+
+            resource.data["image"] = small_img.site_path
         end
 
         hook :resources, :post_render do |resource|
@@ -167,6 +179,7 @@ class ImageProcessor < SiteBuilder
 
             src = attributes[:src]
             image = SourceImage.from_src(src, resource, site)
+            next match unless image
 
             small_img = image.small
             large_img = image.large
