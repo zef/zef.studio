@@ -55,6 +55,34 @@ export function modelDirectives(source) {
   return directives
 }
 
+/**
+ * The parts a model declares, or null if it builds only one thing.
+ *
+ * A deliberately small reading of the same two lines the Ruby parser reads —
+ * the `scad-web: parts` directive and the annotated assignment it names — so
+ * these scripts can render a whole kit without a Ruby round trip. Anything
+ * subtler about the schema is the parser's business, not these scripts'.
+ */
+export function modelParts(source) {
+  const declared = source.match(/^\s*\/\/\s*scad-web:\s*parts\s*=\s*(\w+)\s*$/m)?.[1]
+  if (!declared) return null
+
+  const assignment = source.match(
+    new RegExp(`^\\s*${declared}\\s*=\\s*"([^"]*)"\\s*;\\s*//\\s*\\[(.+)\\]\\s*$`, "m")
+  )
+  if (!assignment) return null
+
+  const options = assignment[2]
+    .split(",")
+    .map((entry) => {
+      const [value, label] = entry.split(":").map((part) => part.trim())
+      return { value, label: label || value }
+    })
+    .filter((option) => option.value)
+
+  return options.length ? { parameter: declared, default: assignment[1], options } : null
+}
+
 /** Triangle count and bounding box of a binary STL, for sanity checks. */
 export function inspectSTL(bytes) {
   const view = new DataView(bytes.buffer, bytes.byteOffset, bytes.byteLength)

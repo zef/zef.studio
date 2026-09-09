@@ -5,10 +5,23 @@
 //   node scripts/scad-render.mjs tile-spacer --set arms=6 --set arm_length=12 -o /tmp/out.stl
 //   node scripts/scad-render.mjs --all          # render every model, report timings
 //
+// A model that declares parts builds all of them, since the model is the kit.
+// `--part powder_cap` narrows that to one. Presets are rendered at the model's
+// default part only: a preset varies the numbers, and every part is built from
+// the same numbers, so crossing the two would multiply the runtime to prove
+// the same thing several times over.
+//
 import fs from "node:fs"
 import path from "node:path"
 
-import { createKernel, inspectSTL, modelDirectives, modelSlugs, readModel } from "./scad-lib.mjs"
+import {
+  createKernel,
+  inspectSTL,
+  modelDirectives,
+  modelParts,
+  modelSlugs,
+  readModel,
+} from "./scad-lib.mjs"
 
 const argv = process.argv.slice(2)
 const flag = (name) => argv.includes(name)
@@ -36,6 +49,16 @@ function parameters() {
 
 const verbose = flag("--verbose")
 const kernel = createKernel()
+
+/**
+ * Where one part's STL goes when several share an `-o`: the part's name is
+ * worked into the filename rather than each overwriting the last.
+ */
+function outputFor(base, part) {
+  if (!base || !part) return base
+  const ext = path.extname(base)
+  return `${base.slice(0, base.length - ext.length)}-${part.replace(/_/g, "-")}${ext || ".stl"}`
+}
 
 async function renderModel(slug, params, outputPath, label = null) {
   const model = readModel(slug)
@@ -75,7 +98,21 @@ async function renderModel(slug, params, outputPath, label = null) {
   return { slug, ok: true, ms: result.ms, triangles: info.triangles }
 }
 
-const slugs = flag("--all") ? modelSlugs() : [argv.find((a) => !a.startsWith("-") && !argv[argv.indexOf(a) - 1]?.startsWith("--set") && argv[argv.indexOf(a) - 1] !== "-o")].filter(Boolean)
+const slugs = flag("--all") ? modelSlugs() : [argv.find((a) => !a.startsWith("-") && !argv[argv.indexOf(a) - 1]?.startsWith("--set") && argv[argv.indexOf(a) - 1] !== "-o" && argv[argv.indexOf(a) - 1] !== "--part")].filter(Boolean)
+
+/**
+ * The parts to render for a model, as [selector value or null, label] pairs.
+ * A single-part model, or one whose part was pinned by hand, gets one entry.
+ */
+function partsToRender(model, params) {
+  const parts = modelParts(model.source)
+  if (!parts) return [[null, null]]
+
+  const pinned = value("--part") || params[parts.parameter]
+  if (pinned) return [[String(pinned), String(pinned)]]
+
+  return parts.options.map((option) => [option.value, option.value])
+}
 
 if (!slugs.length) {
   console.error("Usage: node scripts/scad-render.mjs <slug> [--set name=value] [-o out.stl] | --all")
@@ -85,12 +122,21 @@ if (!slugs.length) {
 console.log("")
 const results = []
 for (const slug of slugs) {
-  results.push(await renderModel(slug, parameters(), slugs.length === 1 ? value("-o") : null))
+  const model = readModel(slug)
+  const parts = modelParts(model.source)
+  const output = slugs.length === 1 ? value("-o") : null
+
+  for (const [part, partLabel] of partsToRender(model, parameters())) {
+    const params = part ? { ...parameters(), [parts.parameter]: part } : parameters()
+    results.push(
+      await renderModel(slug, params, outputFor(output, part), partLabel ? `${slug} · ${partLabel}` : null)
+    )
+  }
 
   // --presets also renders every saved parameter set, so a preset that has
   // drifted out of sync with the model gets caught here rather than by a visitor.
   if (flag("--presets")) {
-    const { presets } = readModel(slug)
+    const { presets } = model
     for (const [name, values] of Object.entries(presets?.parameterSets || {})) {
       const typed = Object.fromEntries(
         Object.entries(values).map(([k, v]) => {
