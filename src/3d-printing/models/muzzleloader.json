@@ -1,0 +1,10 @@
+{
+  "fileFormatVersion": "1",
+  "parameterSets": {
+    ".50 cal — 100 grain": { "caliber": "0.50", "target_grains": "100", "bullet_length": "33", "grain_volume": "66.05" },
+    ".50 cal — 80 grain": { "caliber": "0.50", "target_grains": "80", "bullet_length": "33", "grain_volume": "66.05" },
+    ".54 cal — 120 grain": { "caliber": "0.54", "target_grains": "120", "bullet_length": "38", "grain_volume": "66.05" },
+    ".45 cal — 70 grain": { "caliber": "0.45", "target_grains": "70", "bullet_length": "28", "grain_volume": "66.05", "powder_neck_od": "10.2" },
+    "Pyrodex FFFg": { "caliber": "0.50", "target_grains": "100", "bullet_length": "33", "grain_volume": "62.8" }
+  }
+}
