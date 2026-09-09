@@ -85,6 +85,7 @@ module Builders
     def schema_for(slug, path)
       source = File.read(path, encoding: "UTF-8")
       model = ScadCustomizer.parse(source, slug: slug, presets: presets_for(slug))
+      model.warnings.each { |warning| Bridgetown.logger.warn "ScadModels:", "#{slug}.scad — #{warning}" }
       model.to_h.merge(
         # The worker renders from this, so it travels with the page.
         "source" => source,

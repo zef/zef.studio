@@ -16,6 +16,17 @@
 #
 #   /* [Hidden] */      everything after this is internal
 #
+# One extra annotation is ours rather than OpenSCAD's. A model that builds
+# several printable pieces from one file can nominate the variable that selects
+# between them:
+#
+#   // scad-web: parts = part
+#   part = "tube"; // [tube:Tube, cap:Cap]
+#
+# which turns that dropdown into an export checklist on the website — each
+# ticked part is rendered on its own and gets its own filename. Desktop
+# OpenSCAD ignores the comment and shows the ordinary dropdown.
+#
 # Only variables assigned a plain literal are treated as parameters, which is
 # also the rule OpenSCAD itself applies — anything computed from other
 # variables isn't independently settable.
@@ -68,9 +79,58 @@ module ScadCustomizer
       @group_notes = group_notes
     end
 
+    # The parameter this model nominates as its part selector, if any. Its
+    # options are the pieces the file can build — the website renders each
+    # ticked one separately rather than offering a single dropdown.
+    def part_selector
+      return nil unless directives["parts"]
+
+      parameters.find { |param| param.name == directives["parts"] }
+    end
+
+    def parts
+      return @parts if defined?(@parts)
+
+      selector = part_selector
+      @parts =
+        if selector.nil? || selector.type != "enum"
+          nil
+        else
+          {
+            "parameter" => selector.name,
+            "default" => selector.default,
+            # The comment above the assignment explains the choice, so it
+            # serves as the section's note the way `scad-web: note` does.
+            "note" => selector.description,
+            "options" => selector.options,
+          }.compact
+        end
+    end
+
+    # A nominated selector that can't do the job is worth saying out loud at
+    # build time: the page still works, but silently as a single-part model.
+    def warnings
+      declared = directives["parts"]
+      return [] if declared.nil?
+
+      selector = part_selector
+      if selector.nil?
+        ["scad-web: parts names `#{declared}`, which is not a parameter in this file"]
+      elsif selector.type != "enum"
+        ["scad-web: parts names `#{declared}`, which needs a `// [a:Label A, b:Label B]` " \
+         "annotation listing the parts"]
+      else
+        []
+      end
+    end
+
     # Parameters bucketed by their section, in the order the file declares them.
+    # The part selector is left out: it is presented as the export checklist
+    # instead, and offering it twice would let the two disagree.
     def groups
-      parameters.group_by(&:group).map do |name, params|
+      exported = parts&.dig("parameter")
+      parameters.reject { |param| param.name == exported }
+                .group_by(&:group).map do |name, params|
         { "name" => name, "note" => group_notes[name], "parameters" => params.map(&:to_h) }.compact
       end
     end
@@ -88,6 +148,9 @@ module ScadCustomizer
         "fonts" => directives.fetch("fonts", false),
         "features" => directives["features"],
         "groups" => groups,
+        "parts" => parts,
+        # Deliberately still includes the part selector: the .scad download and
+        # the source view need a value for it even though no control sets one.
         "defaults" => defaults,
         "presets" => presets,
       }.compact
