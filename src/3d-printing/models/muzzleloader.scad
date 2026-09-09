@@ -159,13 +159,21 @@ module screw_cap(neck, thread, primer=false) {
 module powder_cap() { screw_cap(powder_neck_od, powder_thread_od, primer=primer_pocket); }
 module bullet_cap() { screw_cap(bullet_neck_od, bullet_thread_od); }
 
+// The transition and the main tube share an outside *and* an inside diameter
+// where they meet, so butting them leaves two identical annular faces inside
+// the solid and the union has nothing to cut against -- 140 edges come out
+// used six times over. BOSL2 defaults $overlap to 0, so say it here: sinking
+// the joint by a hundredth of a millimetre gives the union something to
+// resolve and the tube exports watertight.
+seam_overlap = 0.01;
+
 module powder_tube() {
   // threaded neck
   screw_neck(powder_neck_od, powder_thread_od, powder_neck_id)
   // transition to main tube
   attach(BOT, TOP) tube(h=transition_length, id1=tube_id, id2=powder_neck_id, wall=wall_thickness)
   // main tube
-  attach(BOT, TOP) tube(od=tube_od, id=tube_id, l=powder_length)
+  attach(BOT, TOP, overlap=seam_overlap) tube(od=tube_od, id=tube_id, l=powder_length)
   // bottom cap
   attach(BOT, TOP) cyl(d=tube_od, l=wall_thickness);
 }
