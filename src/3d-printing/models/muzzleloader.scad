@@ -175,12 +175,16 @@ bullet_body_length = bullet_length + bullet_fit - thread_height;
 neck_headspace = PI * (powder_neck_id/2)^2 * thread_height
                - (primer_pocket ? PI * (primer_boss_od/2)^2 * (primer_depth - 0.1) : 0);
 
-echo("target volume (mm^3)", target_volume);
-echo("powder tube, caps off (mm)",
-     thread_height + transition_length + powder_length + wall_thickness);
-echo("bullet tube, caps off (mm)",
-     thread_height + bullet_body_length + wall_thickness);
-echo("headspace over powder (grains)", neck_headspace / grain_volume);
+// "Label: value" is the shape the website reads these back in, and rounding
+// keeps them to a precision anyone could measure.
+function reported(value, places = 2) = round(value * pow(10, places)) / pow(10, places);
+
+echo(str("Charge volume: ", reported(target_volume, 0), " mm3"));
+echo(str("Powder tube, cap off: ", reported(
+     thread_height + transition_length + powder_length + wall_thickness, 1), " mm"));
+echo(str("Bullet tube, cap off: ", reported(
+     thread_height + bullet_body_length + wall_thickness, 1), " mm"));
+echo(str("Headspace over powder: ", reported(neck_headspace / grain_volume, 1), " grains"));
 
 // -------------------------------------------------------------------- modules
 module screw_neck(neck, thread, id) {

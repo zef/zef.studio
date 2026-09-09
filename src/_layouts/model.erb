@@ -57,6 +57,19 @@ layout: default
     </div>
 
     <div class="scad-panel">
+      <% if scad["parts"] %>
+        <section class="scad-section">
+          <h2>
+            Parts
+            <span class="scad-count"><%= scad["parts"]["options"].length %></span>
+          </h2>
+          <% if scad["parts"]["note"] %>
+            <p class="scad-group-note"><%= scad["parts"]["note"] %></p>
+          <% end %>
+          <ul class="scad-parts" data-role="parts"></ul>
+        </section>
+      <% end %>
+
       <section class="scad-section" data-role="presets-panel">
         <h2>Templates</h2>
         <div class="scad-presets" data-role="presets"></div>
@@ -84,7 +97,9 @@ layout: default
           </div>
           <p class="scad-note">
             The <code>.stl</code> is the printable file — open it in your slicer,
-            PrusaSlicer or Bambu Studio or Cura, and send it to the printer. The
+            PrusaSlicer or Bambu Studio or Cura, and send it to the printer.<% if scad["parts"] %>
+            Tick more than one part and they arrive together as a
+            <code>.zip</code>, each named for the piece it is.<% end %> The
             <code>.scad</code> is the <%= openscad_link.html_safe %> source with your
             values written into it, if you want to take the design further.
           </p>

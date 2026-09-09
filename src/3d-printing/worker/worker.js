@@ -53,7 +53,10 @@ self.onmessage = async (event) => {
     }
 
     if (type === "render") {
-      const { source, parameters, libraries, fonts, features, assetBase } = event.data
+      // `part` is opaque here: it is whichever piece of a multi-part model this
+      // render is for, handed back untouched so the caller can file the result
+      // without having to remember what it asked for.
+      const { source, parameters, libraries, fonts, features, assetBase, part } = event.data
       const scad = await ensureKernel(assetBase)
       post({ type: "status", stage: "rendering", id })
 
@@ -69,6 +72,7 @@ self.onmessage = async (event) => {
         post({
           type: "failed",
           id,
+          part,
           ms: result.ms,
           problems: extractProblems(result.log),
           log: result.log,
@@ -83,6 +87,7 @@ self.onmessage = async (event) => {
         {
           type: "rendered",
           id,
+          part,
           stl: buffer,
           ms: result.ms,
           echoes: extractEchoes(result.log),

@@ -6,12 +6,14 @@
 // everything model-specific was parsed out of the .scad file at build time.
 
 import { Controls } from "./controls.js"
+import { layoutParts, mergeGeometries } from "./parts.js"
 import { decodeState, encodeState, replaceHash, shareURL } from "./share.js"
 import { highlight } from "../syntax/highlight.js"
 import "../syntax/openscad.js"
 import { customizeSource } from "./source.js"
 import { estimateWeight, parseSTL } from "./stl.js"
 import { Viewer } from "./viewer.js"
+import { zipFiles } from "./zip.js"
 
 // Once someone opts into the download on any model, other models load without
 // asking again — it's already in the browser cache by then.
@@ -49,10 +51,24 @@ export class ScadCustomizer extends HTMLElement {
 
     this.values = { ...this.schema.defaults }
     this.activePreset = null
-    this.renderId = 0
+
+    // A model that builds several pieces from one file nominates the parameter
+    // that picks between them. Everything below treats a single-part model as
+    // one nameless part, so there is one code path rather than two.
+    this.parts = this.schema.parts || null
+    this.selection = this.parts ? [String(this.parts.default ?? this.parts.options[0].value)] : []
+
+    // Rendered pieces, keyed by part. Ticking a part you already rendered is
+    // free; changing any parameter invalidates the lot, which is what
+    // `cacheKey` is for.
+    this.cache = new Map()
+    this.cacheKey = null
+
+    this.batchId = 0
+    this.queue = []
     this.pending = false
     this.busy = false
-    this.lastSTL = null
+    this.framedFor = null
     this.worker = null
 
     this.cacheElements()
@@ -79,6 +95,7 @@ export class ScadCustomizer extends HTMLElement {
       poster: find("poster"),
       startButton: find("start"),
       controls: find("controls"),
+      parts: find("parts"),
       presets: find("presets"),
       status: find("status"),
       stats: find("stats"),
@@ -111,6 +128,8 @@ export class ScadCustomizer extends HTMLElement {
       this.scheduleRender()
     })
 
+    this.buildParts()
+
     for (const name of [AS_DESIGNED, ...Object.keys(this.schema.presets || {})]) {
       const button = document.createElement("button")
       button.type = "button"
@@ -126,6 +145,121 @@ export class ScadCustomizer extends HTMLElement {
     return this.schema.presets?.[name]
   }
 
+  // ------------------------------------------------------------- parts
+
+  /**
+   * The export checklist. A part is a thing you print, so each row carries what
+   * it will measure, what it will weigh and the name of the file it will
+   * arrive as — the questions you'd otherwise have to download it to answer.
+   */
+  buildParts() {
+    if (!this.parts || !this.el.parts) return
+
+    this.partRows = new Map()
+    for (const option of this.parts.options) {
+      const value = String(option.value)
+      const id = `scad-part-${this.schema.slug}-${value.replace(/\W/g, "_")}`
+
+      const row = document.createElement("li")
+      row.className = "scad-part"
+
+      // The box and its label are siblings rather than nested, so the row is
+      // one grid and the filename below lines up under the name exactly
+      // instead of by a guessed indent.
+      const box = document.createElement("input")
+      box.type = "checkbox"
+      box.id = id
+      box.className = "scad-part-box"
+      box.addEventListener("change", () => this.togglePart(value, box.checked))
+
+      const name = document.createElement("label")
+      name.className = "scad-part-name"
+      name.htmlFor = id
+      name.textContent = option.label
+
+      const measure = document.createElement("span")
+      measure.className = "scad-part-measure"
+      // Name and measurement share a line where there is room and stack where
+      // there isn't, so they wrap as a pair rather than the name breaking
+      // mid-phrase around a stubborn column of numbers.
+      const head = document.createElement("span")
+      head.className = "scad-part-head"
+      head.append(name, measure)
+
+      const file = document.createElement("code")
+      file.className = "scad-part-file"
+
+      row.append(box, head, file)
+      this.el.parts.append(row)
+      this.partRows.set(value, { row, box, measure, file })
+    }
+    this.refreshPartRows()
+  }
+
+  togglePart(value, wanted) {
+    const chosen = new Set(this.selection)
+    if (wanted) chosen.add(value)
+    else chosen.delete(value)
+    // Nothing sensible renders with no parts at all, so the last one holds.
+    if (!chosen.size) return
+
+    // Ordered by the model's own declaration however they were ticked, so the
+    // row on screen, the parts on the plate and the files in the archive all
+    // read the same way round.
+    this.selection = this.parts.options
+      .map((option) => String(option.value))
+      .filter((option) => chosen.has(option))
+
+    this.refreshPartRows()
+    this.syncURL()
+    this.refreshSource()
+    // Unticking takes effect immediately — the render only has to catch up on
+    // parts that were added.
+    this.showRendered({ final: !this.missingParts().length })
+    this.scheduleRender()
+  }
+
+  refreshPartRows() {
+    if (!this.partRows) return
+
+    const onlyOne = this.selection.length === 1
+    for (const [value, row] of this.partRows) {
+      const on = this.selection.includes(value)
+      row.row.classList.toggle("is-on", on)
+      row.box.checked = on
+      row.box.disabled = on && onlyOne
+      row.box.title = row.box.disabled ? "At least one part has to be selected." : ""
+      row.file.textContent = on ? this.partFileName(value) : ""
+
+      const piece = this.cache.get(value)
+      row.measure.textContent = on && piece ? partMeasure(piece) : ""
+    }
+    this.refreshDownloadLabel()
+  }
+
+  /** Selected parts, or one nameless part for a model that has no such notion. */
+  activeParts() {
+    return this.parts ? [...this.selection] : [null]
+  }
+
+  missingParts() {
+    return this.activeParts().filter((part) => !this.cache.has(part))
+  }
+
+  /** Rendered pieces for the current selection, in declaration order. */
+  renderedPieces() {
+    return this.activeParts()
+      .map((part) => this.cache.get(part))
+      .filter(Boolean)
+  }
+
+  /** The values to render or write out with, with the part selector set. */
+  valuesFor(part) {
+    return part === null || !this.parts
+      ? this.values
+      : { ...this.values, [this.parts.parameter]: part }
+  }
+
   applyInitialState() {
     this.setInches(localStorage.getItem(INCHES_KEY) === "yes")
     this.applyHashState({ render: false })
@@ -139,9 +273,13 @@ export class ScadCustomizer extends HTMLElement {
   }
 
   applyHashState({ render }) {
-    const { values, preset, name, version } = decodeState(window.location.hash, this.controls.parameters)
+    const { values, preset, name, version, parts } = decodeState(
+      window.location.hash,
+      this.controls.parameters
+    )
     if (name && this.el.presetName) this.el.presetName.value = name
     if (this.el.presetVersion) this.el.presetVersion.value = version || ""
+    this.applyPartSelection(parts)
 
     if (preset && this.presetValues(preset)) {
       this.applyPreset(preset, { render })
@@ -153,6 +291,18 @@ export class ScadCustomizer extends HTMLElement {
     this.controls.setValues(this.values)
     this.setActivePreset(null, { keepValues: true })
     if (render) this.scheduleRender()
+  }
+
+  /** Takes a part selection from a link, ignoring anything this model lacks. */
+  applyPartSelection(wanted) {
+    if (!this.parts || !wanted?.length) return
+
+    const known = this.parts.options.map((option) => String(option.value))
+    const chosen = known.filter((part) => wanted.includes(part))
+    if (!chosen.length) return
+
+    this.selection = chosen
+    this.refreshPartRows()
   }
 
   wireButtons() {
@@ -220,12 +370,12 @@ export class ScadCustomizer extends HTMLElement {
         if (message.stage === "rendering") this.setStatus("Rendering…", "busy")
         break
       case "rendered":
-        if (message.id === this.renderId) this.showResult(message)
-        this.finishRender()
+        // A result from an abandoned batch describes values nobody is looking
+        // at any more; the batch that replaced it is already in flight.
+        if (message.id === this.batchId) this.acceptPart(message)
         break
       case "failed":
-        if (message.id === this.renderId) this.showFailure(message)
-        this.finishRender()
+        if (message.id === this.batchId) this.showFailure(message)
         break
     }
   }
@@ -239,91 +389,202 @@ export class ScadCustomizer extends HTMLElement {
   render() {
     if (!this.ready) return
     // OpenSCAD can't be interrupted mid-render, so queue the newest request and
-    // run it the moment the current one lands.
+    // pick it up the moment the part in flight lands.
     if (this.busy) {
       this.pending = true
       return
     }
-    this.busy = true
-    this.pending = false
-    this.renderId += 1
-    this.setStatus("Rendering…", "busy")
+    this.startBatch()
+  }
 
+  /**
+   * Renders whatever the current selection is missing, one part at a time.
+   *
+   * Parts already rendered at these values are kept, so ticking a part you had
+   * a moment ago costs nothing and only genuinely new geometry goes to the
+   * worker. Any parameter change throws the lot away, since every part is built
+   * from the same numbers.
+   */
+  startBatch() {
+    const key = JSON.stringify(this.values)
+    if (this.cacheKey !== key) {
+      this.cache.clear()
+      this.cacheKey = key
+    }
+
+    this.batchId += 1
+    this.pending = false
+    this.queue = this.missingParts()
+
+    if (!this.queue.length) {
+      this.busy = false
+      this.showRendered({ final: true })
+      return
+    }
+
+    this.busy = true
+    this.renderNext()
+  }
+
+  renderNext() {
+    const part = this.queue.shift()
+    this.setStatus(this.progressLabel(part), "busy")
     this.worker.postMessage({
       type: "render",
-      id: this.renderId,
+      id: this.batchId,
+      part,
       assetBase: this.assetBase,
       source: this.schema.source,
-      parameters: this.values,
+      parameters: this.valuesFor(part),
       libraries: this.schema.libraries,
       fonts: this.schema.fonts,
       features: this.schema.features,
     })
   }
 
-  finishRender() {
-    this.busy = false
-    if (this.pending) this.render()
+  progressLabel(part) {
+    if (!this.parts) return "Rendering…"
+    const label = this.partLabel(part)
+    const done = this.selection.length - this.queue.length
+    return this.selection.length > 1
+      ? `Rendering ${label}… (${done} of ${this.selection.length})`
+      : `Rendering ${label}…`
   }
 
-  showResult({ stl, ms, echoes, problems }) {
-    const bytes = new Uint8Array(stl)
-    this.lastSTL = bytes
+  partLabel(part) {
+    const option = this.parts?.options.find((entry) => String(entry.value) === part)
+    return option?.label || part
+  }
 
+  /** Called when a part lands: file it, redraw, and move the batch along. */
+  acceptPart(message) {
     let geometry
     try {
-      geometry = parseSTL(stl)
+      geometry = parseSTL(message.stl)
     } catch (error) {
       this.setStatus(error.message, "error")
+      this.busy = false
       return
     }
 
+    this.cache.set(message.part, {
+      part: message.part,
+      geometry,
+      bytes: new Uint8Array(message.stl),
+      ms: message.ms,
+      echoes: message.echoes || [],
+      problems: message.problems || [],
+    })
+
+    // A change arrived while this part was rendering, so the rest of the batch
+    // is already answering the wrong question. Start again from the new values.
+    if (this.pending) {
+      this.showRendered({ final: false })
+      this.startBatch()
+      return
+    }
+
+    const final = !this.queue.length
+    this.showRendered({ final })
+    if (final) this.busy = false
+    else this.renderNext()
+  }
+
+  /**
+   * Draws whatever has been rendered so far.
+   *
+   * Called after every part rather than only at the end of a batch, so a kit
+   * fills in piece by piece instead of showing nothing for several seconds.
+   */
+  showRendered({ final }) {
+    const pieces = this.renderedPieces()
+    if (!pieces.length) return
+
+    const geometry = mergeGeometries(layoutParts(pieces))
     const first = !this.viewer.geometry
     this.viewer.setGeometry(geometry)
-    if (first) this.viewer.frame()
-    else this.viewer.frameIfNeeded()
 
-    this.setStatus(`Rendered in ${formatMs(ms)}`, "ok")
-    this.lastGeometry = geometry
-    this.lastBytes = bytes.length
+    // The camera follows along while the selection is changing — parts appear
+    // and it pulls back to take them in. Once the selection settles, nudging a
+    // slider leaves the view exactly where the visitor put it.
+    const key = this.selection.join(",")
+    if (first || this.framedFor !== key) this.viewer.frame()
+    else if (final) this.viewer.frameIfNeeded()
+    if (final) this.framedFor = key
+
+    this.refreshPartRows()
     this.refreshStats()
-    this.showComputed(echoes)
-    this.showProblems(problems)
+
+    if (!final) return
+    this.setStatus(this.doneLabel(pieces), "ok")
+    this.showComputed(pieces.flatMap((piece) => piece.echoes))
+    this.showProblems(pieces.flatMap((piece) => piece.problems))
     this.setDownloadsEnabled(true)
     this.refreshSource()
   }
 
-  showFailure({ problems, ms }) {
-    this.setStatus(`OpenSCAD couldn't build this${ms ? ` (${formatMs(ms)})` : ""}`, "error")
+  doneLabel(pieces) {
+    const ms = pieces.reduce((total, piece) => total + piece.ms, 0)
+    return pieces.length > 1
+      ? `${pieces.length} parts in ${formatMs(ms)}`
+      : `Rendered in ${formatMs(ms)}`
+  }
+
+  showFailure({ problems, ms, part }) {
+    // Every part is built from the same numbers, so one failing usually means
+    // they all would. Abandon the rest of the batch rather than repeating the
+    // same complaint once per part.
+    this.queue = []
+    this.busy = false
+
+    const which = part && this.parts ? ` the ${this.partLabel(part)}` : " this"
+    this.setStatus(`OpenSCAD couldn't build${which}${ms ? ` (${formatMs(ms)})` : ""}`, "error")
     this.showProblems(problems?.length ? problems : ["No geometry was produced."])
-    this.setDownloadsEnabled(Boolean(this.lastSTL))
+    this.setDownloadsEnabled(Boolean(this.renderedPieces().length))
+    if (this.pending) this.startBatch()
   }
 
   // ------------------------------------------------------------- output
 
+  /** Totals across everything selected. Per-part figures live in the checklist. */
   refreshStats() {
-    const geometry = this.lastGeometry
-    if (!geometry) return
+    const pieces = this.renderedPieces()
+    if (!pieces.length) return
 
-    const [x, y, z] = geometry.bounds.size
-    const solid = estimateWeight(geometry, 1)
-    const sparse = estimateWeight(geometry, TYPICAL_INFILL)
+    const total = { volume: 0, solid: 0, sparse: 0, triangles: 0, bytes: 0 }
+    for (const piece of pieces) {
+      const solid = estimateWeight(piece.geometry, 1)
+      total.volume += solid.solidVolume
+      total.solid += solid.grams
+      total.sparse += estimateWeight(piece.geometry, TYPICAL_INFILL).grams
+      total.triangles += piece.geometry.triangles
+      total.bytes += piece.bytes.length
+    }
 
-    const size = `${round(x)} × ${round(y)} × ${round(z)} mm`
-    // Decimal inches for the size triple: three fractions side by side is a
-    // wall of slashes, and lining decimals compare at a glance. Stacked under
-    // the millimetres rather than trailing them, so the two read as the same
-    // measurement twice instead of one long line.
-    const inches = `${geometry.bounds.size.map((mm) => (mm / 25.4).toFixed(2)).join(" × ")}″`
-    const rows = [
-      ["Size", this.inchesOn ? [size, inches] : size],
-      ["Volume", `${solid.solidVolume.toFixed(1)} cm³ solid`],
-      ["Weight", `${formatGrams(solid.grams)} in PLA`],
-      [`Weight (${percent(TYPICAL_INFILL)} infill)`, formatGrams(sparse.grams)],
+    const rows = []
+    // One part has a size worth stating here. Several don't share one, and
+    // each row of the checklist already carries its own.
+    if (pieces.length === 1) {
+      const { size: dimensions } = pieces[0].geometry.bounds
+      const [x, y, z] = dimensions
+      const size = `${round(x)} × ${round(y)} × ${round(z)} mm`
+      // Decimal inches for the size triple: three fractions side by side is a
+      // wall of slashes, and lining decimals compare at a glance. Stacked under
+      // the millimetres rather than trailing them, so the two read as the same
+      // measurement twice instead of one long line.
+      const inches = `${dimensions.map((mm) => (mm / 25.4).toFixed(2)).join(" × ")}″`
+      rows.push(["Size", this.inchesOn ? [size, inches] : size])
+    }
+
+    const many = pieces.length > 1
+    rows.push(
+      [many ? "Volume, all parts" : "Volume", `${total.volume.toFixed(1)} cm³ solid`],
+      [many ? "Weight, all parts" : "Weight", `${formatGrams(total.solid)} in PLA`],
+      [`Weight (${percent(TYPICAL_INFILL)} infill)`, formatGrams(total.sparse)],
       // Priced off the sparse weight, since that's what you'd actually print.
-      ["Price", `${formatPrice(sparse.grams)} @ $${PRICE_PER_KG}/kg`],
-      ["STL file", `${geometry.triangles.toLocaleString()} triangles · ${formatBytes(this.lastBytes)}`],
-    ]
+      ["Price", `${formatPrice(total.sparse)} @ $${PRICE_PER_KG}/kg`],
+      [many ? "Download" : "STL file", describeFiles(pieces.length, total)]
+    )
 
     this.el.stats.textContent = ""
     for (const [label, value] of rows) {
@@ -337,7 +598,9 @@ export class ScadCustomizer extends HTMLElement {
   showComputed(echoes) {
     const panel = this.el.computed
     panel.textContent = ""
-    const useful = (echoes || []).filter(Boolean)
+    // Every part echoes the same design figures, so a five-part kit reports
+    // each of them five times over.
+    const useful = [...new Set((echoes || []).filter(Boolean))]
     panel.closest("[data-role='computed-panel']")?.toggleAttribute("hidden", !useful.length)
     for (const line of useful) {
       const [label, value] = splitOnce(line, ":")
@@ -351,7 +614,7 @@ export class ScadCustomizer extends HTMLElement {
   showProblems(problems) {
     const panel = this.el.problems
     panel.textContent = ""
-    const list = problems || []
+    const list = [...new Set(problems || [])]
     panel.toggleAttribute("hidden", !list.length)
     for (const line of list.slice(0, 6)) {
       const item = document.createElement("li")
@@ -378,10 +641,19 @@ export class ScadCustomizer extends HTMLElement {
     if (open) this.refreshSource()
   }
 
+  /**
+   * The values as they'd be written into a downloaded .scad. One file builds
+   * every part, so the selector is set to the first part ticked — opening it
+   * shows that piece, and its dropdown switches between the rest.
+   */
+  sourceValues() {
+    return this.valuesFor(this.selection[0] ?? null)
+  }
+
   /** Shows the source as it would download — with the current values in it. */
   refreshSource() {
     if (!this.el.source || this.el.source.hasAttribute("hidden")) return
-    const source = customizeSource(this.schema.source, this.values)
+    const source = customizeSource(this.schema.source, this.sourceValues())
     this.el.source.querySelector("code").innerHTML = highlight(source, "openscad")
   }
 
@@ -435,7 +707,19 @@ export class ScadCustomizer extends HTMLElement {
       preset: this.activePreset,
       name: worthSharing ? name : null,
       version: this.parameterSetVersion() || null,
+      parts: this.sharedParts(),
     })
+  }
+
+  /**
+   * The part selection, when it says something the recipient wouldn't assume.
+   * A link to the part the model opens with doesn't need to spell that out.
+   */
+  sharedParts() {
+    if (!this.parts) return null
+    const initial = String(this.parts.default ?? this.parts.options[0].value)
+    const untouched = this.selection.length === 1 && this.selection[0] === initial
+    return untouched ? null : this.selection
   }
 
   syncURL() {
@@ -499,14 +783,46 @@ export class ScadCustomizer extends HTMLElement {
     )
   }
 
-  downloadSTL() {
-    if (!this.lastSTL) return
-    save(new Blob([this.lastSTL], { type: "model/stl" }), `${this.fileStem()}.stl`)
+  /** What one part arrives as. Named for the piece, so a folder of them reads. */
+  partFileName(part) {
+    return `${[this.fileStem(), part ? slugify(part) : null].filter(Boolean).join("-")}.stl`
+  }
+
+  async downloadSTL() {
+    const pieces = this.renderedPieces()
+    if (!pieces.length) return
+
+    if (pieces.length === 1) {
+      save(new Blob([pieces[0].bytes], { type: "model/stl" }), this.partFileName(pieces[0].part))
+      return
+    }
+
+    // Zipping several megabytes takes a moment, and a second click would
+    // start it over.
+    const button = this.el.downloadSTL
+    button.disabled = true
+    try {
+      const archive = await zipFiles(
+        pieces.map((piece) => ({ name: this.partFileName(piece.part), bytes: piece.bytes }))
+      )
+      save(archive, `${this.fileStem()}.zip`)
+    } catch (error) {
+      this.setStatus(`Couldn't build the archive — ${error.message}`, "error")
+    } finally {
+      button.disabled = false
+    }
+  }
+
+  /** Says what the button will actually hand over, which depends on the ticks. */
+  refreshDownloadLabel() {
+    const button = this.el.downloadSTL
+    if (!button || !this.parts) return
+    button.textContent = this.selection.length > 1 ? "Download .zip" : "Download .stl"
   }
 
   downloadSCAD() {
     save(
-      new Blob([customizeSource(this.schema.source, this.values)], { type: "text/plain" }),
+      new Blob([customizeSource(this.schema.source, this.sourceValues())], { type: "text/plain" }),
       `${this.fileStem()}.scad`
     )
   }
@@ -515,8 +831,10 @@ export class ScadCustomizer extends HTMLElement {
   // opened in the desktop Customizer — and read back in below.
   downloadPreset() {
     const name = this.parameterSetLabel()
+    // OpenSCAD's format has no notion of building several parts at once, so a
+    // parameter set records the first one ticked and the link carries the rest.
     const values = Object.fromEntries(
-      Object.entries(this.values).map(([key, value]) => [key, String(value)])
+      Object.entries(this.sourceValues()).map(([key, value]) => [key, String(value)])
     )
     const json = JSON.stringify({ fileFormatVersion: "1", parameterSets: { [name]: values } }, null, 2)
     save(new Blob([json], { type: "application/json" }), `${this.schema.slug}-${slugify(name)}.json`)
@@ -557,6 +875,13 @@ export class ScadCustomizer extends HTMLElement {
       const applied = {}
       const unknown = []
       for (const [key, value] of Object.entries(raw)) {
+        // A set saved from the desktop Customizer carries the part selector
+        // along with everything else. It isn't a control here, but it does say
+        // which part the set was written for.
+        if (this.parts && key === this.parts.parameter) {
+          this.applyPartSelection([String(value)])
+          continue
+        }
         const parameter = known.get(key)
         if (!parameter) {
           unknown.push(key)
@@ -669,6 +994,24 @@ function labelled(tag, text) {
     node.append(span)
   }
   return node
+}
+
+/** What the download comes to: how many files, how big, how detailed. */
+function describeFiles(count, total) {
+  return [
+    count > 1 ? `${count} files, zipped` : null,
+    `${total.triangles.toLocaleString()} triangles`,
+    formatBytes(total.bytes),
+  ]
+    .filter(Boolean)
+    .join(" · ")
+}
+
+/** What a part measures and what it will weigh, for its row in the checklist. */
+function partMeasure(piece) {
+  const [x, y, z] = piece.geometry.bounds.size
+  const { grams } = estimateWeight(piece.geometry, TYPICAL_INFILL)
+  return `${round(x)} × ${round(y)} × ${round(z)} mm · ${formatGrams(grams)}`
 }
 
 function splitOnce(text, separator) {

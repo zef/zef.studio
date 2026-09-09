@@ -414,6 +414,90 @@ $controlBg: #f5f4f1
     font-size: 0.95em
 
 ////////////////////////////////////////////////////////////
+// Parts — the export checklist for a model that builds several pieces
+
+.scad-parts
+  list-style: none
+  margin: 0
+  padding: 0
+
+// Two columns: the box, and everything about the part. Putting the name and
+// the filename in the same column means the second line starts exactly under
+// the first rather than at an indent guessed from the checkbox's width.
+.scad-part
+  column-gap: 0.55em
+  display: grid
+  grid-template-columns: auto 1fr
+  padding: 0.45em 0
+  row-gap: 0.15em
+
+  & + &
+    border-top: 1px solid rgba($darkBgColor, 0.12)
+
+.scad-part-box
+  accent-color: $darkBgColor
+  cursor: pointer
+  grid-column: 1
+  margin: 0
+  // Pinned to the first line, so a row whose measurement has wrapped onto a
+  // second one doesn't leave the box floating between the two.
+  align-self: start
+  // Centred on that line: half the difference between the name's 16px line box
+  // and the 13px the browsers all draw a checkbox at. Measured, not guessed.
+  transform: translateY(1.5px)
+
+  &:disabled
+    cursor: default
+
+// The name and the measurement share a line while they fit. When they don't —
+// which depends on how long the part is called and how wide the panel has
+// ended up, not on the size of the window — the measurement drops to its own
+// line instead of squeezing the name into a two-line column.
+.scad-part-head
+  align-items: baseline
+  display: flex
+  flex-wrap: wrap
+  gap: 0 0.6em
+  grid-column: 2
+  justify-content: space-between
+
+.scad-part-name
+  +uiFont
+  color: $lightTextColor
+  cursor: pointer
+  font-size: 0.82rem
+  white-space: nowrap
+
+  .is-on &
+    color: $textColor
+
+.scad-part-box:disabled + .scad-part-head .scad-part-name
+  cursor: default
+
+// What it measures and what it will weigh, which is most of what decides
+// whether you print it now or later.
+.scad-part-measure
+  +uiFont
+  color: $lightTextColor
+  font-size: 0.72rem
+  font-variant-numeric: lining-nums
+  white-space: nowrap
+
+  &:empty
+    display: none
+
+// The name the file will arrive under. Shown only for parts that are actually
+// coming, so the list stays quiet when one part is ticked.
+.scad-part-file
+  color: $lightTextColor
+  font-size: 0.68rem
+  grid-column: 2
+  overflow-wrap: anywhere
+
+  &:empty
+    display: none
+
+////////////////////////////////////////////////////////////
 // Presets
 
 .scad-presets

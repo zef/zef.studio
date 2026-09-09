@@ -19,6 +19,7 @@
 const PRESET_KEY = "preset"
 const NAME_KEY = "name"
 const VERSION_KEY = "version"
+const PARTS_KEY = "parts"
 
 function serialize(value) {
   if (Array.isArray(value)) return `[${value.join(",")}]`
@@ -63,7 +64,14 @@ function nearlyEqual(a, b) {
  * Builds the hash fragment for the current state.
  * @returns {string} e.g. "#arms=3" or "" when everything is at its default
  */
-export function encodeState({ values, defaults, preset = null, name = null, version = null }) {
+export function encodeState({
+  values,
+  defaults,
+  preset = null,
+  name = null,
+  version = null,
+  parts = null,
+}) {
   const params = new URLSearchParams()
   if (preset) {
     params.set(PRESET_KEY, preset)
@@ -74,6 +82,9 @@ export function encodeState({ values, defaults, preset = null, name = null, vers
       params.set(key, serialize(value))
     }
   }
+  // Which parts you had ticked is part of the configuration, and independent
+  // of the values — so it travels even alongside a named preset.
+  if (parts?.length) params.set(PARTS_KEY, parts.join(","))
   // What you called this configuration travels with it, so the person opening
   // the link sees your name for it rather than "customized".
   if (name) params.set(NAME_KEY, name)
@@ -86,15 +97,17 @@ export function encodeState({ values, defaults, preset = null, name = null, vers
  * Reads a hash fragment back into parameter values.
  * @param {string} hash
  * @param {object[]} parameters flat schema list
- * @returns {{values: object, preset: string|null, name: string|null, version: string|null}}
+ * @returns {{values: object, preset: string|null, name: string|null,
+ *            version: string|null, parts: string[]|null}}
  */
 export function decodeState(hash, parameters) {
   const values = {}
   let preset = null
   let name = null
   let version = null
+  let parts = null
   const text = (hash || "").replace(/^#/, "")
-  if (!text) return { values, preset, name, version }
+  if (!text) return { values, preset, name, version, parts }
 
   const byName = new Map(parameters.map((parameter) => [parameter.name, parameter]))
   for (const [key, raw] of new URLSearchParams(text)) {
@@ -110,10 +123,14 @@ export function decodeState(hash, parameters) {
       version = raw
       continue
     }
+    if (key === PARTS_KEY && !byName.has(PARTS_KEY)) {
+      parts = raw.split(",").filter(Boolean)
+      continue
+    }
     const value = parse(raw, byName.get(key))
     if (value !== undefined) values[key] = value
   }
-  return { values, preset, name, version }
+  return { values, preset, name, version, parts }
 }
 
 /** Replaces the hash without adding a history entry for every slider nudge. */
