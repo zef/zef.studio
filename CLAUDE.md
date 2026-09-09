@@ -72,6 +72,10 @@ Each of these cost real time. They are not obvious from reading the code.
 - **git-lfs pointers masquerade as corrupt files.** A file that "is not a known
   file format" is often an unfetched pointer; check with `head -c 20` before
   debugging the code that reads it.
+- **WASM renders in the in-app preview browser run ~6x slower than in Node.**
+  A model that takes 0.7 s from `scad-render.mjs` reports 4–5 s on the page
+  there. It is the sandboxed browser, not the code — measure an untouched
+  model before chasing a regression that isn't one.
 - **Watch out for `git add -A` after a build.** The image pipeline used to
   leave `-1248-1248.jpg` duplicates behind (fixed in `01efa64`); check
   `git status` for generated strays before staging.
