@@ -4,6 +4,11 @@
 // hardware in a North American workshop is imperial. Rather than convert the
 // models, the customizer shows the inch equivalent alongside the value you're
 // actually setting — so a 4.76 mm grout line reads as the 3/16" it is.
+//
+// A few parameters run the other way. A muzzleloader's caliber is a number of
+// inches by definition — nobody calls it a 12.7 mm rifle — so the model holds
+// it in inches and converts internally. Those get the same treatment mirrored:
+// the reading beside them is the millimetre equivalent.
 
 const MM_PER_INCH = 25.4
 
@@ -99,7 +104,43 @@ export function snapTarget(mm) {
   return { mm: Number(target.toFixed(4)), label: text }
 }
 
-/** Which parameters get an inch readout at all. */
+/** Which parameters carry a reading in the other unit system. */
 export function convertible(parameter) {
-  return parameter.type === "number" && parameter.unit === "mm"
+  return parameter.type === "number" && (parameter.unit === "mm" || parameter.unit === "inch")
+}
+
+/**
+ * A parameter whose reading is shown whatever the inches switch says.
+ *
+ * The switch means "also show me inches", which is a preference. An
+ * inch-valued parameter sitting in a model measured in millimetres is not a
+ * preference — the millimetre reading is the context that says how big .50
+ * caliber is, and it's worth having either way.
+ */
+export function alwaysShown(parameter) {
+  return parameter.unit === "inch"
+}
+
+/**
+ * The reading shown beside a control, in whichever direction the parameter
+ * needs, along with the exact value it offers to snap to (or null).
+ *
+ * @returns {{text: string, title: string, snap: {mm: number, label: string}|null}}
+ */
+export function readout(parameter, value) {
+  if (!Number.isFinite(value)) return { text: "", title: "", snap: null }
+
+  if (parameter.unit === "inch") {
+    // Nothing to offer here: the value is already exact in its own unit, and
+    // rounding an inch measurement to a tidy millimetre would be backwards.
+    return { text: `${trimZeros((value * MM_PER_INCH).toFixed(2))} mm`, title: "", snap: null }
+  }
+
+  const { text, decimal } = toInches(value)
+  const snap = snapTarget(value)
+  return {
+    text: inchLabel(value),
+    title: snap ? `Snap to ${snap.label} — ${snap.mm} mm` : text === decimal ? "" : decimal,
+    snap,
+  }
 }

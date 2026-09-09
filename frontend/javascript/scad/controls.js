@@ -6,7 +6,7 @@
 // slider for exploring, the box for typing an exact measurement, since these
 // are real millimetres that have to match real hardware.
 
-import { convertible, inchLabel, snapTarget, toInches } from "./units.js"
+import { alwaysShown, convertible, readout as unitReadout } from "./units.js"
 
 const GROUP_OPEN_BY_DEFAULT = 2 // later sections start collapsed
 
@@ -69,7 +69,12 @@ export class Controls {
     // and the value becomes exactly the fraction it was rounding to. Disabled
     // when there's nothing to snap to, which is most of the time.
     const readout = convertible(parameter) ? element("button", "scad-inches") : null
-    if (readout) readout.type = "button"
+    if (readout) {
+      readout.type = "button"
+      // A parameter already in inches shows its millimetre equivalent whether
+      // or not the switch is on: that reading is scale, not a preference.
+      if (alwaysShown(parameter)) readout.classList.add("is-fixed")
+    }
 
     const heading = element("div", "scad-label-row")
     heading.append(label)
@@ -126,15 +131,11 @@ export class Controls {
         : ""
       if (!readout) return
 
-      const { text, decimal } = toInches(value)
-      readout.textContent = inchLabel(value)
-      snap = snapTarget(value)
+      const reading = unitReadout(parameter, value)
+      readout.textContent = reading.text
+      snap = reading.snap
       readout.disabled = !snap
-      readout.title = snap
-        ? `Snap to ${snap.label} — ${snap.mm} mm`
-        : text === decimal
-          ? ""
-          : decimal
+      readout.title = reading.title
     }
 
     // One path for every way the value can change: put it in both inputs,
