@@ -11,7 +11,10 @@ import fs from "node:fs"
 import path from "node:path"
 import zlib from "node:zlib"
 
-import { assetDir, createKernel, modelDirectives, modelSlugs, readModel } from "./scad-lib.mjs"
+import { assetDir, createKernel, modelDirectives, modelParts, modelSlugs, readModel } from "./scad-lib.mjs"
+// The same row-and-gap rule the viewer uses, so the thumbnail and the
+// interactive view arrange a kit the same way round.
+import { layoutParts } from "../frontend/javascript/scad/parts.js"
 
 const argv = process.argv.slice(2)
 const flagValue = (name, fallback) => {
@@ -42,6 +45,49 @@ function trianglesFromSTL(bytes) {
         positions[t * 9 + v * 3 + a] = view.getFloat32(base + 12 + v * 12 + a * 4, true)
       }
     }
+  }
+  return { count, positions, normals }
+}
+
+/** Bounds of a parsed STL, in the shape layoutParts expects. */
+function withBounds(geometry) {
+  const min = [Infinity, Infinity, Infinity]
+  const max = [-Infinity, -Infinity, -Infinity]
+  for (let i = 0; i < geometry.count * 3; i++) {
+    for (let axis = 0; axis < 3; axis++) {
+      const value = geometry.positions[i * 3 + axis]
+      if (value < min[axis]) min[axis] = value
+      if (value > max[axis]) max[axis] = value
+    }
+  }
+  return {
+    ...geometry,
+    bounds: { min, max, size: [max[0] - min[0], max[1] - min[1], max[2] - min[2]] },
+  }
+}
+
+/** Lays several parts out in a row and welds them into one mesh to draw. */
+function combineParts(pieces) {
+  if (pieces.length === 1) return pieces[0].geometry
+
+  const placed = layoutParts(pieces)
+  const count = placed.reduce((sum, piece) => sum + piece.geometry.count, 0)
+  const positions = new Float32Array(count * 9)
+  // Normals here are one per triangle rather than per vertex, and the layout
+  // only translates, so they carry over as they are.
+  const normals = new Float32Array(count * 3)
+
+  let vertex = 0
+  let triangle = 0
+  for (const { geometry, offset } of placed) {
+    normals.set(geometry.normals, triangle * 3)
+    for (let i = 0; i < geometry.count * 3; i++) {
+      for (let axis = 0; axis < 3; axis++) {
+        positions[(vertex + i) * 3 + axis] = geometry.positions[i * 3 + axis] + offset[axis]
+      }
+    }
+    vertex += geometry.count * 3
+    triangle += geometry.count
   }
   return { count, positions, normals }
 }
@@ -263,17 +309,31 @@ console.log("")
 for (const slug of slugs) {
   const model = readModel(slug)
   const directives = modelDirectives(model.source)
-  const result = await kernel.render({
-    source: model.source,
-    libraries: directives.libraries,
-    fonts: directives.fonts,
-    ...(directives.features ? { features: directives.features } : {}),
-  })
-  if (!result.ok) {
-    console.log(`  \x1b[31m✗\x1b[0m ${slug} — render failed`)
-    continue
+  const parts = modelParts(model.source)
+
+  // A kit's thumbnail shows the kit. Every part is rendered and laid out the
+  // way the viewer lays them out, so the grid says what the model actually is
+  // rather than showing whichever piece happens to be the default.
+  const wanted = parts ? parts.options.map((option) => option.value) : [null]
+  const pieces = []
+  for (const part of wanted) {
+    const result = await kernel.render({
+      source: model.source,
+      parameters: part ? { [parts.parameter]: part } : {},
+      libraries: directives.libraries,
+      fonts: directives.fonts,
+      ...(directives.features ? { features: directives.features } : {}),
+    })
+    if (!result.ok) {
+      console.log(`  \x1b[31m✗\x1b[0m ${slug}${part ? ` · ${part}` : ""} — render failed`)
+      pieces.length = 0
+      break
+    }
+    pieces.push({ part, geometry: withBounds(trianglesFromSTL(result.output)) })
   }
-  const geometry = trianglesFromSTL(result.output)
+  if (!pieces.length) continue
+
+  const geometry = combineParts(pieces)
   const buffer = render(geometry, SIZE * SUPERSAMPLE)
   const png = encodePNG(resolve(buffer, SUPERSAMPLE))
   const file = path.join(OUT_DIR, `${slug}.png`)
