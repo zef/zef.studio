@@ -44,7 +44,10 @@ are built together, the section knows things a generic customizer can't: the
 index grid is rendered from the actual geometry at build time, `echo()` output
 surfaces as explained results rather than log spam, the weight estimate accounts
 for infill, and imperial equivalents appear next to values because that's what
-the workshop this comes out of actually measures in.
+the workshop this comes out of actually measures in. A model that builds
+several pieces offers them as a checklist and hands them over as a folder of
+properly-named files — every hosted customizer, and the desktop app, gives you
+one part per render and leaves the filing to you.
 
 The honest cost is an 11 MB download the first time someone opens a model, and
 a render that takes between a tenth of a second and a second and a half. That
@@ -88,6 +91,12 @@ enabled = true;                       checkbox
 // scad-web: unit = count
 sides = 6;          // [3:1:12]
 
+// `inch` runs the conversion the other way, for the rare value that is
+// genuinely imperial — a caliber, a pipe thread. The reading beside it is the
+// millimetre equivalent, and it shows whether or not the inches switch is on.
+// scad-web: unit = inch
+caliber = 0.50;     // [0.30:0.01:0.62]
+
 /* [Hidden] */
 
 // Anything below this heading is internal. So is anything computed from
@@ -108,6 +117,39 @@ Things worth knowing:
 - **`echo()` output is surfaced** under the viewer as "Worked out for you".
   Use `echo(str("Label: ", value))` for anything the model figures out that
   the reader would want to know. See `magnet-wire-spool.scad`.
+
+### Models that build more than one part
+
+A file that builds several pieces — a tube, its cap, a band — usually switches
+on a variable. Name that variable and its dropdown becomes an export checklist:
+
+```openscad
+// scad-web: parts = part
+
+// The comment here becomes the note under the section heading.
+part = "powder_tube"; // [powder_tube:Powder Tube, powder_cap:Powder Cap]
+```
+
+There is no new syntax: the annotation is the ordinary one OpenSCAD reads, so
+the same file opens in the desktop Customizer as a plain dropdown and renders
+one part at a time there. On the website every ticked part is rendered
+separately and downloaded under its own name, `<slug>-<part>.stl`, with
+several arriving together as a zip. The option's value names the file and its
+label names the checkbox, so both come from the same place.
+
+Two things follow from parts being separate downloads:
+
+- **Build each part the way it prints, standing on the plate.** Whoever
+  downloads it is going straight to a slicer. `muzzleloader.scad` does this at
+  the foot of the file — the modules are built wherever their geometry is
+  easiest to describe, then turned and set down.
+- **The selector is dropped from the parameter form**, since offering it in two
+  places lets the two disagree. It stays in `defaults`, so the downloaded
+  `.scad` still has a value for it — the first part you ticked.
+
+A directive naming something that can't serve as a selector — a variable that
+doesn't exist, or one with no `// [a:A, b:B]` annotation — leaves the model
+working as a single-part one and says so as a build warning.
 
 **2. The page**, at `src/_models/<slug>.md`.
 
@@ -170,7 +212,13 @@ count and bounding box. Useful flags:
 node scripts/scad-render.mjs <slug> --set width=25 --set style='"hex"' -o /tmp/out.stl
 node scripts/scad-render.mjs --all --presets     # every model and every preset
 node scripts/scad-render.mjs <slug> --verbose    # show OpenSCAD's own output
+node scripts/scad-render.mjs <slug> --part cap   # one part of a multi-part model
 ```
+
+A model that declares parts builds all of them, since the model is the kit.
+Presets are rendered at the default part only: a preset varies the numbers,
+every part is built from the same numbers, and the assertions that catch a bad
+preset fire whichever part you ask for.
 
 Run `--all --presets` before pushing. A preset that has drifted out of sync
 with its model is the easiest thing to break and the least visible.
@@ -213,7 +261,7 @@ src/3d-printing/
 src/_models/     the pages
 plugins/scad_customizer.rb          parses the annotations
 plugins/builders/scad_models.rb     attaches the schema to each page
-frontend/javascript/scad/           viewer, controls, sharing (bundled)
+frontend/javascript/scad/           viewer, controls, parts, sharing, zip (bundled)
 frontend/javascript/syntax/         syntax highlighting (site-wide, not just here)
 frontend/styles/_models.sass        styling
 ```
@@ -240,6 +288,24 @@ A few implementation notes that aren't obvious from the code:
   chosen infill. Parts too thin to have an interior — a 2 mm funnel wall — come
   out all shell, which is correct, and the UI says so rather than showing an
   infill control that would do nothing. Density assumes PLA at 1.24 g/cm³.
+- **Several parts download as a zip**, written by `frontend/javascript/scad/zip.js`
+  — a few headers around the file bytes, with the platform's own
+  `CompressionStream` doing the deflating. A browser can't deliver a set of
+  named files from one click otherwise.
+- **Rendered parts are cached against the parameter values.** Ticking a part
+  you had a moment ago costs nothing; changing any parameter drops the lot,
+  since every part is built from the same numbers.
+- **One warning is filtered from the page**: `PolySet -> Manifold conversion
+  failed`. It comes from BOSL2 differencing against a textured cylinder, and it
+  is a note about which internal path OpenSCAD took rather than about the
+  geometry — the export is watertight either way, checked by pairing its edges.
+  `scad-render.mjs` still reports it, so it stays visible to whoever is adding
+  a model.
+- **Attached solids that share a whole face need an overlap.** BOSL2 defaults
+  `$overlap` to 0, so `attach()` butts them exactly; if the two faces are
+  identical the union has nothing to cut against and leaves them both inside
+  the solid. `attach(BOT, TOP, overlap=0.01)` fixes it. This is invisible until
+  you pair the edges of the export, and slicers mostly paper over it.
 - The **source view** is highlighted at runtime by
   `frontend/javascript/syntax/`, because it changes with every parameter and so
   can't be highlighted at build time. Rouge has no OpenSCAD lexer either, so the
