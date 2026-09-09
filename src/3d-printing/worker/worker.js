@@ -25,7 +25,16 @@ function extractEchoes(log) {
 }
 
 // Anything OpenSCAD flagged, minus the noise it prints on every single run.
-const IGNORED = /Could not initialize localization|Compiling design|Top level object|^\s*(Simple|Vertices|Halfedges|Edges|Halffacets|Facets|Volumes|Genus|Status):/
+//
+// The Manifold conversion warning is here because it is a note about which
+// internal path OpenSCAD took, not about the geometry: BOSL2 hands it a
+// polyset it can't convert when a textured cylinder is differenced against,
+// OpenSCAD falls back, and the exported mesh comes out watertight either way
+// (checked by pairing the edges of the export). There is nothing a visitor
+// could do about it, so it doesn't belong in a panel of things to fix. It is
+// still reported by scripts/scad-render.mjs, where the person who could act
+// on it is the one reading.
+const IGNORED = /Could not initialize localization|Compiling design|Top level object|PolySet -> Manifold conversion failed|^\s*(Simple|Vertices|Halfedges|Edges|Halffacets|Facets|Volumes|Genus|Status):/
 
 function extractProblems(log) {
   return log.filter((line) => /WARNING|ERROR|Parser error|TRACE/i.test(line) && !IGNORED.test(line))
