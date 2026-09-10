@@ -147,16 +147,23 @@ bullet_thread_od = bullet_neck_od + thread_depth;
 powder_neck_id = powder_neck_od - wall_thickness * 2;
 primer_headroom = thread_height + 0.1; // inside-top of the cap to the powder
 
-assert(powder_thread_od < bore_d,
+// Each rule below stops only the parts it is actually about. Flat assertions
+// checked the whole design on every render, so shortening the thread refused
+// to build the powder *tube* over a rule about the primer pocket in the cap --
+// a part that wasn't being rendered and needn't have been in the kit at all.
+checking_powder_tube = part == "powder_tube";
+checking_primer_cap = part == "powder_cap" && primer_pocket;
+
+assert(!checking_powder_tube || powder_thread_od < bore_d,
        str("powder neck ", powder_thread_od, "mm will not enter a ", caliber,
            " bore (", bore_d, "mm) -- reduce powder_neck_od or thread_depth"));
-assert(tube_od > bore_d,
+assert(!checking_powder_tube || tube_od > bore_d,
        str("tube ", tube_od, "mm is not fat enough to catch on a ", caliber,
            " muzzle (", bore_d, "mm) and would drop in -- thicken wall_thickness"));
-assert(!primer_pocket || primer_boss_od < powder_neck_id,
+assert(!checking_primer_cap || primer_boss_od < powder_neck_id,
        str("primer boss ", primer_boss_od, "mm will not clear the neck bore (",
            powder_neck_id, "mm) -- reduce primer_fit"));
-assert(!primer_pocket || primer_depth < primer_headroom,
+assert(!checking_primer_cap || primer_depth < primer_headroom,
        str("primer boss ", primer_depth, "mm reaches past the neck (",
            primer_headroom, "mm) into the powder -- shorten primer_depth"));
 
