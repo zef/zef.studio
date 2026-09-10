@@ -133,9 +133,27 @@ part = "powder_tube"; // [powder_tube:Powder Tube, powder_cap:Powder Cap]
 There is no new syntax: the annotation is the ordinary one OpenSCAD reads, so
 the same file opens in the desktop Customizer as a plain dropdown and renders
 one part at a time there. On the website every ticked part is rendered
-separately and downloaded under its own name, `<slug>-<part>.stl`, with
-several arriving together as a zip. The option's value names the file and its
-label names the checkbox, so both come from the same place.
+separately and downloaded under its own name. The option's value names the
+file and its label names the checkbox, so both come from the same place.
+
+How much of the name a part carries depends on whether it is travelling
+alone. On its own it needs the whole story, because nothing else will say
+where it came from; inside an archive the folder says all of that once:
+
+```
+muzzleloader-shed-hunt-v2-powder-tube.stl     one part, on its own
+
+muzzleloader-shed-hunt-v2.zip                 several parts
+  muzzleloader-shed-hunt-v2/
+    powder-tube.stl
+    powder-cap.stl
+```
+
+The middle of that name is the parameter set you named, or the preset you
+picked, and nothing at all if neither. It is deliberately never derived from
+which parameters differ from the defaults: that took whichever two came first
+in the file, which is an accident of declaration order, and produced names
+like `primer-pocket-false-fn-70`.
 
 Two things follow from parts being separate downloads:
 
@@ -287,7 +305,11 @@ A few implementation notes that aren't obvious from the code:
   as the solid shell a slicer would lay down, and fills whatever is left at the
   chosen infill. Parts too thin to have an interior — a 2 mm funnel wall — come
   out all shell, which is correct, and the UI says so rather than showing an
-  infill control that would do nothing. Density assumes PLA at 1.24 g/cm³.
+  infill control that would do nothing. The infill row is hidden outright
+  unless it saves at least 5% of the weight, since the same number under a
+  second label reads as a mistake; measured across the models here, the parts
+  that benefit save 10–20% and the rest save nothing at all, so nothing sits
+  near that line. Density assumes PLA at 1.24 g/cm³.
 - **Several parts download as a zip**, written by `frontend/javascript/scad/zip.js`
   — a few headers around the file bytes, with the platform's own
   `CompressionStream` doing the deflating. A browser can't deliver a set of

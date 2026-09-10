@@ -237,7 +237,7 @@ export class ScadCustomizer extends HTMLElement {
       row.box.checked = on
       row.box.disabled = on && onlyOne
       row.box.title = row.box.disabled ? "At least one part has to be selected." : ""
-      row.file.textContent = on ? this.partFileName(value) : ""
+      row.file.textContent = on ? this.partDownloadName(value) : ""
 
       const piece = this.cache.get(value)
       row.measure.textContent = on && piece ? partMeasure(piece) : ""
@@ -595,7 +595,12 @@ export class ScadCustomizer extends HTMLElement {
     rows.push(
       // Priced off the sparse weight, since that's what you'd actually print.
       ["Price", `${formatPrice(total.sparse)} @ $${PRICE_PER_KG}/kg`],
-      [many ? "Download" : "STL file", describeFiles(pieces.length, total)]
+      [
+        many ? "Download" : "STL file",
+        many
+          ? [`${this.fileStem()}.zip`, describeFiles(pieces.length, total)]
+          : describeFiles(pieces.length, total),
+      ]
     )
 
     this.el.stats.textContent = ""
@@ -771,32 +776,40 @@ export class ScadCustomizer extends HTMLElement {
 
   // ----------------------------------------------------------- download
 
-  // Downloads end up in a folder alongside other variants of the same part, so
-  // the name has to say which one this is. Whatever you called the set wins;
-  // failing that, the preset it came from, or what was changed and what to.
+  // Downloads end up alongside other variants of the same part, so the name has
+  // to say which one this is. Whatever you called the set wins; failing that,
+  // the preset it came from; failing that, nothing — the model's name alone.
   fileStem() {
     return [this.schema.slug, this.variantName()].filter(Boolean).join("-")
   }
 
+  /**
+   * What distinguishes this configuration from the model as designed.
+   *
+   * Deliberately only ever something a person chose: a name they typed or a
+   * preset they picked. Naming the parameters that differ was worse than
+   * nothing — it took whichever two came first in the file, which is an
+   * accident of declaration order, and produced things like
+   * `primer-pocket-false-fn-70`. The name field is right there, prefilled,
+   * for anyone who wants their downloads told apart.
+   */
   variantName() {
     const named = this.parameterSetName()
     const version = this.parameterSetVersion()
     if (named !== DEFAULT_SET_NAME || version) return slugify(this.parameterSetLabel())
     if (this.activePreset && this.activePreset !== AS_DESIGNED) return slugify(this.activePreset)
-    return this.changed()
-      .slice(0, 2)
-      .map(([name, value]) => `${slugify(name)}-${slugify(value)}`)
-      .join("-")
+    return ""
   }
 
-  changed() {
-    return Object.entries(this.values).filter(
-      ([name, value]) => String(value) !== String(this.schema.defaults[name])
-    )
-  }
-
-  /** What one part arrives as. Named for the piece, so a folder of them reads. */
-  partFileName(part) {
+  /**
+   * What a part arrives as, which depends on whether it is travelling alone.
+   *
+   * On its own it carries the whole story, because nothing else will say which
+   * model or which settings it came from. Inside an archive the folder says
+   * all of that once, so the file itself only has to say which piece it is.
+   */
+  partDownloadName(part) {
+    if (this.selection.length > 1) return `${slugify(part)}.stl`
     return `${[this.fileStem(), part ? slugify(part) : null].filter(Boolean).join("-")}.stl`
   }
 
@@ -805,7 +818,7 @@ export class ScadCustomizer extends HTMLElement {
     if (!pieces.length) return
 
     if (pieces.length === 1) {
-      save(new Blob([pieces[0].bytes], { type: "model/stl" }), this.partFileName(pieces[0].part))
+      save(new Blob([pieces[0].bytes], { type: "model/stl" }), this.partDownloadName(pieces[0].part))
       return
     }
 
@@ -814,10 +827,16 @@ export class ScadCustomizer extends HTMLElement {
     const button = this.el.downloadSTL
     button.disabled = true
     try {
+      // Everything goes in one folder, so unzipping into a downloads directory
+      // lands a named kit rather than five loose parts.
+      const folder = this.fileStem()
       const archive = await zipFiles(
-        pieces.map((piece) => ({ name: this.partFileName(piece.part), bytes: piece.bytes }))
+        pieces.map((piece) => ({
+          name: `${folder}/${this.partDownloadName(piece.part)}`,
+          bytes: piece.bytes,
+        }))
       )
-      save(archive, `${this.fileStem()}.zip`)
+      save(archive, `${folder}.zip`)
     } catch (error) {
       this.setStatus(`Couldn't build the archive — ${error.message}`, "error")
     } finally {
@@ -1011,7 +1030,7 @@ function labelled(tag, text) {
 /** What the download comes to: how many files, how big, how detailed. */
 function describeFiles(count, total) {
   return [
-    count > 1 ? `${count} files, zipped` : null,
+    count > 1 ? `${count} files` : null,
     `${total.triangles.toLocaleString()} triangles`,
     formatBytes(total.bytes),
   ]
