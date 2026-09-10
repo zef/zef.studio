@@ -48,6 +48,13 @@ const INFILL_WORTH_SHOWING = 0.05
 // baked into a number nobody can check.
 const PRICE_PER_KG = 20
 
+// An arrow into a tray. Inline because it is the only icon on the site and a
+// sprite, a font or a request would all outweigh nine lines of path data.
+const DOWNLOAD_ICON = `<svg viewBox="0 0 16 16" aria-hidden="true" focusable="false">
+  <path d="M8 1.6v7.2M5 6l3 3 3-3" />
+  <path d="M2.6 11.4v2.4h10.8v-2.4" />
+</svg>`
+
 export class ScadCustomizer extends HTMLElement {
   connectedCallback() {
     if (this.initialized) return
@@ -201,9 +208,19 @@ export class ScadCustomizer extends HTMLElement {
       const file = document.createElement("code")
       file.className = "scad-part-file"
 
-      row.append(box, head, file)
+      // One part on its own, without changing what's ticked. Appears once
+      // there is something to hand over.
+      const get = document.createElement("button")
+      get.type = "button"
+      get.className = "scad-part-get"
+      get.innerHTML = DOWNLOAD_ICON
+      get.setAttribute("aria-label", `Download ${option.label}`)
+      get.hidden = true
+      get.addEventListener("click", () => this.downloadPart(value))
+
+      row.append(box, head, get, file)
       this.el.parts.append(row)
-      this.partRows.set(value, { row, box, measure, file })
+      this.partRows.set(value, { row, box, measure, file, get })
     }
     this.refreshPartRows()
   }
@@ -249,6 +266,12 @@ export class ScadCustomizer extends HTMLElement {
       const failed = on && this.failures.has(value)
       row.row.classList.toggle("is-failed", failed)
       row.measure.textContent = failed ? "wouldn't build" : on && piece ? partMeasure(piece) : ""
+
+      row.get.hidden = !(on && piece)
+      // The tooltip names the file this button gives you, which is the full
+      // one — a part taken on its own isn't inside a folder that says which
+      // model it came from.
+      row.get.title = piece ? `Download ${this.soloFileName(value)}` : ""
     }
     this.refreshDownloadLabel()
   }
@@ -860,6 +883,13 @@ export class ScadCustomizer extends HTMLElement {
   /** The name a part carries when nothing around it says where it came from. */
   soloFileName(part) {
     return `${[this.fileStem(), part ? slugify(part) : null].filter(Boolean).join("-")}.stl`
+  }
+
+  /** Hands over a single part, whatever else happens to be ticked. */
+  downloadPart(part) {
+    const piece = this.cache.get(part)
+    if (!piece) return
+    save(new Blob([piece.bytes], { type: "model/stl" }), this.soloFileName(part))
   }
 
   async downloadSTL() {

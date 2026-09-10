@@ -149,6 +149,10 @@ muzzleloader-shed-hunt-v2.zip                 several parts
     powder-cap.stl
 ```
 
+Each row of the checklist also carries its own download button, which takes
+that one part without disturbing what is ticked — so it always arrives under
+the solo name, whatever else is selected.
+
 The middle of that name is the parameter set you named, or the preset you
 picked, and nothing at all if neither. It is deliberately never derived from
 which parameters differ from the defaults: that took whichever two came first

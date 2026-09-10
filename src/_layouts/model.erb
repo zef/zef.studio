@@ -70,6 +70,25 @@ layout: default
         </section>
       <% end %>
 
+      <section class="scad-section">
+        <h2>Download</h2>
+        <div class="scad-downloads">
+          <div class="scad-parameter-row">
+            <button type="button" class="scad-action is-primary" data-role="download-stl" disabled>Download .stl</button>
+            <button type="button" class="scad-action" data-role="download-scad" disabled>Download .scad</button>
+          </div>
+          <p class="scad-note">
+            The <code>.stl</code> is the printable file — open it in your slicer,
+            PrusaSlicer or Bambu Studio or Cura, and send it to the printer.<% if scad["parts"] %>
+            Tick more than one part and they arrive together as a
+            <code>.zip</code>, each named for the piece it is — or take a single
+            part straight from its row above.<% end %> The
+            <code>.scad</code> is the <%= openscad_link.html_safe %> source with your
+            values written into it, if you want to take the design further.
+          </p>
+        </div>
+      </section>
+
       <section class="scad-section" data-role="presets-panel">
         <h2>Templates</h2>
         <div class="scad-presets" data-role="presets"></div>
@@ -89,24 +108,8 @@ layout: default
       </section>
 
       <section class="scad-section">
-        <h2>Download</h2>
-        <div class="scad-downloads">
-          <div class="scad-parameter-row">
-            <button type="button" class="scad-action is-primary" data-role="download-stl" disabled>Download .stl</button>
-            <button type="button" class="scad-action" data-role="download-scad" disabled>Download .scad</button>
-          </div>
-          <p class="scad-note">
-            The <code>.stl</code> is the printable file — open it in your slicer,
-            PrusaSlicer or Bambu Studio or Cura, and send it to the printer.<% if scad["parts"] %>
-            Tick more than one part and they arrive together as a
-            <code>.zip</code>, each named for the piece it is.<% end %> The
-            <code>.scad</code> is the <%= openscad_link.html_safe %> source with your
-            values written into it, if you want to take the design further.
-          </p>
-        </div>
-
+        <h2>Parameter sets</h2>
         <div class="scad-parameter-file">
-          <h3 class="scad-subhead">Parameter sets</h3>
           <div class="scad-parameter-row scad-naming">
             <div class="scad-stacked-field">
               <label class="scad-field-label" for="scad-preset-name">Name</label>
