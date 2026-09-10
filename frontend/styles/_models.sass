@@ -474,6 +474,15 @@ $controlBg: #f5f4f1
 .scad-part-box:disabled + .scad-part-head .scad-part-name
   cursor: default
 
+// A part the model refused to build. The reason is in the problems list below;
+// this is just so the row and that message agree about which part it was.
+.scad-part.is-failed
+  .scad-part-name
+    color: $lightTextColor
+
+  .scad-part-measure
+    color: #a3474b
+
 // What it measures and what it will weigh, which is most of what decides
 // whether you print it now or later.
 .scad-part-measure

@@ -34,7 +34,11 @@ function extractEchoes(log) {
 // could do about it, so it doesn't belong in a panel of things to fix. It is
 // still reported by scripts/scad-render.mjs, where the person who could act
 // on it is the one reading.
-const IGNORED = /Could not initialize localization|Compiling design|Top level object|PolySet -> Manifold conversion failed|^\s*(Simple|Vertices|Halfedges|Edges|Halffacets|Facets|Volumes|Genus|Status):/
+//
+// The trace that follows every failed assertion is dropped for the same
+// reason: it only ever says "called by 'assert'", which the message above it
+// has already made clear.
+const IGNORED = /Could not initialize localization|Compiling design|Top level object|PolySet -> Manifold conversion failed|TRACE: called by 'assert'|^\s*(Simple|Vertices|Halfedges|Edges|Halffacets|Facets|Volumes|Genus|Status):/
 
 function extractProblems(log) {
   return log.filter((line) => /WARNING|ERROR|Parser error|TRACE/i.test(line) && !IGNORED.test(line))

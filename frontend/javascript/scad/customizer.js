@@ -70,6 +70,10 @@ export class ScadCustomizer extends HTMLElement {
     // free; changing any parameter invalidates the lot, which is what
     // `cacheKey` is for.
     this.cache = new Map()
+    // Parts that wouldn't build at these values, and why. Kept beside the
+    // cache and cleared with it, so a failing part isn't retried on every
+    // tick of an unrelated checkbox.
+    this.failures = new Map()
     this.cacheKey = null
 
     this.batchId = 0
@@ -237,10 +241,14 @@ export class ScadCustomizer extends HTMLElement {
       row.box.checked = on
       row.box.disabled = on && onlyOne
       row.box.title = row.box.disabled ? "At least one part has to be selected." : ""
-      row.file.textContent = on ? this.partDownloadName(value) : ""
+      // Only name a file that is actually coming: a part that wouldn't build
+      // has none, and a part waiting its turn doesn't have one yet.
+      row.file.textContent = on && this.cache.has(value) ? this.partDownloadName(value) : ""
 
       const piece = this.cache.get(value)
-      row.measure.textContent = on && piece ? partMeasure(piece) : ""
+      const failed = on && this.failures.has(value)
+      row.row.classList.toggle("is-failed", failed)
+      row.measure.textContent = failed ? "wouldn't build" : on && piece ? partMeasure(piece) : ""
     }
     this.refreshDownloadLabel()
   }
@@ -251,7 +259,9 @@ export class ScadCustomizer extends HTMLElement {
   }
 
   missingParts() {
-    return this.activeParts().filter((part) => !this.cache.has(part))
+    return this.activeParts().filter(
+      (part) => !this.cache.has(part) && !this.failures.has(part)
+    )
   }
 
   /** Rendered pieces for the current selection, in declaration order. */
@@ -417,6 +427,7 @@ export class ScadCustomizer extends HTMLElement {
     const key = JSON.stringify(this.values)
     if (this.cacheKey !== key) {
       this.cache.clear()
+      this.failures.clear()
       this.cacheKey = key
     }
 
@@ -470,11 +481,12 @@ export class ScadCustomizer extends HTMLElement {
     try {
       geometry = parseSTL(message.stl)
     } catch (error) {
-      this.setStatus(error.message, "error")
-      this.busy = false
+      this.failures.set(message.part, [error.message])
+      this.advance()
       return
     }
 
+    this.failures.delete(message.part)
     this.cache.set(message.part, {
       part: message.part,
       geometry,
@@ -483,8 +495,12 @@ export class ScadCustomizer extends HTMLElement {
       echoes: message.echoes || [],
       problems: message.problems || [],
     })
+    this.advance()
+  }
 
-    // A change arrived while this part was rendering, so the rest of the batch
+  /** Moves the batch on: the next part, a restart, or the finished picture. */
+  advance() {
+    // A change arrived while that part was rendering, so the rest of the batch
     // is already answering the wrong question. Start again from the new values.
     if (this.pending) {
       this.showRendered({ final: false })
@@ -492,10 +508,14 @@ export class ScadCustomizer extends HTMLElement {
       return
     }
 
-    const final = !this.queue.length
-    this.showRendered({ final })
-    if (final) this.busy = false
-    else this.renderNext()
+    if (this.queue.length) {
+      this.showRendered({ final: false })
+      this.renderNext()
+      return
+    }
+
+    this.busy = false
+    this.showRendered({ final: true })
   }
 
   /**
@@ -506,50 +526,64 @@ export class ScadCustomizer extends HTMLElement {
    */
   showRendered({ final }) {
     const pieces = this.renderedPieces()
-    if (!pieces.length) return
 
-    const geometry = mergeGeometries(layoutParts(pieces))
-    const first = !this.viewer.geometry
-    this.viewer.setGeometry(geometry)
+    if (pieces.length) {
+      const geometry = mergeGeometries(layoutParts(pieces))
+      const first = !this.viewer.geometry
+      this.viewer.setGeometry(geometry)
 
-    // The camera follows along while the selection is changing — parts appear
-    // and it pulls back to take them in. Once the selection settles, nudging a
-    // slider leaves the view exactly where the visitor put it.
-    const key = this.selection.join(",")
-    if (first || this.framedFor !== key) this.viewer.frame()
-    else if (final) this.viewer.frameIfNeeded()
-    if (final) this.framedFor = key
+      // The camera follows along while the selection is changing — parts appear
+      // and it pulls back to take them in. Once the selection settles, nudging a
+      // slider leaves the view exactly where the visitor put it.
+      const key = this.selection.join(",")
+      if (first || this.framedFor !== key) this.viewer.frame()
+      else if (final) this.viewer.frameIfNeeded()
+      if (final) this.framedFor = key
+    }
 
     this.refreshPartRows()
     this.refreshStats()
 
     if (!final) return
-    this.setStatus(this.doneLabel(pieces), "ok")
+    const failed = this.failedParts()
+    this.setStatus(this.doneLabel(pieces, failed), failed.length ? "error" : "ok")
     this.showComputed(pieces.flatMap((piece) => piece.echoes))
-    this.showProblems(pieces.flatMap((piece) => piece.problems))
-    this.setDownloadsEnabled(true)
+    this.showProblems([
+      ...failed.flatMap((part) => this.failures.get(part)),
+      ...pieces.flatMap((piece) => piece.problems),
+    ])
+    this.setDownloadsEnabled(Boolean(pieces.length))
     this.refreshSource()
   }
 
-  doneLabel(pieces) {
-    const ms = pieces.reduce((total, piece) => total + piece.ms, 0)
-    return pieces.length > 1
-      ? `${pieces.length} parts in ${formatMs(ms)}`
-      : `Rendered in ${formatMs(ms)}`
+  /** Selected parts that wouldn't build, in the order the model declares them. */
+  failedParts() {
+    return this.activeParts().filter((part) => this.failures.has(part))
   }
 
-  showFailure({ problems, ms, part }) {
-    // Every part is built from the same numbers, so one failing usually means
-    // they all would. Abandon the rest of the batch rather than repeating the
-    // same complaint once per part.
-    this.queue = []
-    this.busy = false
+  doneLabel(pieces, failed = []) {
+    const ms = pieces.reduce((total, piece) => total + piece.ms, 0)
+    const built =
+      pieces.length > 1 ? `${pieces.length} parts in ${formatMs(ms)}` : `Rendered in ${formatMs(ms)}`
 
-    const which = part && this.parts ? ` the ${this.partLabel(part)}` : " this"
-    this.setStatus(`OpenSCAD couldn't build${which}${ms ? ` (${formatMs(ms)})` : ""}`, "error")
-    this.showProblems(problems?.length ? problems : ["No geometry was produced."])
-    this.setDownloadsEnabled(Boolean(this.renderedPieces().length))
-    if (this.pending) this.startBatch()
+    if (!failed.length) return built
+    const names = this.parts ? failed.map((part) => this.partLabel(part)).join(", ") : "this"
+    // Name what didn't build, but don't hide what did: the rest of the kit is
+    // on screen and downloadable, and saying only "couldn't build" would read
+    // as though nothing had.
+    return pieces.length ? `${built} — ${names} failed` : `OpenSCAD couldn't build ${names}`
+  }
+
+  /**
+   * Records that one part wouldn't build, and carries on with the rest.
+   *
+   * A model's rules are usually about one piece — a cap's primer pocket says
+   * nothing about whether its tube is sound — so one part failing is no reason
+   * to leave the others unrendered and the viewer empty.
+   */
+  showFailure({ problems, part }) {
+    this.failures.set(part, problems?.length ? problems : ["No geometry was produced."])
+    this.advance()
   }
 
   // ------------------------------------------------------------- output
@@ -635,7 +669,7 @@ export class ScadCustomizer extends HTMLElement {
     panel.toggleAttribute("hidden", !list.length)
     for (const line of list.slice(0, 6)) {
       const item = document.createElement("li")
-      item.textContent = line.replace(/\s+in file .*$/, "")
+      item.textContent = readableProblem(line)
       panel.append(item)
     }
   }
@@ -809,7 +843,22 @@ export class ScadCustomizer extends HTMLElement {
    * all of that once, so the file itself only has to say which piece it is.
    */
   partDownloadName(part) {
-    if (this.selection.length > 1) return `${slugify(part)}.stl`
+    return this.downloadCount() > 1 ? `${slugify(part)}.stl` : this.soloFileName(part)
+  }
+
+  /**
+   * How many parts the download button will actually hand over.
+   *
+   * Counted from what built rather than what is ticked: if two of three parts
+   * fail, the survivor leaves on its own and needs the name of one that isn't
+   * inside a folder.
+   */
+  downloadCount() {
+    return this.renderedPieces().length
+  }
+
+  /** The name a part carries when nothing around it says where it came from. */
+  soloFileName(part) {
     return `${[this.fileStem(), part ? slugify(part) : null].filter(Boolean).join("-")}.stl`
   }
 
@@ -848,7 +897,7 @@ export class ScadCustomizer extends HTMLElement {
   refreshDownloadLabel() {
     const button = this.el.downloadSTL
     if (!button || !this.parts) return
-    button.textContent = this.selection.length > 1 ? "Download .zip" : "Download .stl"
+    button.textContent = this.downloadCount() > 1 ? "Download .zip" : "Download .stl"
   }
 
   downloadSCAD() {
@@ -1025,6 +1074,22 @@ function labelled(tag, text) {
     node.append(span)
   }
   return node
+}
+
+/**
+ * Strips OpenSCAD's scaffolding off a problem, leaving what a person wrote.
+ *
+ * An assertion arrives wrapped in the expression that failed and the file it
+ * was in — useful when you are editing the model, noise when you are trying
+ * to print one. The message inside it was written for a reader, so show that.
+ */
+function readableProblem(line) {
+  const trimmed = line.replace(/\s+in file .*$/, "")
+  const asserted = trimmed.match(/Assertion\s+'(.+)'\s+failed:\s*"([\s\S]*)"$/)
+  if (!asserted) return trimmed
+  // Some assertions carry no message of their own; the expression is then the
+  // only thing there is to say.
+  return asserted[2].trim() || `Failed: ${asserted[1]}`
 }
 
 /** What the download comes to: how many files, how big, how detailed. */
