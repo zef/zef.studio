@@ -35,6 +35,14 @@ const DEFAULT_SET_NAME = "customized"
 // more stepper to fiddle with wasn't earning its place.
 const TYPICAL_INFILL = 0.2
 
+// ...and only while they are actually two numbers. A part with walls thin
+// enough to print solid all the way through has no interior to skimp on, so
+// the infill figure comes out identical to the solid one, and the same number
+// under a second label reads as a mistake rather than as information. Across
+// the models here the split is stark — the parts that benefit save 10-20%,
+// and the rest save nothing at all — so anything in this range would do.
+const INFILL_WORTH_SHOWING = 0.05
+
 // A fair middle for PLA — generic runs nearer $15, Prusament nearer $30. The
 // rate is printed next to the price so the assumption is visible rather than
 // baked into a number nobody can check.
@@ -579,8 +587,12 @@ export class ScadCustomizer extends HTMLElement {
     const many = pieces.length > 1
     rows.push(
       [many ? "Volume, all parts" : "Volume", `${total.volume.toFixed(1)} cm³ solid`],
-      [many ? "Weight, all parts" : "Weight", `${formatGrams(total.solid)} in PLA`],
-      [`Weight (${percent(TYPICAL_INFILL)} infill)`, formatGrams(total.sparse)],
+      [many ? "Weight, all parts" : "Weight", `${formatGrams(total.solid)} in PLA`]
+    )
+    if (total.solid > 0 && total.sparse <= total.solid * (1 - INFILL_WORTH_SHOWING)) {
+      rows.push([`Weight (${percent(TYPICAL_INFILL)} infill)`, formatGrams(total.sparse)])
+    }
+    rows.push(
       // Priced off the sparse weight, since that's what you'd actually print.
       ["Price", `${formatPrice(total.sparse)} @ $${PRICE_PER_KG}/kg`],
       [many ? "Download" : "STL file", describeFiles(pieces.length, total)]
@@ -1007,10 +1019,15 @@ function describeFiles(count, total) {
     .join(" · ")
 }
 
-/** What a part measures and what it will weigh, for its row in the checklist. */
+/**
+ * What a part measures and what it will weigh, for its row in the checklist.
+ *
+ * Solid, matching the Weight row above rather than the infill one, so the
+ * parts add up to the total instead of to a figure that may not be on screen.
+ */
 function partMeasure(piece) {
   const [x, y, z] = piece.geometry.bounds.size
-  const { grams } = estimateWeight(piece.geometry, TYPICAL_INFILL)
+  const { grams } = estimateWeight(piece.geometry, 1)
   return `${round(x)} × ${round(y)} × ${round(z)} mm · ${formatGrams(grams)}`
 }
 
