@@ -129,43 +129,14 @@ bullet_neck_od = tube_od;
 primer_bore_d = primer_d + primer_fit;
 primer_boss_od = primer_bore_d + wall_thickness * 2;
 
-// The cap is modelled where it sits screwed down, a hair clear of the neck top
-// so the two don't share a face in the assembled view.
-cap_clearance = 0.1;
-
-// The transition and the main tube share an outside *and* an inside diameter
-// where they meet, so butting them leaves two identical annular faces inside
-// the solid and the union has nothing to cut against -- 140 edges come out
-// used six times over. BOSL2 defaults $overlap to 0, so say it here: sinking
-// the joint by a hundredth of a millimetre gives the union something to
-// resolve and the tube exports watertight.
-seam_overlap = 0.01;
-
-// ------------------------------------------------------------------ soundness
 powder_thread_od = powder_neck_od + thread_depth;
 bullet_thread_od = bullet_neck_od + thread_depth;
 powder_neck_id = powder_neck_od - wall_thickness * 2;
 primer_headroom = thread_height + 0.1; // inside-top of the cap to the powder
 
-// Each rule below stops only the parts it is actually about. Flat assertions
-// checked the whole design on every render, so shortening the thread refused
-// to build the powder *tube* over a rule about the primer pocket in the cap --
-// a part that wasn't being rendered and needn't have been in the kit at all.
-checking_powder_tube = part == "powder_tube";
-checking_primer_cap = part == "powder_cap" && primer_pocket;
-
-assert(!checking_powder_tube || powder_thread_od < bore_d,
-       str("powder neck ", powder_thread_od, "mm will not enter a ", caliber,
-           " bore (", bore_d, "mm) -- reduce powder_neck_od or thread_depth"));
-assert(!checking_powder_tube || tube_od > bore_d,
-       str("tube ", tube_od, "mm is not fat enough to catch on a ", caliber,
-           " muzzle (", bore_d, "mm) and would drop in -- thicken wall_thickness"));
-assert(!checking_primer_cap || primer_boss_od < powder_neck_id,
-       str("primer boss ", primer_boss_od, "mm will not clear the neck bore (",
-           powder_neck_id, "mm) -- reduce primer_fit"));
-assert(!checking_primer_cap || primer_depth < primer_headroom,
-       str("primer boss ", primer_depth, "mm reaches past the neck (",
-           primer_headroom, "mm) into the powder -- shorten primer_depth"));
+// The cap is modelled where it sits screwed down, a hair clear of the neck top
+// so the two don't share a face in the assembled view.
+cap_clearance = 0.1;
 
 // -------------------------------------------------------------------- reports
 // Volume of a conical frustum, from its height and end diameters.
@@ -178,20 +149,22 @@ powder_length = (target_volume - transition_volume) / PI / (tube_id/2)^2;
 // The neck bore is usable bullet space, so the chamber only needs the rest.
 bullet_body_length = bullet_length + bullet_fit - thread_height;
 
+// How much tube hangs below the neck -- which is also how far it has to be
+// lifted to stand on its own floor.
+powder_below_neck = transition_length + powder_length + wall_thickness;
+bullet_below_neck = bullet_body_length + wall_thickness;
+
 // Air left over the powder once the cap is on, less whatever the boss occupies.
 neck_headspace = PI * (powder_neck_id/2)^2 * thread_height
                - (primer_pocket ? PI * (primer_boss_od/2)^2 * (primer_depth - 0.1) : 0);
 
-// "Label: value" is the shape the website reads these back in, and rounding
-// keeps them to a precision anyone could measure.
-function reported(value, places = 2) = round(value * pow(10, places)) / pow(10, places);
+function mm1(v) = round(v * 10) / 10;
 
-echo(str("Charge volume: ", reported(target_volume, 0), " mm3"));
-echo(str("Powder tube, cap off: ", reported(
-     thread_height + transition_length + powder_length + wall_thickness, 1), " mm"));
-echo(str("Bullet tube, cap off: ", reported(
-     thread_height + bullet_body_length + wall_thickness, 1), " mm"));
-echo(str("Headspace over powder: ", reported(neck_headspace / grain_volume, 1), " grains"));
+// "Label: value" is the shape the website reads these back in.
+echo(str("Charge volume: ", round(target_volume), " mm3"));
+echo(str("Powder tube, cap off: ", mm1(thread_height + powder_below_neck), " mm"));
+echo(str("Bullet tube, cap off: ", mm1(thread_height + bullet_below_neck), " mm"));
+echo(str("Headspace over powder: ", mm1(neck_headspace / grain_volume), " grains"));
 
 // -------------------------------------------------------------------- modules
 module screw_neck(neck, thread, id) {
@@ -235,46 +208,55 @@ module screw_cap(neck, thread, primer=false) {
     }
 }
 
-module powder_cap() { screw_cap(powder_neck_od, powder_thread_od, primer=primer_pocket); }
-module bullet_cap() { screw_cap(bullet_neck_od, bullet_thread_od); }
+// Caps print face-down, so the primer pocket lands on the bed.
+module powder_cap() {
+  if (primer_pocket) {
+    assert(primer_boss_od < powder_neck_id,
+           str("primer boss ", primer_boss_od, "mm will not clear the neck bore (",
+               powder_neck_id, "mm) -- reduce primer_fit"));
+    assert(primer_depth < primer_headroom,
+           str("primer boss ", primer_depth, "mm reaches past the neck (",
+               primer_headroom, "mm) into the powder -- shorten primer_depth"));
+  }
+  up(wall_thickness + cap_clearance) zflip()
+    screw_cap(powder_neck_od, powder_thread_od, primer=primer_pocket);
+}
 
-// Written as four siblings placed by hand rather than the `attach()` chain this
-// obviously wants to be, and the reason is Safari. Each link of an attach chain
-// is a child of the one before, and OpenSCAD evaluates that nesting by
-// recursing -- which costs host stack, of which Safari's WebAssembly engine
-// allows a good deal less than Chrome's. Chained, this part needs ~320 KB of
-// stack and Safari aborts with "Maximum call stack size exceeded"; flat, it
-// needs ~280 KB, which is the same floor as every other part here. Measured by
-// rendering under `node --stack-size`, and the saving holds at every setting.
+module bullet_cap() {
+  up(wall_thickness + cap_clearance) zflip()
+    screw_cap(bullet_neck_od, bullet_thread_od);
+}
+
+// Stacked downward from the neck, then stood up on its floor.
 //
-// Offsets follow the chain exactly: the neck sits from the origin up, and each
-// piece below hangs its top off the bottom of the one above.
-// Accumulated in the same order the chain accumulated it. Writing the floor's
-// depth as `transition_length + powder_length - seam_overlap` is the same
-// number in algebra and a different one in floating point, and that last bit
-// is enough to leave a sliver between the tube and its floor at some settings.
-body_top = transition_length - seam_overlap;
-
+// Deliberately four siblings rather than the `attach()` chain this wants to be:
+// each link of a chain is a child of the one before, and OpenSCAD recurses
+// through that nesting. Safari's WebAssembly stack is small enough that the
+// chained version overflowed it. Flat, this costs what every other part costs.
 module powder_tube() {
-  union() {
-    // threaded neck
+  assert(powder_thread_od < bore_d,
+         str("powder neck ", powder_thread_od, "mm will not enter a ", caliber,
+             " bore (", bore_d, "mm) -- reduce powder_neck_od or thread_depth"));
+  assert(tube_od > bore_d,
+         str("tube ", tube_od, "mm is not fat enough to catch on a ", caliber,
+             " muzzle (", bore_d, "mm) and would drop in -- thicken wall_thickness"));
+
+  up(powder_below_neck) {
     screw_neck(powder_neck_od, powder_thread_od, powder_neck_id);
-    // transition to main tube
     tube(h=transition_length, id1=tube_id, id2=powder_neck_id, wall=wall_thickness, anchor=TOP);
-    // main tube, sunk by the seam overlap
-    down(body_top)
+    down(transition_length)
       tube(od=tube_od, id=tube_id, l=powder_length, anchor=TOP);
-    // bottom cap, sunk into the tube the same way and lengthened to match, so
-    // the joint has something to resolve and the floor's underside stays put
-    down(body_top + powder_length - seam_overlap)
-      cyl(d=tube_od, l=wall_thickness + seam_overlap, anchor=TOP);
+    down(transition_length + powder_length)
+      cyl(d=tube_od, l=wall_thickness, anchor=TOP);
   }
 }
 
 module bullet_tube() {
-  screw_neck(bullet_neck_od, bullet_thread_od, tube_id)
-  attach(BOT, TOP) tube(od=tube_od, id=tube_id, l=bullet_body_length)
-  attach(BOT, TOP) cyl(d=tube_od, l=wall_thickness);
+  up(bullet_below_neck) {
+    screw_neck(bullet_neck_od, bullet_thread_od, tube_id);
+    tube(od=tube_od, id=tube_id, l=bullet_body_length, anchor=TOP);
+    down(bullet_body_length) cyl(d=tube_od, l=wall_thickness, anchor=TOP);
+  }
 }
 
 // Loops sit wall-to-wall and are hulled before boring, so the waist is filled
@@ -284,7 +266,7 @@ module bullet_band() {
   bullet_loop_id = bore_d - band_grip;
   spacing = (tube_loop_id + bullet_loop_id) / 2 + wall_thickness * 2;
 
-  difference() {
+  up(band_height / 2) difference() {
     hull() {
       cyl(d=tube_loop_id + wall_thickness*2, h=band_height,
           rounding=wall_thickness/3);
@@ -298,25 +280,11 @@ module bullet_band() {
 }
 
 // ----------------------------------------------------------------- the part
-// Each module is built where its geometry is easiest to describe: the tubes
-// hang below their neck, and a cap sits the way it does when screwed on. Here
-// they are turned the way they print and set down on the plate, so what you
-// download is what you slice.
-tube_drop = transition_length + powder_length + wall_thickness;
-bullet_drop = bullet_body_length + wall_thickness;
-cap_rise = wall_thickness + cap_clearance;
-
-if (part == "powder_tube") {
-  // Less the overlap, which raised the main tube by that much already.
-  up(tube_drop - seam_overlap) powder_tube();
-} else if (part == "powder_cap") {
-  up(cap_rise) zflip() powder_cap();
-} else if (part == "bullet_tube") {
-  up(bullet_drop) bullet_tube();
-} else if (part == "bullet_cap") {
-  up(cap_rise) zflip() bullet_cap();
-} else if (part == "bullet_band") {
-  up(band_height / 2) bullet_band();
-} else {
-  assert(false, str("unknown part \"", part, "\" -- see the [Part] dropdown"));
-}
+// Every module above stands on the plate in the orientation it prints, so what
+// you download is what you slice.
+if (part == "powder_tube") powder_tube();
+else if (part == "powder_cap") powder_cap();
+else if (part == "bullet_tube") bullet_tube();
+else if (part == "bullet_cap") bullet_cap();
+else if (part == "bullet_band") bullet_band();
+else assert(false, str("unknown part \"", part, "\" -- see the [Part] dropdown"));
