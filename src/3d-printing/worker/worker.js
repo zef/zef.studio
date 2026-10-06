@@ -44,6 +44,22 @@ function extractProblems(log) {
   return log.filter((line) => /WARNING|ERROR|Parser error|TRACE/i.test(line) && !IGNORED.test(line))
 }
 
+/**
+ * Why a render produced nothing, guaranteeing an answer.
+ *
+ * Usually the log flagged something itself. When it didn't, OpenSCAD died
+ * without filing a complaint in the words we look for, and the exit code and
+ * the last few lines are all there is — which still beats telling someone
+ * "no geometry was produced" and leaving them to guess.
+ */
+function failureProblems(result) {
+  const flagged = extractProblems(result.log)
+  if (flagged.length) return flagged
+
+  const tail = result.log.filter((line) => line.trim()).slice(-3)
+  return [`OpenSCAD exited with code ${result.exitCode} and produced no geometry.`, ...tail]
+}
+
 function post(message, transfer = []) {
   self.postMessage(message, transfer)
 }
@@ -87,7 +103,7 @@ self.onmessage = async (event) => {
           id,
           part,
           ms: result.ms,
-          problems: extractProblems(result.log),
+          problems: failureProblems(result),
           log: result.log,
         })
         return

@@ -504,7 +504,11 @@ export class ScadCustomizer extends HTMLElement {
     try {
       geometry = parseSTL(message.stl)
     } catch (error) {
-      this.failures.set(message.part, [error.message])
+      // OpenSCAD did build this one; we couldn't read what came back. Say so,
+      // because "couldn't build it" would send anyone looking in the model.
+      this.failures.set(message.part, [
+        `Couldn't read the geometry OpenSCAD returned — ${error.message}`,
+      ])
       this.advance()
       return
     }

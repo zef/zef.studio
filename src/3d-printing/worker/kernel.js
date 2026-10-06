@@ -216,8 +216,11 @@ export class OpenSCADKernel {
     try {
       exitCode = instance.callMain(args)
     } catch (error) {
-      // A hard abort (out of memory, assertion) throws instead of returning.
-      record(`OpenSCAD aborted: ${error?.message || error}`)
+      // A hard abort (out of memory, an unsupported instruction, a runtime that
+      // gave up) throws instead of returning. Tagged as an error so it travels
+      // with the rest of them -- untagged, every consumer that filters the log
+      // for problems drops the one line explaining why there is no output.
+      record(`ERROR: OpenSCAD aborted: ${error?.message || error}`)
       exitCode = -1
     }
     const ms = Date.now() - started
