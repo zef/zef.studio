@@ -238,15 +238,37 @@ module screw_cap(neck, thread, primer=false) {
 module powder_cap() { screw_cap(powder_neck_od, powder_thread_od, primer=primer_pocket); }
 module bullet_cap() { screw_cap(bullet_neck_od, bullet_thread_od); }
 
+// Written as four siblings placed by hand rather than the `attach()` chain this
+// obviously wants to be, and the reason is Safari. Each link of an attach chain
+// is a child of the one before, and OpenSCAD evaluates that nesting by
+// recursing -- which costs host stack, of which Safari's WebAssembly engine
+// allows a good deal less than Chrome's. Chained, this part needs ~320 KB of
+// stack and Safari aborts with "Maximum call stack size exceeded"; flat, it
+// needs ~280 KB, which is the same floor as every other part here. Measured by
+// rendering under `node --stack-size`, and the saving holds at every setting.
+//
+// Offsets follow the chain exactly: the neck sits from the origin up, and each
+// piece below hangs its top off the bottom of the one above.
+// Accumulated in the same order the chain accumulated it. Writing the floor's
+// depth as `transition_length + powder_length - seam_overlap` is the same
+// number in algebra and a different one in floating point, and that last bit
+// is enough to leave a sliver between the tube and its floor at some settings.
+body_top = transition_length - seam_overlap;
+
 module powder_tube() {
-  // threaded neck
-  screw_neck(powder_neck_od, powder_thread_od, powder_neck_id)
-  // transition to main tube
-  attach(BOT, TOP) tube(h=transition_length, id1=tube_id, id2=powder_neck_id, wall=wall_thickness)
-  // main tube
-  attach(BOT, TOP, overlap=seam_overlap) tube(od=tube_od, id=tube_id, l=powder_length)
-  // bottom cap
-  attach(BOT, TOP) cyl(d=tube_od, l=wall_thickness);
+  union() {
+    // threaded neck
+    screw_neck(powder_neck_od, powder_thread_od, powder_neck_id);
+    // transition to main tube
+    tube(h=transition_length, id1=tube_id, id2=powder_neck_id, wall=wall_thickness, anchor=TOP);
+    // main tube, sunk by the seam overlap
+    down(body_top)
+      tube(od=tube_od, id=tube_id, l=powder_length, anchor=TOP);
+    // bottom cap, sunk into the tube the same way and lengthened to match, so
+    // the joint has something to resolve and the floor's underside stays put
+    down(body_top + powder_length - seam_overlap)
+      cyl(d=tube_od, l=wall_thickness + seam_overlap, anchor=TOP);
+  }
 }
 
 module bullet_tube() {
