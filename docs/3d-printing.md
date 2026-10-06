@@ -327,6 +327,26 @@ A few implementation notes that aren't obvious from the code:
   geometry — the export is watertight either way, checked by pairing its edges.
   `scad-render.mjs` still reports it, so it stays visible to whoever is adding
   a model.
+- **Deep nesting costs stack, and Safari has much less of it.** OpenSCAD
+  evaluates a nested tree by recursing, and JavaScriptCore allows far fewer
+  nested WebAssembly frames than V8 — so a model that builds in Chrome can
+  abort in Safari with "Maximum call stack size exceeded". It is nesting that
+  costs, not detail: `$fn` makes no difference at all, while each link of an
+  `attach()` chain makes the next piece a child of the last and adds real
+  depth. Four siblings placed by hand are far cheaper than four chained
+  attachments, which is why `powder_tube()` is written the way it is.
+
+  Measure it rather than guessing, by rendering under a constrained stack:
+
+  ```bash
+  node --stack-size=280 -e 'import("./scripts/scad-lib.mjs")' # see muzzleloader notes
+  ```
+
+  Bisecting `--stack-size` gives the figure a model actually needs. For
+  reference: anything with a BOSL2 thread on it sits at about 280 KB, which is
+  `thread_helix` and is not reducible; the simpler models here want 150–200 KB.
+  A part much above that floor is worth flattening before it reaches a visitor.
+
 - **Attached solids that share a whole face need an overlap.** BOSL2 defaults
   `$overlap` to 0, so `attach()` butts them exactly; if the two faces are
   identical the union has nothing to cut against and leaves them both inside

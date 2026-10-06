@@ -76,6 +76,12 @@ Each of these cost real time. They are not obvious from reading the code.
   A model that takes 0.7 s from `scad-render.mjs` reports 4–5 s on the page
   there. It is the sandboxed browser, not the code — measure an untouched
   model before chasing a regression that isn't one.
+- **Safari's WebAssembly call stack is much smaller than Chrome's.** A model
+  that renders fine in the preview browser can abort in Safari with "Maximum
+  call stack size exceeded". Nesting is what costs — `attach()` chains, module
+  wrapping — not facet count; `$fn` makes no difference. Reproduce and measure
+  it with `node --stack-size=N` rather than guessing. See the notes in
+  `docs/3d-printing.md`.
 - **Watch out for `git add -A` after a build.** The image pipeline used to
   leave `-1248-1248.jpg` duplicates behind (fixed in `01efa64`); check
   `git status` for generated strays before staging.
