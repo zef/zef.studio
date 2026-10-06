@@ -1110,6 +1110,11 @@ function labelled(tag, text) {
   return node
 }
 
+// Some failures are the browser's rather than the model's. This one is worth
+// translating because it reads as a bug in the part when it isn't, and because
+// the answer — open it somewhere else — is not guessable from the wording.
+const STACK_OVERFLOW = /maximum call stack|call stack size exceeded|stack overflow/i
+
 /**
  * Strips OpenSCAD's scaffolding off a problem, leaving what a person wrote.
  *
@@ -1119,6 +1124,15 @@ function labelled(tag, text) {
  */
 function readableProblem(line) {
   const trimmed = line.replace(/\s+in file .*$/, "")
+
+  if (STACK_OVERFLOW.test(trimmed)) {
+    return (
+      "This part needs more call stack than this browser will give it. " +
+      "Safari allows a good deal less of it than Chrome or Firefox, so the " +
+      "same part usually builds in those. Nothing you can change here affects it."
+    )
+  }
+
   const asserted = trimmed.match(/Assertion\s+'(.+)'\s+failed:\s*"([\s\S]*)"$/)
   if (!asserted) return trimmed
   // Some assertions carry no message of their own; the expression is then the
