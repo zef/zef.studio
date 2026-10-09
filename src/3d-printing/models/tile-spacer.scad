@@ -28,6 +28,7 @@ arms = 4; // [2:1:6]
 // scad-web: note = Finishing, and how many come off the plate at once.
 
 // Chamfer along the arms so the spacer slides into a joint without catching.
+// scad-web: unit = mm
 chamfer = 0.5; // [0:0.05:1.5]
 
 // Print a row of spacers at once. Handy — you always want more than one.

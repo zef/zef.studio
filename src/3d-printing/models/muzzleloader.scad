@@ -55,6 +55,7 @@ caliber = 0.50; // [0.30:0.01:0.62]
 
 // Clearance around the bullet, added to the bore diameter. Also sets how
 // loosely the tubes sit in the muzzle.
+// scad-web: unit = mm
 bullet_fit = 0.5; // [0:0.05:2]
 
 // Overall length of the bullet the bullet tube has to swallow.
@@ -64,6 +65,7 @@ bullet_length = 33; // [10:0.5:70]
 // scad-web: note = Both tubes and both caps share these. The walls are deliberately thin — these carry a charge in a pocket, not a load.
 
 // Every wall, floor and band in the model.
+// scad-web: unit = mm
 wall_thickness = 0.9; // [0.4:0.1:3]
 
 // The taper that sits in the muzzle while you pour. Its cavity counts toward
@@ -75,10 +77,12 @@ transition_length = 5; // [0:0.5:15]
 powder_neck_od = 11.5; // [6:0.1:20]
 
 // How far the thread stands out from the neck.
+// scad-web: unit = mm
 thread_depth = 0.8; // [0.4:0.05:2]
 
 // Distance between thread crests. Coarser threads close in fewer turns and
 // print more cleanly.
+// scad-web: unit = mm
 thread_pitch = 2; // [1:0.25:4]
 
 // Length of the threaded section, which is also the depth of the cap.
@@ -100,6 +104,7 @@ primer_depth = 7.5; // [3:0.1:12]
 // Diametral clearance — the number to fiddle with. Raise it about 0.05 at a
 // time for less grip. TPU wants more than PLA: it prints holes undersized and
 // then the walls squeeze whatever is in them.
+// scad-web: unit = mm
 primer_fit = 0.12; // [0:0.01:0.5]
 
 /* [Band] */
@@ -110,6 +115,7 @@ band_height = 8; // [3:0.5:20]
 
 // Diametral interference. The stretch is what holds the bullet, so this wants
 // to be a squeeze, not a fit.
+// scad-web: unit = mm
 band_grip = 0.4; // [0:0.05:1.5]
 
 /* [Detail] */

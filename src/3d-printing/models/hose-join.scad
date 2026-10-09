@@ -32,15 +32,18 @@ insert_length = 22; // [8:0.5:60]
 rib_count = 8; // [0:1:20]
 
 // How far each rib stands out past the barb. More grip, harder to push on.
+// scad-web: unit = mm
 rib_thickness = 0.4; // [0.1:0.05:1.5]
 
 // Thickness of each rib along the length of the barb.
+// scad-web: unit = mm
 rib_height = 0.8; // [0.4:0.05:3]
 
 /* [Wall] */
 // scad-web: note = The bore through the middle is the barb diameter less twice this.
 
 // Wall thickness. The bore through the middle is the barb diameter less twice this.
+// scad-web: unit = mm
 wall = 1.4; // [0.6:0.05:5]
 
 /* [Quality] */

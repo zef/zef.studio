@@ -22,6 +22,7 @@ hole_diameter = 28.6; // [10:0.1:120]
 wall_thickness = 12.7; // [5:0.5:60]
 
 // Wall thickness of the grommet itself.
+// scad-web: unit = mm
 wall = 1.4; // [0.8:0.05:5]
 
 /* [Flange] */

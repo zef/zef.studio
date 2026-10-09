@@ -41,6 +41,7 @@ countersink = true;
 // scad-web: note = Thickness is set in whole extrusion widths, so the slicer prints solid loops instead of filling a thin gap.
 
 // Extrusion width your slicer is set to. Used to size the wall in whole beads.
+// scad-web: unit = mm
 extrusion_width = 0.45; // [0.2:0.01:1.2]
 
 // Wall thickness in perimeters. Two is springy, three or four is stiff.

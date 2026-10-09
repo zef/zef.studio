@@ -61,11 +61,13 @@ label_face = "Top"; // [Top, Underside]
 label_scale = 0.7; // [0.3:0.05:1]
 
 // How deep the lettering is cut into the rim.
+// scad-web: unit = mm
 label_depth = 0.6; // [0.2:0.05:2]
 
 /* [Wall] */
 
 // Wall thickness throughout.
+// scad-web: unit = mm
 wall = 2.2; // [0.8:0.1:6]
 
 /* [Quality] */

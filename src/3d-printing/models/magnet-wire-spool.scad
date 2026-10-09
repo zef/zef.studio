@@ -34,6 +34,7 @@ core_diameter = 5; // [2:0.1:40]
 core_length = 16; // [4:0.5:80]
 
 // Core wall thickness.
+// scad-web: unit = mm
 wall = 0.8; // [0.4:0.05:4]
 
 /* [Flanges] */
