@@ -114,6 +114,7 @@ There is no test suite. These are the checks that matter:
 bundle exec bridgetown build          # warnings here are real
 node esbuild.config.js                # frontend bundle
 node scripts/scad-render.mjs --all --presets   # every model and preset renders
+node scripts/units-check.mjs          # unit conversion and fraction formatting
 ```
 
 For anything visible, start the dev server and look at it — at mobile width

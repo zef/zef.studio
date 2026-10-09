@@ -86,14 +86,20 @@ corner = "r";       // [r:Rounded, s:Square]       dropdown with labels
 label = "HELLO";    // [16]           text, max length
 enabled = true;                       checkbox
 
-// Numbers are millimetres unless told otherwise, which is what earns them an
-// inch readout. Say so when they aren't: `count`, `ratio`, or `none`.
+// Numbers are millimetres unless told otherwise. Say so when they aren't:
+// `count`, `ratio`, or `none` for things that aren't lengths at all.
 // scad-web: unit = count
 sides = 6;          // [3:1:12]
 
-// `inch` runs the conversion the other way, for the rare value that is
-// genuinely imperial — a caliber, a pipe thread. The reading beside it is the
-// millimetre equivalent, and it shows whether or not the inches switch is on.
+// Declaring `mm` means something different from leaving it out: it pins the
+// parameter to millimetres. Use it when the number is metric because of how
+// the thing prints rather than how big it is -- a wall that is three
+// extrusion widths stays in millimetres however the rest is being measured.
+// scad-web: unit = mm
+wall = 0.9;         // [0.4:0.1:3]
+
+// `inch` is for a value that is genuinely imperial. The model stores inches
+// and converts internally; the website shows the millimetre equivalent.
 // scad-web: unit = inch
 caliber = 0.50;     // [0.30:0.01:0.62]
 
@@ -172,6 +178,42 @@ Two things follow from parts being separate downloads:
 A directive naming something that can't serve as a selector — a variable that
 doesn't exist, or one with no `// [a:A, b:B]` annotation — leaves the model
 working as a single-part one and says so as a build warning.
+
+### Units, and who decides them
+
+Two different things get called a parameter's unit, and the difference is the
+whole of how this behaves:
+
+- **The unit it is stored in** is the model's business and fixed. Millimetres,
+  unless the file declares `inch`.
+- **The unit it is worked in** is the reader's. Each length carries its unit
+  beside the box and a press switches it, and the page has one switch that
+  moves everything at once.
+
+What the page switch moves is decided by whether the file declared a unit:
+
+| in the `.scad`        | stored in | the page switch        |
+|-----------------------|-----------|------------------------|
+| nothing               | mm        | moves it               |
+| `unit = mm`           | mm        | leaves it alone        |
+| `unit = inch`         | inch      | leaves it alone        |
+| `count`/`ratio`/`none`| —         | no units at all        |
+
+So declare a unit only when the choice matters, and leave it off otherwise —
+most dimensions are just the size of the thing and should follow the reader.
+Either way a reader can still switch one parameter by hand, and once they do,
+the page switch stops moving that one too.
+
+Typing in inches accepts fractions as people write them: `3/16`, `1 3/8`,
+`1-3/8`, `.125`, with or without an inch mark. A value that lands on a rule
+marking reads back as the fraction. One that lands *near* one says so —
+`≈ 3/16″` — and pressing that makes it exactly 4.7625 mm, which is the number
+you want when the part has to meet imperial hardware.
+
+Sliders working in inches step along rule markings rather than along whatever
+the model's millimetre step converts to. A model that declares `inch` keeps
+its own step, since calibers come in hundredths and a 1/64 grid would step
+straight past .50.
 
 **2. The page**, at `src/_models/<slug>.md`.
 
@@ -367,8 +409,14 @@ A few implementation notes that aren't obvious from the code:
   can't be highlighted at build time. Rouge has no OpenSCAD lexer either, so the
   same grammar serves any ```openscad block in a post. It emits Rouge's class
   names, so `syntax-highlighting.css` themes both.
-- **Inch conversion is display-only.** The models are millimetres throughout,
-  because OpenSCAD is and because mixing units inside a model is how you end up
-  with a part that is wrong by a factor of 25.4. Parameters can declare
-  `// scad-web: unit = count` (or `ratio`) to opt out of a conversion that would
-  be meaningless.
+- **Unit switching is display-only.** The value in the file never changes
+  unit; only what you type and read does. Everything converts through
+  millimetres, so there is one hop each way and no round trips to accumulate
+  error. Mixing units *inside* a model is how you end up with a part wrong by
+  a factor of 25.4, so the model stays in one.
+- **The input box and the reading round differently, on purpose.** A reading
+  stops at sixteenths because nobody takes in "23/64″" at a glance; the box
+  goes to 64ths because what you type has to be exact. `scripts/units-check.mjs`
+  exists for this sort of thing — pure arithmetic and formatting, no DOM, and
+  the kind of mistake that drifts a value a thousandth at a time rather than
+  announcing itself.
