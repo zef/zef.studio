@@ -76,12 +76,21 @@ Each of these cost real time. They are not obvious from reading the code.
   A model that takes 0.7 s from `scad-render.mjs` reports 4–5 s on the page
   there. It is the sandboxed browser, not the code — measure an untouched
   model before chasing a regression that isn't one.
-- **Safari's WebAssembly call stack is much smaller than Chrome's.** A model
-  that renders fine in the preview browser can abort in Safari with "Maximum
-  call stack size exceeded". Nesting is what costs — `attach()` chains, module
-  wrapping — not facet count; `$fn` makes no difference. Reproduce and measure
-  it with `node --stack-size=N` rather than guessing. See the notes in
-  `docs/3d-printing.md`.
+- **Stack size is per-thread and the browsers disagree wildly.** Measured with
+  a recursive WASM function: Chrome gives a worker 63,500 frames against the
+  main thread's 15,500, while Safari 27's engine gives the main thread 7,000.
+  So the worker is the roomiest place in Chrome and the worst in Safari, and
+  OpenSCAD recurses deeply enough to care. A model that renders in the preview
+  browser can abort in Safari with "Maximum call stack size exceeded"; the
+  customizer retries those on the main thread. Nesting is what costs —
+  `attach()` chains, module wrapping — not facet count; `$fn` makes no
+  difference. Measure with `node --stack-size=N`, and `jsc` (in
+  JavaScriptCore.framework/Versions/A/Helpers) is Safari's actual engine if you
+  need to compare. See `docs/3d-printing.md`.
+- **Nothing versions what the worker imports.** `worker.js` gets a cache key
+  from the builder; `kernel.js` is a fixed URL, so it must be imported with
+  that key passed through or a browser will pair a new worker with a stale
+  kernel. A module worker reports that as an error event with no message.
 - **Watch out for `git add -A` after a build.** The image pipeline used to
   leave `-1248-1248.jpg` duplicates behind (fixed in `01efa64`); check
   `git status` for generated strays before staging.
