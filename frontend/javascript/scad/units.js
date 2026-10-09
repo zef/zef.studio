@@ -1,42 +1,83 @@
-// Millimetres to inches, for people who think in inches.
+// Working in millimetres, in inches, and in both at once.
 //
-// OpenSCAD works in millimetres and so does every model here, but half the
-// hardware in a North American workshop is imperial. Rather than convert the
-// models, the customizer shows the inch equivalent alongside the value you're
-// actually setting — so a 4.76 mm grout line reads as the 3/16" it is.
+// Two different things kept getting called "the unit", and keeping them apart
+// is most of what this module is for:
 //
-// A few parameters run the other way. A muzzleloader's caliber is a number of
-// inches by definition — nobody calls it a 12.7 mm rifle — so the model holds
-// it in inches and converts internally. Those get the same treatment mirrored:
-// the reading beside them is the millimetre equivalent.
+//   the stored unit    what the .scad file holds the number in. The model's
+//                      business and fixed: millimetres unless it says
+//                      otherwise, and a muzzleloader's caliber says otherwise
+//                      because .50 calibre is a number of inches by
+//                      definition.
+//
+//   the working unit   what you type and read. Yours, switchable, and settable
+//                      per parameter — because a part can be imperial all over
+//                      and still have a wall thickness that is three extrusion
+//                      widths and belongs in millimetres.
+//
+// Everything converts through millimetres, so there is one hop in each
+// direction and no accumulating round trips.
 
-const MM_PER_INCH = 25.4
+export const MM_PER_INCH = 25.4
 
-// A tape measure stops being readable somewhere around sixteenths. Finer
-// values are still measured to 1/64 internally, but if the reduced fraction
-// needs a bigger denominator than this, the decimal is the clearer answer.
-const READABLE_DENOMINATOR = 16
+// A rule is marked to 1/64, so that is as fine as a fraction ever gets here.
 const FINEST = 64
 
+// How fine a fraction is worth *reading*. Past sixteenths, a glanced-at
+// reading says more as a decimal — nobody takes in "23/64″" at a glance. The
+// input box is held to a different standard and uses FINEST, because what you
+// type has to be precise and 7/64 is both exact and perfectly typable.
+const READABLE_DENOMINATOR = 16
+
+/** Whether a parameter is a length at all, and so has units to switch between. */
+export function isLength(parameter) {
+  return parameter.type === "number" && (parameter.unit === "mm" || parameter.unit === "inch")
+}
+
 /**
- * Formats a millimetre value as inches.
+ * Whether the page's unit switch may move this parameter.
  *
- * `fraction` says whether the reading is in fraction notation — 3/16″, 1 3/8″,
- * 2″ — or fell back to a decimal. It matters because only a fraction can be
- * *rounded to*: a decimal reading is already as precise as it looks.
- *
- * @returns {{text: string, exact: boolean, fraction: boolean, decimal: string}}
+ * A unit the file declared is a decision; one we assumed is not. So the switch
+ * sweeps up everything that didn't say, and leaves alone the ones that did —
+ * which can still be changed by hand, one at a time.
  */
-export function toInches(mm) {
-  const inches = mm / MM_PER_INCH
-  const decimal = `${trimZeros(inches.toFixed(3))}″`
+export function followsPageUnit(parameter) {
+  return isLength(parameter) && !parameter.unit_declared
+}
 
-  if (!Number.isFinite(inches)) return { text: "", exact: false, fraction: false, decimal: "" }
-  if (inches === 0) return { text: "0″", exact: true, fraction: true, decimal }
+// ------------------------------------------------------------- conversion
 
-  const sign = inches < 0 ? "-" : ""
+/** A stored value as millimetres. Scale only, so it works on steps too. */
+export function storedToMm(value, parameter) {
+  return parameter.unit === "inch" ? value * MM_PER_INCH : value
+}
+
+/** Millimetres back into whatever the model stores. */
+export function mmToStored(mm, parameter) {
+  return parameter.unit === "inch" ? mm / MM_PER_INCH : mm
+}
+
+export function mmTo(mm, unit) {
+  return unit === "inch" ? mm / MM_PER_INCH : mm
+}
+
+export function mmFrom(value, unit) {
+  return unit === "inch" ? value * MM_PER_INCH : value
+}
+
+// --------------------------------------------------------------- fractions
+
+/**
+ * An inch measurement as a fraction, or null when it isn't worth writing as
+ * one. Reduced to the smallest denominator that still lands on a 64th.
+ *
+ * @returns {{whole: number, numerator: number, denominator: number,
+ *            exact: boolean, negative: boolean}|null}
+ */
+function asFraction(inches, maxDenominator = READABLE_DENOMINATOR) {
+  if (!Number.isFinite(inches)) return null
+
+  const negative = inches < 0
   const magnitude = Math.abs(inches)
-
   const ticks = Math.round(magnitude * FINEST)
   const exact = Math.abs(magnitude * FINEST - ticks) < 1e-9
 
@@ -47,100 +88,164 @@ export function toInches(mm) {
     denominator /= 2
   }
 
-  // Too fine to read off a rule — a decimal says more.
-  if (numerator > 0 && denominator > READABLE_DENOMINATOR) {
-    return { text: decimal, exact, fraction: false, decimal }
+  if (numerator > 0 && denominator > maxDenominator) return null
+
+  return { whole: Math.floor(ticks / FINEST), numerator, denominator, exact, negative }
+}
+
+/** "3/16", "1 3/8", "2" — the fraction alone, with no inch mark. */
+function fractionText({ whole, numerator, denominator, negative }) {
+  const sign = negative ? "-" : ""
+  if (numerator === 0) return `${sign}${whole}`
+  if (whole === 0) return `${sign}${numerator}/${denominator}`
+  return `${sign}${whole} ${numerator}/${denominator}`
+}
+
+/**
+ * How an inch measurement reads.
+ *
+ * `exact` says the fraction is the value rather than a rounding of it, which
+ * is what decides whether a reading gets a ≈ in front and whether there is
+ * anything to offer snapping to.
+ *
+ * @returns {{text: string, exact: boolean, fraction: boolean, decimal: string}}
+ */
+export function formatInches(inches) {
+  if (!Number.isFinite(inches)) return { text: "", exact: false, fraction: false, decimal: "" }
+
+  const decimal = `${trimZeros(inches.toFixed(3))}″`
+  const parts = asFraction(inches)
+  if (!parts) return { text: decimal, exact: false, fraction: false, decimal }
+
+  return { text: `${fractionText(parts)}″`, exact: parts.exact, fraction: true, decimal }
+}
+
+/**
+ * Reads a length someone typed, in the unit they are working in.
+ *
+ * Inches accept the way people actually write them: 3/16, 1 3/8, 1-3/8, .125,
+ * and any of those with an inch mark on the end. Returns null for anything it
+ * can't make a number of, so the caller can leave the value alone.
+ */
+export function parseTyped(text, unit) {
+  const cleaned = String(text)
+    .trim()
+    .replace(/(?:″|"|'')\s*$/, "")
+    .replace(/\s*(?:in|inch|inches|mm)\s*$/i, "")
+    .trim()
+  if (!cleaned) return null
+
+  if (unit === "inch") {
+    // Optional whole number, then a fraction: "1 3/8", "1-3/8", "3/16".
+    const mixed = cleaned.match(/^(-?)\s*(?:(\d+)[\s-]+)?(\d+)\s*\/\s*(\d+)$/)
+    if (mixed) {
+      const [, sign, whole, numerator, denominator] = mixed
+      if (Number(denominator) === 0) return null
+      const value = Number(whole || 0) + Number(numerator) / Number(denominator)
+      return sign === "-" ? -value : value
+    }
   }
 
-  const whole = Math.floor(ticks / FINEST)
-  let text
-  if (numerator === 0) text = `${whole}″`
-  else if (whole === 0) text = `${numerator}/${denominator}″`
-  else text = `${whole} ${numerator}/${denominator}″`
-
-  return { text: `${sign}${text}`, exact, fraction: true, decimal }
+  const plain = Number(cleaned)
+  return Number.isFinite(plain) ? plain : null
 }
 
+// ----------------------------------------------------------------- display
+
 /**
- * The readout shown beside a control.
+ * The value as it goes into the input box: bare, with no unit mark, since the
+ * box has a unit button sitting next to it saying which one it's in.
  *
- * The ≈ marks a fraction the value has been rounded to — it's saying "call it
- * 3/16", not 3/16 exactly". A decimal reading carries no such rounding claim,
- * so it goes bare.
+ * Inches prefer the fraction when the value is exactly one, because that is
+ * what someone would have typed and what they will read off a rule.
  */
-export function inchLabel(mm) {
-  const { text, exact, fraction } = toInches(mm)
-  if (!text) return ""
-  return exact || !fraction ? text : `≈ ${text}`
-}
+export function forInput(mm, unit) {
+  if (!Number.isFinite(mm)) return ""
+  if (unit !== "inch") return trimZeros(mm.toFixed(4))
 
-function trimZeros(text) {
-  return text.replace(/\.?0+$/, "")
+  const inches = mm / MM_PER_INCH
+  const parts = asFraction(inches, FINEST)
+  if (parts && parts.exact) return fractionText(parts)
+  return trimZeros(inches.toFixed(4))
 }
 
 /**
- * The exact millimetre value behind an approximate inch readout.
+ * The same measurement in the other unit, shown beside the control.
  *
- * A part that has to meet imperial hardware wants the real number — 3/16" is
- * 4.7625 mm, not 4.7. The condition is deliberately the same one that puts the
- * ≈ on the reading: if the label claims to have rounded, this offers to
- * unround it, and if it doesn't claim that, there's nothing to offer. Any gap
- * between the two reads as a broken control — a value marked approximate that
- * won't do anything when you press it.
+ * Working in millimetres, the counterpart is inches and may be a rounding —
+ * hence the ≈, and hence an offer to snap to the fraction it is rounding to.
+ * Working in inches, the counterpart is millimetres, which is exact: there is
+ * no rounding to mark and nothing to snap to, because dragging an imperial
+ * measurement onto a tidy millimetre would be backwards.
  *
- * A decimal reading is exempt because it isn't rounding to anything: there's
- * no tidy value nearby, and dragging someone to the nearest 64th would be a
- * disservice rather than a favour.
+ * @returns {{text: string, title: string, snap: {mm: number, label: string}|null}}
+ */
+export function counterpart(mm, workingUnit) {
+  if (!Number.isFinite(mm)) return { text: "", title: "", snap: null }
+
+  if (workingUnit === "inch") {
+    return { text: `${trimZeros(mm.toFixed(3))} mm`, title: "", snap: null }
+  }
+
+  const { text, exact, fraction, decimal } = formatInches(mm / MM_PER_INCH)
+  if (!text) return { text: "", title: "", snap: null }
+
+  const rounded = fraction && !exact
+  const snap = rounded ? snapTarget(mm) : null
+  return {
+    text: rounded ? `≈ ${text}` : text,
+    title: snap ? `Snap to ${snap.label} — ${snap.mm} mm` : text === decimal ? "" : decimal,
+    snap,
+  }
+}
+
+/**
+ * The exact millimetre value behind an approximate inch reading.
+ *
+ * A part that has to meet imperial hardware wants the real number: 3/16″ is
+ * 4.7625 mm, not 4.7. Offered under exactly the condition that puts the ≈ on
+ * the reading, so a value marked approximate always has something to press and
+ * one that isn't never does.
  *
  * @returns {{mm: number, label: string}|null}
  */
 export function snapTarget(mm) {
-  const { text, exact, fraction } = toInches(mm)
-  if (exact || !fraction || !text || !Number.isFinite(mm)) return null
+  if (!Number.isFinite(mm)) return null
+  const { text, exact, fraction } = formatInches(mm / MM_PER_INCH)
+  if (exact || !fraction || !text) return null
 
   const ticks = Math.round((mm / MM_PER_INCH) * FINEST)
-  const target = (ticks / FINEST) * MM_PER_INCH
-  // Four places is past any printer's resolution and keeps 1/64ths exact.
-  return { mm: Number(target.toFixed(4)), label: text }
+  // Four places is past any printer's resolution and keeps 64ths exact.
+  return { mm: Number(((ticks / FINEST) * MM_PER_INCH).toFixed(4)), label: text }
 }
 
-/** Which parameters carry a reading in the other unit system. */
-export function convertible(parameter) {
-  return parameter.type === "number" && (parameter.unit === "mm" || parameter.unit === "inch")
-}
+// The steps a rule is marked in. A slider working in inches should land on
+// these rather than on whatever a millimetre step converts to.
+const INCH_STEPS = [1 / 64, 1 / 32, 1 / 16, 1 / 8, 1 / 4, 1 / 2, 1]
 
 /**
- * A parameter whose reading is shown whatever the inches switch says.
+ * A slider step in the working unit.
  *
- * The switch means "also show me inches", which is a preference. An
- * inch-valued parameter sitting in a model measured in millimetres is not a
- * preference — the millimetre reading is the context that says how big .50
- * caliber is, and it's worth having either way.
+ * Converting a 0.1 mm step straight into inches gives 0.0039″, which is both
+ * unreachable on a rule and meaningless to drag to. So in inches the step
+ * becomes whichever binary fraction is closest to the one the model asked for
+ * — compared in ratio, since steps are a scale rather than a position.
  */
-export function alwaysShown(parameter) {
-  return parameter.unit === "inch"
+export function stepIn(unit, mmStep) {
+  if (unit !== "inch") return mmStep
+  const wanted = mmStep / MM_PER_INCH
+  if (!(wanted > 0)) return 1 / 64
+  return INCH_STEPS.reduce((best, step) =>
+    Math.abs(Math.log(step / wanted)) < Math.abs(Math.log(best / wanted)) ? step : best
+  )
 }
 
-/**
- * The reading shown beside a control, in whichever direction the parameter
- * needs, along with the exact value it offers to snap to (or null).
- *
- * @returns {{text: string, title: string, snap: {mm: number, label: string}|null}}
- */
-export function readout(parameter, value) {
-  if (!Number.isFinite(value)) return { text: "", title: "", snap: null }
+/** The symbol a unit is written with. */
+export function unitLabel(unit) {
+  return unit === "inch" ? "in" : "mm"
+}
 
-  if (parameter.unit === "inch") {
-    // Nothing to offer here: the value is already exact in its own unit, and
-    // rounding an inch measurement to a tidy millimetre would be backwards.
-    return { text: `${trimZeros((value * MM_PER_INCH).toFixed(2))} mm`, title: "", snap: null }
-  }
-
-  const { text, decimal } = toInches(value)
-  const snap = snapTarget(value)
-  return {
-    text: inchLabel(value),
-    title: snap ? `Snap to ${snap.label} — ${snap.mm} mm` : text === decimal ? "" : decimal,
-    snap,
-  }
+function trimZeros(text) {
+  // Only ever strip a fractional tail: "100" must not become "1".
+  return text.includes(".") ? text.replace(/0+$/, "").replace(/\.$/, "") : text
 }
