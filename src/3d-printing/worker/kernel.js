@@ -238,6 +238,55 @@ export class OpenSCADKernel {
   }
 }
 
+// ---------------------------------------------------------------- log reading
+
+// OpenSCAD reports echo() output on stderr as `ECHO: "..."`. Models use it to
+// surface derived measurements — capacity, overall height — that the customizer
+// shows beneath the viewer.
+const ECHO = /^ECHO:\s*"?(.*?)"?\s*$/
+
+export function extractEchoes(log) {
+  return log.flatMap((line) => {
+    const match = ECHO.exec(line)
+    return match ? [match[1]] : []
+  })
+}
+
+// Anything OpenSCAD flagged, minus the noise it prints on every single run.
+//
+// The Manifold conversion warning is here because it is a note about which
+// internal path OpenSCAD took, not about the geometry: BOSL2 hands it a
+// polyset it can't convert when a textured cylinder is differenced against,
+// OpenSCAD falls back, and the exported mesh comes out watertight either way.
+// There is nothing a visitor could do about it, so it doesn't belong in a
+// panel of things to fix. It is still reported by scripts/scad-render.mjs,
+// where the person who could act on it is the one reading.
+//
+// The trace that follows every failed assertion is dropped for the same
+// reason: it only ever says "called by 'assert'", which the message above it
+// has already made clear.
+const IGNORED = /Could not initialize localization|Compiling design|Top level object|PolySet -> Manifold conversion failed|TRACE: called by 'assert'|^\s*(Simple|Vertices|Halfedges|Edges|Halffacets|Facets|Volumes|Genus|Status):/
+
+export function extractProblems(log) {
+  return log.filter((line) => /WARNING|ERROR|Parser error|TRACE/i.test(line) && !IGNORED.test(line))
+}
+
+/**
+ * Why a render produced nothing, guaranteeing an answer.
+ *
+ * Usually the log flagged something itself. When it didn't, OpenSCAD died
+ * without filing a complaint in the words we look for, and the exit code and
+ * the last few lines are all there is — which still beats telling someone
+ * "no geometry was produced" and leaving them to guess.
+ */
+export function failureProblems(result) {
+  const flagged = extractProblems(result.log)
+  if (flagged.length) return flagged
+
+  const tail = result.log.filter((line) => line.trim()).slice(-3)
+  return [`OpenSCAD exited with code ${result.exitCode} and produced no geometry.`, ...tail]
+}
+
 /** Asset adapter for the browser (worker or main thread). */
 export function browserAssets(base = ASSET_BASE) {
   const url = (path) => new URL(`${base}/${path}`, self.location.href).href
