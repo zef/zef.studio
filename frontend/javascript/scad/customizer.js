@@ -387,7 +387,8 @@ export class ScadCustomizer extends HTMLElement {
   // ------------------------------------------------------------ running
 
   async start() {
-    if (this.worker) return
+    if (this.started) return
+    this.started = true
     this.setAttribute("data-started", "")
     this.setStatus("Loading OpenSCAD…", "loading")
 
@@ -402,13 +403,40 @@ export class ScadCustomizer extends HTMLElement {
     this.worker.postMessage({ type: "warmup", assetBase: this.assetBase })
   }
 
+  /** Warms the in-page kernel and begins, standing in for the worker's "ready". */
+  async startInPage() {
+    try {
+      await this.mainThreadKernel()
+      this.ready = true
+      this.render()
+    } catch (error) {
+      this.setStatus(`Couldn't load OpenSCAD — ${error?.message || error}`, "error")
+    }
+  }
+
   spawnWorker() {
     this.worker = new Worker(this.workerURL, { type: "module" })
     this.worker.onmessage = (event) => this.handleWorkerMessage(event.data)
     this.worker.onerror = (event) => {
+      // A module worker that fails to load reports an error event with no
+      // message at all, so there is nothing to diagnose from and nothing to
+      // be gained by stopping here. The page can do the work itself.
+      if (!this.renderInThisThread) {
+        console.info("scad: the worker failed to start; rendering in the page instead")
+        this.moveRenderingIntoPage()
+        this.startInPage()
+        return
+      }
       this.setStatus(`Worker failed: ${event.message || "unknown error"}`, "error")
       this.busy = false
     }
+  }
+
+  /** Switches to in-page rendering and lets go of the worker. */
+  moveRenderingIntoPage() {
+    this.renderInThisThread = true
+    this.worker?.terminate()
+    this.worker = null
   }
 
   handleWorkerMessage(message) {
@@ -683,7 +711,7 @@ export class ScadCustomizer extends HTMLElement {
     // this happens, so move there and try again — and stay there, rather than
     // spending a doomed worker render on every subsequent change.
     if (!this.renderInThisThread && list.some((line) => STACK_OVERFLOW.test(line))) {
-      this.renderInThisThread = true
+      this.moveRenderingIntoPage()
       this.queue.unshift(part)
       console.info("scad: the worker ran out of stack; rendering in the page instead")
       this.renderNext()

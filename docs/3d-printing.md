@@ -327,6 +327,16 @@ A few implementation notes that aren't obvious from the code:
   geometry — the export is watertight either way, checked by pairing its edges.
   `scad-render.mjs` still reports it, so it stays visible to whoever is adding
   a model.
+- **The render runs wherever there is stack for it.** A Worker is the right
+  place — OpenSCAD can't be interrupted, so rendering on the main thread locks
+  the page up — but how much stack a thread gets is the browser's business,
+  and they differ by orders of magnitude. Measured with a recursive WASM
+  function: Chrome's workers reach 7,943 frames, Safari 27's reach 555. That
+  is too few to evaluate anything, so a render that overflows is retried on
+  the main thread and stays there for the session. Safari's own main thread
+  allows 262,144, so everything builds there; the two lightest models still
+  render in its worker and are left alone.
+
 - **Deep nesting costs stack, and Safari has much less of it.** OpenSCAD
   evaluates a nested tree by recursing, and JavaScriptCore allows far fewer
   nested WebAssembly frames than V8 — so a model that builds in Chrome can

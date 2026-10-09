@@ -76,17 +76,28 @@ Each of these cost real time. They are not obvious from reading the code.
   A model that takes 0.7 s from `scad-render.mjs` reports 4–5 s on the page
   there. It is the sandboxed browser, not the code — measure an untouched
   model before chasing a regression that isn't one.
-- **Stack size is per-thread and the browsers disagree wildly.** Measured with
-  a recursive WASM function: Chrome gives a worker 63,500 frames against the
-  main thread's 15,500, while Safari 27's engine gives the main thread 7,000.
-  So the worker is the roomiest place in Chrome and the worst in Safari, and
-  OpenSCAD recurses deeply enough to care. A model that renders in the preview
-  browser can abort in Safari with "Maximum call stack size exceeded"; the
-  customizer retries those on the main thread. Nesting is what costs —
-  `attach()` chains, module wrapping — not facet count; `$fn` makes no
-  difference. Measure with `node --stack-size=N`, and `jsc` (in
-  JavaScriptCore.framework/Versions/A/Helpers) is Safari's actual engine if you
-  need to compare. See `docs/3d-printing.md`.
+- **Stack size is per-thread and the browsers disagree wildly.** Measured in
+  each browser with a recursive WASM function:
+
+  |            | main thread | worker |
+  |------------|-------------|--------|
+  | Chrome     | 15,503      | 7,943  |
+  | Safari 27  | 262,144     | **555** |
+
+  555 frames is too few for OpenSCAD to evaluate anything, so every model
+  failed in Safari until the customizer learned to retry on the main thread.
+  Nesting is what costs — `attach()` chains, module wrapping — not facet
+  count; `$fn` makes no difference.
+
+  Measure models with `node --stack-size=N`. Do **not** trust `jsc` as a stand
+  in for Safari: its shell gave 7,096 where the browser gives 262,144. And do
+  not gate behaviour on a synthetic stack probe — WASM tier-up changes frame
+  size mid-measurement, so the same probe answered `true` once in six runs
+  where the real depth was 555. Only an actual failure is a reliable signal.
+
+  To drive Safari: `safaridriver -p PORT`, then POST to `/session`. It needs
+  "Allow remote automation" in the Develop menu *and* Safari fully quit — it
+  will not take a session while Safari is open. See `docs/3d-printing.md`.
 - **Nothing versions what the worker imports.** `worker.js` gets a cache key
   from the builder; `kernel.js` is a fixed URL, so it must be imported with
   that key passed through or a browser will pair a new worker with a stale
