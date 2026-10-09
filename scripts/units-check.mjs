@@ -8,10 +8,11 @@
 // that goes wrong quietly. A fraction that doesn't survive being written into
 // a box and read back out is a value drifting every time someone edits it.
 import {
-  counterpart,
   followsPageUnit,
   forInput,
+  inchReading,
   mmFrom,
+  mmReading,
   mmToStored,
   parseTyped,
   stepIn,
@@ -69,13 +70,17 @@ section("what lands in the input box", () => {
 })
 
 section("the reading beside the box", () => {
-  is("exact fraction goes bare", counterpart(4.7625, "mm").text, "3/16″")
-  is("a rounding is marked", counterpart(4.7, "mm").text, "≈ 3/16″")
-  is("and offers the real number", counterpart(4.7, "mm").snap, { mm: 4.7625, label: "3/16″" })
-  is("an exact one offers nothing", counterpart(4.7625, "mm").snap, null)
-  is("too fine to read as a fraction", counterpart(2.778125, "mm").text, "0.109″")
-  is("working in inches reads millimetres", counterpart(12.7, "inch").text, "12.7 mm")
-  is("millimetres are never a rounding", counterpart(12.3456, "inch").snap, null)
+  is("exact fraction goes bare", inchReading(4.7625).text, "3/16″")
+  is("a rounding is marked", inchReading(4.7).text, "≈ 3/16″")
+  is("and offers the real number", inchReading(4.7).snap, { mm: 4.7625, label: "3/16″" })
+  is("an exact one offers nothing", inchReading(4.7625).snap, null)
+  is("too fine to read as a fraction", inchReading(2.778125).text, "0.109″")
+  is("smaller than any marking reads as a decimal", inchReading(0.12).text, "0.005″")
+  is("and offers no snap to nothing", inchReading(0.12).snap, null)
+  is("zero is still zero", inchReading(0).text, "0″")
+  is("the millimetre reading", mmReading(12.7), "12.7 mm")
+  // The reading and the box must agree, or switching units looks like a bug.
+  is("it matches the box it would become", mmReading(11.1125), `${forInput(11.1125, "mm")} mm`)
 })
 
 section("slider steps land on rule markings", () => {

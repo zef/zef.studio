@@ -6,7 +6,19 @@
 // slider for exploring, the box for typing an exact measurement, since these
 // are real millimetres that have to match real hardware.
 
-import { alwaysShown, convertible, readout as unitReadout } from "./units.js"
+import {
+  forInput,
+  inchReading,
+  mmReading,
+  isLength,
+  mmFrom,
+  mmTo,
+  mmToStored,
+  parseTyped,
+  stepIn,
+  storedToMm,
+  unitLabel,
+} from "./units.js"
 
 const GROUP_OPEN_BY_DEFAULT = 2 // later sections start collapsed
 
@@ -16,12 +28,25 @@ export class Controls {
    * @param {object} schema parsed model schema
    * @param {(name: string, value: any) => void} onChange fires per edit
    */
-  constructor(container, schema, onChange) {
+  constructor(container, schema, onChange, pageUnit = "mm") {
     this.container = container
     this.schema = schema
     this.onChange = onChange
+    this.pageUnit = pageUnit
     this.inputs = new Map() // name -> {set(value)}
+    this.units = new Map() // name -> {pageUnitChanged(unit)}, lengths only
     this.render()
+  }
+
+  /**
+   * Switches what the page is worked in.
+   *
+   * Only parameters that never declared a unit follow; the rest were already
+   * decided, by the model or by hand, and each keeps its own switch.
+   */
+  setPageUnit(unit) {
+    this.pageUnit = unit
+    for (const control of this.units.values()) control.pageUnitChanged(unit)
   }
 
   get parameters() {
@@ -61,27 +86,26 @@ export class Controls {
     const label = element("label", "scad-label", parameter.label)
     label.htmlFor = id
 
-    // The inch equivalent shares the label's line, sitting above the number
-    // box rather than beside it. Turning the switch on then changes nothing
-    // about the width of the control row — the sliders stay where they were.
+    // The same measurement in the other unit, sharing the label's line so that
+    // showing or hiding it can't move the slider underneath.
     //
     // It's a button because an approximate reading is also an offer: press it
     // and the value becomes exactly the fraction it was rounding to. Disabled
     // when there's nothing to snap to, which is most of the time.
-    const readout = convertible(parameter) ? element("button", "scad-inches") : null
-    if (readout) {
-      readout.type = "button"
-      // A parameter already in inches shows its millimetre equivalent whether
-      // or not the switch is on: that reading is scale, not a preference.
-      if (alwaysShown(parameter)) readout.classList.add("is-fixed")
-    }
+    const lengthy = isLength(parameter)
+    const readout = lengthy ? element("button", "scad-inches") : null
+    if (readout) readout.type = "button"
+    // The millimetre value, for when the box is showing inches. Separate from
+    // the reading above because it is a plain fact rather than an offer.
+    const metric = lengthy ? element("span", "scad-mm") : null
 
     const heading = element("div", "scad-label-row")
     heading.append(label)
     if (readout) heading.append(readout)
+    if (metric) heading.append(metric)
     field.append(heading)
 
-    field.append(this.buildControl(parameter, id, readout))
+    field.append(this.buildControl(parameter, id, readout, metric))
 
     if (parameter.description) {
       field.append(element("p", "scad-help", parameter.description))
@@ -89,95 +113,186 @@ export class Controls {
     return field
   }
 
-  buildControl(parameter, id, readout) {
+  buildControl(parameter, id, readout, metric) {
     switch (parameter.type) {
       case "boolean": return this.buildBoolean(parameter, id)
       case "enum": return this.buildEnum(parameter, id)
       case "vector": return this.buildVector(parameter, id)
-      case "number": return this.buildNumber(parameter, id, readout)
+      case "number": return this.buildNumber(parameter, id, readout, metric)
       default: return this.buildText(parameter, id)
     }
   }
 
-  buildNumber(parameter, id, readout = null) {
+  buildNumber(parameter, id, readout = null, metric = null) {
     const wrapper = element("div", "scad-number")
     const hasRange = parameter.min !== undefined && parameter.max !== undefined
-    const step = parameter.step ?? inferStep(parameter)
+    const lengthy = isLength(parameter)
 
-    const box = element("input", "scad-number-box")
-    box.type = "number"
-    box.id = id
-    box.step = String(step)
-    // Deliberately no min/max here. The slider's range is a suggestion of where
-    // the useful values live, not a limit — if you need 7000 where the slider
-    // stops at 5000, type it. Dragging the slider afterwards snaps back inside.
-    box.value = String(parameter.default)
+    // A length is tracked in millimetres inside this control whatever the
+    // model stores it as and whatever the reader is typing, so there is one
+    // number to reason about and conversion happens only at the edges.
+    const canonical = (stored) => (lengthy ? storedToMm(stored, parameter) : stored)
+    const stored = (value) => (lengthy ? mmToStored(value, parameter) : value)
+    const display = (value) => (lengthy ? mmTo(value, unit) : value)
 
-    const slider = hasRange ? element("input", "scad-slider") : null
+    const lowest = hasRange ? canonical(parameter.min) : undefined
+    const highest = hasRange ? canonical(parameter.max) : undefined
+    const declaredStep = parameter.step ?? inferStep(parameter)
+    const stepSize = canonical(declaredStep)
 
-    // The exact millimetre value behind the current approximate reading, or
-    // null when there's nothing worth snapping to. Kept here so the readout's
-    // click handler and its appearance stay in agreement.
+    /**
+     * The slider's step, in whatever unit is being worked in.
+     *
+     * Only a step that has to be *converted* gets rebuilt. A model that asks
+     * for 0.01 of its own unit means it — calibers come in hundredths of an
+     * inch, and rounding that onto a 1/64 grid would step straight past .50.
+     * It is converting a millimetre step into inches that needs help, because
+     * 0.1 mm lands on 0.0039″, which is neither reachable on a rule nor
+     * meaningful to drag to.
+     */
+    const workingStep = () => {
+      if (!lengthy || unit === parameter.unit) return declaredStep
+      return unit === "inch" ? stepIn("inch", stepSize) : stepSize
+    }
+
+    // The unit this parameter is being worked in, and whether the page switch
+    // is allowed to move it. A unit the file declared is already a decision;
+    // so is one the reader made by hand.
+    let unit = lengthy ? (parameter.unit_declared ? parameter.unit : this.pageUnit) : null
+    let pinned = Boolean(parameter.unit_declared)
+    let value = canonical(parameter.default)
     let snap = null
 
-    // Keeps the row's appearance in step with the value: the inch equivalent,
-    // whether that reading can be snapped to exactly, and a mark when the value
-    // sits outside the slider's range so it's clear why the handle has stopped.
-    const reflect = (value) => {
-      const beyond = hasRange && (value < parameter.min || value > parameter.max)
+    const box = element("input", "scad-number-box")
+    box.id = id
+    // Deliberately no min/max. The slider's range says where the useful values
+    // live, not where they stop — if you need 7000 where the slider ends at
+    // 5000, type it. Dragging afterwards snaps back inside; the value stands.
+    const slider = hasRange ? element("input", "scad-slider") : null
+    if (slider) {
+      slider.type = "range"
+      slider.setAttribute("aria-label", parameter.label)
+    }
+
+    // Shown as the unit it is rather than an arrow, because the label is the
+    // thing worth knowing and the switch is the bonus.
+    const unitButton = lengthy ? element("button", "scad-unit") : null
+    if (unitButton) unitButton.type = "button"
+
+    const sizeInputs = () => {
+      // Inches want their fractions, which no number input will hold.
+      box.type = lengthy && unit === "inch" ? "text" : "number"
+      if (box.type === "text") {
+        box.inputMode = "decimal"
+        box.removeAttribute("step")
+      } else {
+        box.step = String(workingStep())
+      }
+      if (!slider) return
+      slider.min = String(display(lowest))
+      slider.max = String(display(highest))
+      slider.step = String(workingStep())
+    }
+
+    // Everything the row shows, derived from the one value it holds.
+    const reflect = () => {
+      box.value = lengthy ? forInput(value, unit) : String(value)
+      if (slider) slider.value = String(display(value))
+
+      const beyond = hasRange && (value < lowest || value > highest)
       wrapper.classList.toggle("is-beyond", beyond)
       wrapper.title = beyond
         ? `Outside the usual range of ${parameter.min}–${parameter.max}. The slider stops at the edge; the value stands.`
         : ""
+
+      if (unitButton) {
+        unitButton.textContent = unitLabel(unit)
+        unitButton.title = `Working in ${unit === "inch" ? "inches" : "millimetres"}. Switch this one to ${
+          unit === "inch" ? "millimetres" : "inches"
+        }.`
+      }
       if (!readout) return
 
-      const reading = unitReadout(parameter, value)
+      const reading = inchReading(value)
       readout.textContent = reading.text
       snap = reading.snap
       readout.disabled = !snap
       readout.title = reading.title
+      // With inches already in the box, this reading only earns its place when
+      // it says something the box doesn't: that the value is *near* a rule
+      // marking. An exact fraction is already in the box, and a decimal would
+      // just be the box again at lower precision.
+      //
+      // With millimetres in the box it is the counterpart, and shows whenever
+      // the reader has asked for imperial at all.
+      readout.classList.toggle(
+        "is-shown",
+        unit === "inch" ? Boolean(snap) : this.pageUnit === "inch"
+      )
+      // Millimetres are not a preference: with inches in the box they are the
+      // only thing saying how big this actually is.
+      metric.textContent = mmReading(value)
+      metric.classList.toggle("is-shown", unit === "inch")
     }
 
-    // One path for every way the value can change: put it in both inputs,
-    // refresh the row, tell the customizer. The slider pins itself to whichever
-    // end it can reach when the value is outside its range; the value stands.
-    const apply = (value) => {
-      box.value = String(value)
-      if (slider) slider.value = String(value)
-      reflect(value)
-      this.emit(parameter, value)
+    const apply = (next) => {
+      value = next
+      reflect()
+      this.emit(parameter, tidy(stored(value)))
     }
+
+    const setUnit = (next) => {
+      unit = next
+      sizeInputs()
+      reflect()
+    }
+
+    unitButton?.addEventListener("click", () => {
+      pinned = true
+      setUnit(unit === "inch" ? "mm" : "inch")
+      box.focus()
+    })
 
     readout?.addEventListener("click", () => {
       if (snap) apply(snap.mm)
     })
 
-    if (slider) {
-      slider.type = "range"
-      slider.min = String(parameter.min)
-      slider.max = String(parameter.max)
-      slider.step = String(step)
-      slider.value = String(parameter.default)
-      slider.setAttribute("aria-label", parameter.label)
-      slider.addEventListener("input", () => apply(Number(slider.value)))
-      wrapper.append(slider)
-    }
+    slider?.addEventListener("input", () => {
+      const typed = Number(slider.value)
+      apply(lengthy ? mmFrom(typed, unit) : typed)
+    })
 
     box.addEventListener("change", () => {
-      const value = Number(box.value)
-      if (Number.isFinite(value)) apply(value)
+      const typed = lengthy ? parseTyped(box.value, unit) : Number(box.value)
+      // Nothing readable in there; put back what the value actually is rather
+      // than guessing at a number.
+      if (typed === null || !Number.isFinite(typed)) {
+        reflect()
+        return
+      }
+      apply(lengthy ? mmFrom(typed, unit) : typed)
     })
-    wrapper.append(box)
 
-    reflect(parameter.default)
+    if (slider) wrapper.append(slider)
+    wrapper.append(box)
+    if (unitButton) wrapper.append(unitButton)
+
+    sizeInputs()
+    reflect()
 
     this.inputs.set(parameter.name, {
-      set(value) {
-        box.value = String(value)
-        if (slider) slider.value = String(value)
-        reflect(value)
+      set(next) {
+        value = canonical(next)
+        reflect()
       },
     })
+    if (lengthy) {
+      this.units.set(parameter.name, {
+        // Pinned parameters still refresh: the page changing unit can change
+        // whether their counterpart is worth showing.
+        pageUnitChanged: (next) => (pinned ? reflect() : setUnit(next)),
+      })
+    }
     return wrapper
   }
 
@@ -258,6 +373,12 @@ export class Controls {
       this.inputs.get(name)?.set(value)
     }
   }
+}
+
+// Float arithmetic leaves 4.762500000000001 behind; six places is past any
+// printer's resolution and matches what the renderer writes out.
+function tidy(value) {
+  return Number(value.toFixed(6))
 }
 
 function element(tag, className, text) {

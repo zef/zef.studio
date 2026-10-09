@@ -648,7 +648,7 @@ $controlBg: #f5f4f1
   font-variant-numeric: lining-nums tabular-nums
   padding: 0.35em 0.4em
   text-align: right
-  width: 5.2em
+  width: 4.6em
 
   &:focus
     border-color: $highlightColor
@@ -870,9 +870,9 @@ $controlBg: #f5f4f1
   padding-left: 0.7em
   border-left: 2px solid rgba($darkBgColor, 0.22)
 
-// The inch reading, and — when it's approximate — the offer to make it exact.
-// It's a button, so it resets to look like the text it is until there's
-// something to press.
+// The same measurement in the other unit, and — when it's approximate — the
+// offer to make it exact. It's a button, so it resets to look like the text it
+// is until there's something to press.
 .scad-inches
   +uiFont
   appearance: none
@@ -904,9 +904,46 @@ $controlBg: #f5f4f1
       border-bottom-color: $highlightColor
       color: $highlightColor
 
-.shows-inches .scad-inches,
-.scad-inches.is-fixed
+// Shown once anything imperial is on screen: either the page is being worked
+// in inches, or this one parameter is.
+.scad-inches.is-shown
   display: inline-block
+
+// The millimetre value, when the box has inches in it.
+.scad-mm
+  +uiFont
+  color: $lightTextColor
+  display: none
+  font-size: 0.72rem
+  font-variant-numeric: lining-nums
+  white-space: nowrap
+
+  &.is-shown
+    display: inline-block
+
+// The unit the box above is in, and a press to change it. Sits where a unit
+// suffix would, because that is what it mostly is — the switch is the bonus,
+// and the label was missing before this.
+.scad-unit
+  +uiFont
+  appearance: none
+  background: none
+  border: none
+  border-bottom: 1px dotted rgba($textColor, 0.3)
+  border-radius: 0
+  color: $lightTextColor
+  cursor: pointer
+  font-size: 0.72rem
+  line-height: 1.2
+  padding: 0
+  // Just wide enough for either label, so switching doesn't shuffle the row.
+  text-align: left
+  width: 1.5em
+
+  &:hover,
+  &:focus-visible
+    border-bottom-color: $highlightColor
+    color: $highlightColor
 
 // A value the slider can't reach is legitimate — just worth marking.
 .scad-number.is-beyond

@@ -25,7 +25,9 @@ import { zipFiles } from "./zip.js"
 // Once someone opts into the download on any model, other models load without
 // asking again — it's already in the browser cache by then.
 const OPT_IN_KEY = "scad-customizer-opt-in"
-const INCHES_KEY = "scad-customizer-inches"
+// Which unit the page is worked in. Stores the unit rather than a yes/no,
+// since it is a choice between two now and not a thing being switched on.
+const UNIT_KEY = "scad-customizer-working-unit"
 const RENDER_DEBOUNCE_MS = 220
 
 // The preset entry standing for the values the model itself declares. Naming it
@@ -148,6 +150,7 @@ export class ScadCustomizer extends HTMLElement {
   // ------------------------------------------------------------ set-up
 
   buildControls() {
+    this.pageUnit = localStorage.getItem(UNIT_KEY) === "inch" ? "inch" : "mm"
     this.controls = new Controls(this.el.controls, this.schema, (name, value) => {
       this.values[name] = value
       // Any manual edit means this is no longer "the preset", it's your own.
@@ -155,7 +158,7 @@ export class ScadCustomizer extends HTMLElement {
       this.syncURL()
       this.refreshSource()
       this.scheduleRender()
-    })
+    }, this.pageUnit)
 
     this.buildParts()
 
@@ -312,7 +315,7 @@ export class ScadCustomizer extends HTMLElement {
   }
 
   applyInitialState() {
-    this.setInches(localStorage.getItem(INCHES_KEY) === "yes")
+    this.setPageUnit(this.pageUnit)
     this.applyHashState({ render: false })
 
     // Changing only the hash doesn't reload the page, so following a shared
@@ -362,7 +365,9 @@ export class ScadCustomizer extends HTMLElement {
       this.start()
     })
     this.el.recenter?.addEventListener("click", () => this.viewer?.frame())
-    this.el.inches?.addEventListener("change", () => this.setInches(this.el.inches.checked))
+    this.el.inches?.addEventListener("change", () =>
+      this.setPageUnit(this.el.inches.checked ? "inch" : "mm")
+    )
     this.el.sourceToggle?.addEventListener("click", () => this.toggleSource())
     this.el.uploadPreset?.addEventListener("change", (event) => this.loadParameterFile(event))
     // Both of these end up in filenames, so slugify as you type and show what
@@ -747,11 +752,11 @@ export class ScadCustomizer extends HTMLElement {
       const [x, y, z] = dimensions
       const size = `${round(x)} × ${round(y)} × ${round(z)} mm`
       // Decimal inches for the size triple: three fractions side by side is a
-      // wall of slashes, and lining decimals compare at a glance. Stacked under
-      // the millimetres rather than trailing them, so the two read as the same
-      // measurement twice instead of one long line.
+      // wall of slashes, and lining decimals compare at a glance. The unit
+      // being worked in leads, with the other stacked under it, so the two
+      // read as the same measurement twice instead of one long line.
       const inches = `${dimensions.map((mm) => (mm / 25.4).toFixed(2)).join(" × ")}″`
-      rows.push(["Size", this.inchesOn ? [size, inches] : size])
+      rows.push(["Size", this.pageUnit === "inch" ? [inches, size] : size])
     }
 
     const many = pieces.length > 1
@@ -810,11 +815,19 @@ export class ScadCustomizer extends HTMLElement {
     }
   }
 
-  setInches(on) {
-    this.inchesOn = Boolean(on)
-    this.classList.toggle("shows-inches", this.inchesOn)
-    if (this.el.inches) this.el.inches.checked = this.inchesOn
-    localStorage.setItem(INCHES_KEY, this.inchesOn ? "yes" : "no")
+  /**
+   * Sets what the page is worked in.
+   *
+   * Sweeps up every parameter that never declared a unit. The ones that did —
+   * a wall thickness in millimetres, a caliber in inches — were already
+   * decided and keep their own switch.
+   */
+  setPageUnit(unit) {
+    this.pageUnit = unit === "inch" ? "inch" : "mm"
+    this.classList.toggle("shows-inches", this.pageUnit === "inch")
+    if (this.el.inches) this.el.inches.checked = this.pageUnit === "inch"
+    localStorage.setItem(UNIT_KEY, this.pageUnit)
+    this.controls?.setPageUnit(this.pageUnit)
     this.refreshStats()
   }
 

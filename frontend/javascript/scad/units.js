@@ -81,6 +81,10 @@ function asFraction(inches, maxDenominator = READABLE_DENOMINATOR) {
   const ticks = Math.round(magnitude * FINEST)
   const exact = Math.abs(magnitude * FINEST - ticks) < 1e-9
 
+  // Smaller than the finest marking on a rule. "≈ 0″" is not a reading, and
+  // offering to snap a real measurement to nothing is worse than not offering.
+  if (ticks === 0 && magnitude > 0) return null
+
   let numerator = ticks % FINEST
   let denominator = FINEST
   while (numerator > 0 && numerator % 2 === 0) {
@@ -170,22 +174,17 @@ export function forInput(mm, unit) {
 }
 
 /**
- * The same measurement in the other unit, shown beside the control.
+ * Where a measurement sits in inches, and the nearest rule marking to it.
  *
- * Working in millimetres, the counterpart is inches and may be a rounding —
- * hence the ≈, and hence an offer to snap to the fraction it is rounding to.
- * Working in inches, the counterpart is millimetres, which is exact: there is
- * no rounding to mark and nothing to snap to, because dragging an imperial
- * measurement onto a tidy millimetre would be backwards.
+ * Shown whichever unit is being worked in, because it answers a question that
+ * survives the switch: a value typed as 0.1874″ is no more obviously 3/16″
+ * than 4.76 mm is. The ≈ marks a reading that has been rounded to get there,
+ * and that is exactly when there is something to snap to.
  *
  * @returns {{text: string, title: string, snap: {mm: number, label: string}|null}}
  */
-export function counterpart(mm, workingUnit) {
+export function inchReading(mm) {
   if (!Number.isFinite(mm)) return { text: "", title: "", snap: null }
-
-  if (workingUnit === "inch") {
-    return { text: `${trimZeros(mm.toFixed(3))} mm`, title: "", snap: null }
-  }
 
   const { text, exact, fraction, decimal } = formatInches(mm / MM_PER_INCH)
   if (!text) return { text: "", title: "", snap: null }
@@ -197,6 +196,16 @@ export function counterpart(mm, workingUnit) {
     title: snap ? `Snap to ${snap.label} — ${snap.mm} mm` : text === decimal ? "" : decimal,
     snap,
   }
+}
+
+/**
+ * The measurement in millimetres, for when the box is showing inches.
+ *
+ * Four places, matching what the box itself would show after switching units:
+ * a reading that disagrees with the box is a bug report waiting to happen.
+ */
+export function mmReading(mm) {
+  return Number.isFinite(mm) ? `${trimZeros(mm.toFixed(4))} mm` : ""
 }
 
 /**
