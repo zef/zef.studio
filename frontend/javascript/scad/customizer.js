@@ -5,6 +5,13 @@
 // handed to it as JSON in a <script> tag, so the element itself is generic:
 // everything model-specific was parsed out of the .scad file at build time.
 
+import {
+  browserAssets,
+  extractEchoes,
+  extractProblems,
+  failureProblems,
+  OpenSCADKernel,
+} from "../../../src/3d-printing/worker/kernel.js"
 import { Controls } from "./controls.js"
 import { layoutParts, mergeGeometries } from "./parts.js"
 import { decodeState, encodeState, replaceHash, shareURL } from "./share.js"
@@ -85,6 +92,9 @@ export class ScadCustomizer extends HTMLElement {
 
     this.batchId = 0
     this.queue = []
+    // Set once the worker proves it can't do the job; see renderInPage.
+    this.renderInThisThread = false
+    this.localKernel = null
     this.pending = false
     this.busy = false
     this.framedFor = null
@@ -471,7 +481,7 @@ export class ScadCustomizer extends HTMLElement {
   renderNext() {
     const part = this.queue.shift()
     this.setStatus(this.progressLabel(part), "busy")
-    this.worker.postMessage({
+    const request = {
       type: "render",
       id: this.batchId,
       part,
@@ -481,7 +491,64 @@ export class ScadCustomizer extends HTMLElement {
       libraries: this.schema.libraries,
       fonts: this.schema.fonts,
       features: this.schema.features,
-    })
+    }
+    if (this.renderInThisThread) this.renderInPage(request)
+    else this.worker.postMessage(request)
+  }
+
+  /**
+   * Runs the render here instead of in the worker.
+   *
+   * Normally the wrong place — OpenSCAD can't be interrupted, so this locks the
+   * page up for as long as it takes, which is the whole reason the worker
+   * exists. But how much stack a thread gets is the browser's business and the
+   * browsers disagree sharply: Chrome hands a worker about four times the main
+   * thread's (63,500 frames against 15,500, measured), while Safari's engine
+   * gives the main thread less than half of Chrome's and its workers less
+   * still. OpenSCAD recurses deeply enough that this decides whether a model
+   * builds at all, so where there is more stack is where the render belongs.
+   * A second of frozen page beats a part that will not build.
+   */
+  async mainThreadKernel() {
+    if (!this.localKernel) {
+      this.localKernel = new OpenSCADKernel({ assets: browserAssets(this.assetBase) })
+    }
+    await this.localKernel.warmup()
+    return this.localKernel
+  }
+
+  async renderInPage(request) {
+    const stale = () => request.id !== this.batchId
+    try {
+      const kernel = await this.mainThreadKernel()
+      if (stale()) return
+      // Let the status paint before the thread stops answering.
+      await new Promise((resolve) => setTimeout(resolve, 0))
+
+      const result = await kernel.render({
+        source: request.source,
+        parameters: request.parameters,
+        libraries: request.libraries,
+        fonts: request.fonts,
+        ...(request.features ? { features: request.features } : {}),
+      })
+      if (stale()) return
+
+      if (!result.ok) {
+        this.showFailure({ part: request.part, problems: failureProblems(result), ms: result.ms })
+        return
+      }
+      this.acceptPart({
+        part: request.part,
+        stl: result.output.buffer,
+        ms: result.ms,
+        echoes: extractEchoes(result.log),
+        problems: extractProblems(result.log),
+      })
+    } catch (error) {
+      if (stale()) return
+      this.showFailure({ part: request.part, problems: [error?.message || String(error)] })
+    }
   }
 
   progressLabel(part) {
@@ -609,7 +676,21 @@ export class ScadCustomizer extends HTMLElement {
    * to leave the others unrendered and the viewer empty.
    */
   showFailure({ problems, part }) {
-    this.failures.set(part, problems?.length ? problems : ["No geometry was produced."])
+    const list = problems?.length ? problems : ["No geometry was produced."]
+
+    // The worker ran out of stack rather than hitting anything wrong with the
+    // model. There is more of it on the main thread in the one engine where
+    // this happens, so move there and try again — and stay there, rather than
+    // spending a doomed worker render on every subsequent change.
+    if (!this.renderInThisThread && list.some((line) => STACK_OVERFLOW.test(line))) {
+      this.renderInThisThread = true
+      this.queue.unshift(part)
+      console.info("scad: the worker ran out of stack; rendering in the page instead")
+      this.renderNext()
+      return
+    }
+
+    this.failures.set(part, list)
     this.advance()
   }
 
