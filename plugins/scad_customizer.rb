@@ -50,7 +50,9 @@ module ScadCustomizer
   }.freeze
 
   class Parameter
-    ATTRIBUTES = %i[name label description type default min max step options group max_length unit].freeze
+    ATTRIBUTES = %i[
+      name label description type default min max step options group max_length unit unit_declared
+    ].freeze
     attr_accessor(*ATTRIBUTES)
 
     def initialize(**attrs)
@@ -288,14 +290,21 @@ module ScadCustomizer
         default: default,
         group: group,
         type: type_for(default),
-        unit: unit_for(name, default, unit)
+        unit: unit_for(name, default, unit),
+        # Whether the file chose this unit or we assumed it. The website lets a
+        # reader switch what they type in, and a declared unit opts out of
+        # being swept along by that: a wall thickness is in millimetres because
+        # it is some number of extrusion widths, whatever the rest of the part
+        # is measured in.
+        unit_declared: (!unit.nil? || nil)
       )
       apply_annotation(param, annotation)
       param
     end
 
     # These are CAD models, so a bare number is a length in millimetres unless
-    # the model says otherwise. Special variables like $fn never are.
+    # the model says otherwise — which is an assumption, not a declaration, and
+    # `unit_declared` keeps the difference.
     def unit_for(name, default, declared)
       return declared if declared
       return nil unless default.is_a?(Numeric)
