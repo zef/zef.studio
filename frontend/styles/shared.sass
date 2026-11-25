@@ -1,0 +1,9 @@
+// zef.studio's look for sibling sites (store.zef.studio): the same base the
+// site itself is built on (_base.sass), published on its own at /shared.css
+// with every image and font loading from zef.studio. A sibling links it, then
+// adds its own stylesheet for whatever only it needs.
+//
+// Built by `rake shared_css` (part of `rake deploy`), not by esbuild: esbuild's
+// files get content hashes in their names, and siblings need a fixed URL.
+@use 'theme' with ($assetHost: "https://zef.studio")
+@use 'base'

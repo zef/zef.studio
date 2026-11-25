@@ -15,6 +15,10 @@ $secondaryColor: #ff3f45
 
 $background: white
 
+// Where images and fonts load from. Empty on zef.studio itself; shared.sass
+// sets it to https://zef.studio so the stylesheet works from other sites.
+$assetHost: "" !default
+
 $cornerRadius: 16px
 
 // Prose sits at $contentWidth and stays there. Measured, that's about 90
@@ -68,12 +72,12 @@ $gridGutter: 2rem
 
 =paperBg
   background-color: $background
-  background: url(/images/bg-texture.svg)
+  background: url(#{$assetHost}/images/bg-texture.svg)
   background-position: center
 
 =paperBgDark
   background-color: $darkBgColor
-  background: url(/images/bg-texture-dark.svg)
+  background: url(#{$assetHost}/images/bg-texture-dark.svg)
   background-position: center
 
 =svgSquare($size)
