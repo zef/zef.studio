@@ -58,18 +58,26 @@ class SourceImage
     disk_path = site.in_source_dir(src)
 
     if !File.exist?(disk_path)
-      disk_path = disk_path.sub(/jpg$/, "jpeg")
-      if !File.exist?(disk_path)
-        Bridgetown.logger.error "SourceImage:", "Source image not found: #{disk_path}"
-        return nil
-      end
+      jpeg = disk_path.sub(/jpg$/, "jpeg")
+      disk_path = jpeg if File.exist?(jpeg)
     end
 
-    new(disk_path, site)
+    image = new(disk_path, site)
+    # Originals of resized photos aren't kept in the repo (.gitignore), so a
+    # fresh clone has only the resized copies, and those are all it needs.
+    return image if File.exist?(disk_path) || image.resized_copies?
+
+    Bridgetown.logger.error "SourceImage:", "Source image not found: #{disk_path}"
+    nil
   end
 
   def small
     resized(SIZES[:small])
+  end
+
+  # Whether every size has already been made, so the original isn't needed.
+  def resized_copies?
+    resizable?(destination_for(SIZES[:small])) && SIZES.values.all? { |width| File.exist?(destination_for(width)) }
   end
 
   def large
@@ -102,13 +110,16 @@ class SourceImage
   end
 
   def resized(width)
+    destination = destination_for(width)
+    site_path = site_path_for(destination)
+
+    # Made before: the original may not even be here (see from_src).
+    return SiteImage.new(destination, site_path) if resizable?(destination) && File.exist?(destination)
+
     unless File.exist?(@source_path)
       Bridgetown.logger.error "SourceImage:", "Original source not found for #{@source_path}; skipping resize"
       return nil
     end
-
-    destination = destination_for(width)
-    site_path = site_path_for(destination)
 
     # Formats we don't resize are served as they are.
     return SiteImage.new(@source_path, site_path) unless resizable?(destination)

@@ -43,3 +43,11 @@ yarn-debug.log*
 
 # Built by plugins/builders/shared_css.rb
 /src/shared.css
+
+# Original photos beside posts stay on this machine only. The image plugin
+# publishes resized copies (src/projects/, src/journal/), which are committed
+# and are all a build needs; originals are only for making new sizes.
+/src/_posts/**/*.jpg
+/src/_posts/**/*.jpeg
+/src/_posts/**/*.JPG
+/src/_posts/**/*.JPEG
