@@ -14,6 +14,13 @@ task :deploy => [:clean, "frontend:build"] do
   `rsync -a output/ ~/code/zef-studio-output`
 end
 
+# What Netlify runs (netlify.toml): the deploy build, without the copy into
+# ~/code/zef-studio-output.
+desc "Build the site on Netlify"
+task :netlify => [:clean, "frontend:build"] do
+  Bridgetown::Commands::Build.start
+end
+
 desc "Build the site in a test environment"
 task :test do
   ENV["BRIDGETOWN_ENV"] = "test"

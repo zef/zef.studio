@@ -1,0 +1,43 @@
+# Netlify builds zef.studio from this repo. Ruby comes from .ruby-version, and
+# Netlify's build image has the libvips the image plugins use.
+[build]
+  command = "bundle exec rake netlify"
+  publish = "output"
+
+[build.environment]
+  NODE_VERSION = "24"
+  # Photos are in Git LFS. Originals aren't committed; the resized copies are
+  # all a build needs.
+  GIT_LFS_ENABLED = "true"
+
+# Addresses the site used to have. The old deploy copied each build over the
+# last without deleting anything, so these kept working; a fresh build each
+# time doesn't have them.
+[[redirects]]
+  from = "/feed.rss"
+  to = "/feed.xml"
+  status = 301
+[[redirects]]
+  from = "/projects/MaxxFan/*"
+  to = "/projects/maxxfan/:splat"
+  status = 301
+[[redirects]]
+  from = "/journal/what-I-want-from-this-site/*"
+  to = "/journal/what-i-want-from-this-site/:splat"
+  status = 301
+[[redirects]]
+  from = "/journal/why-I-havent-been-sharing/*"
+  to = "/journal/why-i-havent-been-sharing/:splat"
+  status = 301
+[[redirects]]
+  from = "/backlog/*"
+  to = "/projects/backlog/:splat"
+  status = 301
+[[redirects]]
+  from = "/tags/zefstudio/*"
+  to = "/tags/zef.studio/:splat"
+  status = 301
+[[redirects]]
+  from = "/tags/bags/*"
+  to = "/tags/fabric/"
+  status = 301
