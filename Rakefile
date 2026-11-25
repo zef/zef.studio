@@ -12,6 +12,7 @@ desc "Build the Bridgetown site for deployment"
 task :deploy => [:clean, "frontend:build"] do
   Bridgetown::Commands::Build.start
   Rake::Task[:shared_css].invoke
+  Rake::Task[:redirects].invoke
   `rsync -a output/ ~/code/zef-studio-output`
 end
 
@@ -51,6 +52,16 @@ namespace :frontend do
     sh "npm run esbuild-dev"
   rescue Interrupt
   end
+end
+
+# Short addresses printed on things, such as zef.studio/SensorShield on the
+# SensorShield board, pointing at the pages that explain them.
+desc "Write Netlify's _redirects into output/"
+task :redirects do
+  File.write("output/_redirects", <<~REDIRECTS)
+    /SensorShield  /projects/sensorshield/  301
+    /sensorshield  /projects/sensorshield/  301
+  REDIRECTS
 end
 
 #
