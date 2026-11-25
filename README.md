@@ -16,6 +16,8 @@ The template and design is handcoded by me, and I use the excellent
 I also used [PhotoSwipe](https://photoswipe.com) for the image gallery that is
 activated when an image is selected.
 
+I have been using AI for technical purposes, but I do not use it for writing.
+
 Let me know if you have any questions!
 
 ## Customizations
