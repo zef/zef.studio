@@ -11,7 +11,6 @@ task default: :deploy
 desc "Build the Bridgetown site for deployment"
 task :deploy => [:clean, "frontend:build"] do
   Bridgetown::Commands::Build.start
-  Rake::Task[:redirects].invoke
   `rsync -a output/ ~/code/zef-studio-output`
 end
 
