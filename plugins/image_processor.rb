@@ -116,7 +116,9 @@ class SourceImage
     unless File.exist?(destination)
       Bridgetown.logger.info "ImageProcessor:", "Resizing #{File.basename(@source_path)} to #{width}px"
       FileUtils.mkdir_p(File.dirname(destination))
-      ImageProcessing::Vips.source(@source_path).resize_to_limit(width, width).call(destination: destination)
+      # Keep only the colour profile: camera metadata, GPS location among it,
+      # otherwise rides along into every published copy.
+      ImageProcessing::Vips.source(@source_path).saver(keep: "icc").resize_to_limit(width, width).call(destination: destination)
     end
 
     SiteImage.new(destination, site_path)
