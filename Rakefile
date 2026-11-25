@@ -11,23 +11,8 @@ task default: :deploy
 desc "Build the Bridgetown site for deployment"
 task :deploy => [:clean, "frontend:build"] do
   Bridgetown::Commands::Build.start
-  Rake::Task[:shared_css].invoke
   Rake::Task[:redirects].invoke
   `rsync -a output/ ~/code/zef-studio-output`
-end
-
-# /shared.css: the site's base styles for sibling sites such as
-# store.zef.studio (see frontend/styles/shared.sass), and the header that lets
-# that store load the fonts: browsers refuse cross-site web fonts without it.
-desc "Build /shared.css and its CORS headers into output/"
-task :shared_css do
-  sh "npx sass --load-path=node_modules --style=compressed --no-source-map --quiet-deps frontend/styles/shared.sass output/shared.css"
-  File.write("output/_headers", <<~HEADERS)
-    /fonts/*
-      Access-Control-Allow-Origin: https://store.zef.studio
-    /shared.css
-      Access-Control-Allow-Origin: https://store.zef.studio
-  HEADERS
 end
 
 desc "Build the site in a test environment"

@@ -40,3 +40,6 @@ yarn-debug.log*
 /tmp/pids/*
 !/tmp/pids/
 !/tmp/pids/.keep
+
+# Built by plugins/builders/shared_css.rb
+/src/shared.css
