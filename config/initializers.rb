@@ -123,13 +123,6 @@ Bridgetown.configure do |config|
     "3d-printing/models/**/*.jpg",
     "3d-printing/models/**/*.jpeg",
     "3d-printing/models/**/*.png",
-    # Held back until it's ready to publish. Revert the commit that added
-    # these lines (and took 3D Printing out of the nav) to ship them.
-    "3d-printing/",
-    "_models/",
-    "_pages/3d-printing.erb",
-    "_posts/projects/SensorShield/",
-    "projects/sensorshield/",
   ]
 
   init :"bridgetown-feed"
